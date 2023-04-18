@@ -1,6 +1,8 @@
+import 'package:armada/view/screens/screens.dart';
 import 'package:flutter/material.dart';
 
-import 'view/screens/auth_screen/login_screen.dart';
+import 'configuration/routing.dart';
+import 'configuration/theme_manager.dart';
 
 void main() {
   runApp(const MyApp());
@@ -12,10 +14,12 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Armada',
-      home: Login(),
+      theme: customtheme(),
+      onGenerateRoute: ROUTE.onGenerateRouth,
+      initialRoute: HomeScreen.routeName,
     );
   }
 }

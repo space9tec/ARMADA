@@ -1,6 +1,17 @@
 import 'package:flutter/material.dart';
 
 class Login extends StatefulWidget {
+  static const String routeName = '/login';
+
+  static Route route() {
+    return MaterialPageRoute(
+      settings: RouteSettings(name: routeName),
+      builder: (context) {
+        return Login();
+      },
+    );
+  }
+
   const Login({super.key});
 
   @override
