@@ -15,7 +15,9 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("HomePage")),
+      appBar: AppBar(
+        title: Text("HomePage"),
+      ),
       bottomNavigationBar: BottomAppBar(
           color: Colors.black,
           child: Container(
