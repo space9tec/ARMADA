@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 ThemeData customtheme() {
   return ThemeData(
       scaffoldBackgroundColor: Colors.white,
-      fontFamily: 'Avenir',
+      // fontFamily: 'Avenir',
       textTheme: textTheme());
 }
 
