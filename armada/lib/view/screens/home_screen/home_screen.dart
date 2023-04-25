@@ -17,9 +17,10 @@ class HomeScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text("HomePage"),
+        backgroundColor: Theme.of(context).primaryColor,
       ),
       bottomNavigationBar: BottomAppBar(
-          color: Colors.black,
+          color: Theme.of(context).bottomAppBarTheme.color,
           child: Container(
             height: 70,
             child: Row(

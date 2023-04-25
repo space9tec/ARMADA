@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../view/screens/auth_screen/login_screen.dart';
-import '../view/screens/home_screen/home_screen.dart';
+import '../view/screens/screens.dart';
 
 class ROUTE {
   static Route onGenerateRouth(RouteSettings settings) {
@@ -16,6 +15,8 @@ class ROUTE {
         return HomeScreen.route();
       case Login.routeName:
         return Login.route();
+      case SignUp.routeName:
+        return SignUp.route();
       default:
         return _errorRoute();
     }
