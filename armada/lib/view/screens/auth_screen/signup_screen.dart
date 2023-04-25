@@ -66,7 +66,7 @@ class _SignUpState extends State<SignUp> {
                 width: MediaQuery.of(context).size.width - 120,
                 child: Row(
                   children: [
-                    Container(
+                    SizedBox(
                       width: MediaQuery.of(context).size.width - 322,
                       // padding: EdgeInsets.only(right: 28.0),
                       child: Text(
