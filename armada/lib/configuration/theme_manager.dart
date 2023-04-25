@@ -8,6 +8,8 @@ ThemeData customtheme() {
     primaryColor: const Color.fromARGB(255, 10, 190, 106),
     textTheme: textTheme(),
     bottomAppBarTheme: bottomAppBarThem(),
+
+    dialogBackgroundColor: const Color.fromARGB(255, 10, 190, 106),
   );
 }
 

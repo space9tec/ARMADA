@@ -1,6 +1,6 @@
 import 'package:armada/utils/helper_widget.dart';
-import 'package:armada/configuration/theme_manager.dart';
 import 'package:flutter/material.dart';
+import 'package:armada/view/widgets/widgets.dart';
 
 class Login extends StatefulWidget {
   static const String routeName = '/login';
@@ -116,71 +116,4 @@ class _LoginState extends State<Login> {
       ),
     );
   }
-
-  Widget Button(BuildContext context, String login) {
-    return InkWell(
-      onTap: () {},
-      child: Container(
-        width: MediaQuery.of(context).size.width - 150,
-        height: 55,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(15),
-          gradient: const LinearGradient(
-            colors: [
-              Color.fromARGB(255, 8, 204, 113),
-              Color.fromARGB(255, 10, 190, 106),
-            ],
-          ),
-        ),
-        child: Center(
-          child: Text(
-            login,
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 20,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-Widget InputText(BuildContext context, String hint, bool obscureText,
-    IconData icon, TextInputType ktype) {
-  return SizedBox(
-    width: MediaQuery.of(context).size.width - 120,
-    height: 50,
-    child: TextFormField(
-      keyboardType: ktype,
-      obscureText: obscureText,
-      style: const TextStyle(
-        fontSize: 17,
-        color: Colors.grey,
-      ),
-      decoration: InputDecoration(
-        labelText: hint,
-        labelStyle: const TextStyle(
-          fontSize: 17,
-          color: Colors.grey,
-        ),
-        prefixIcon: Icon(
-          icon,
-          color: const Color.fromARGB(255, 10, 190, 106),
-        ),
-        focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(15),
-            borderSide: const BorderSide(
-              width: 1,
-              color: Colors.green,
-            )),
-        enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(15),
-            borderSide: const BorderSide(
-              width: 1,
-              color: Colors.green,
-            )),
-      ),
-    ),
-  );
 }
