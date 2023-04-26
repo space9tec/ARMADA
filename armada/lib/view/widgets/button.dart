@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 
-Widget Button(BuildContext context, String login) {
+Widget Button(BuildContext context, String login, String routh) {
   return InkWell(
-    onTap: () {},
+    onTap: () {
+      Navigator.pushNamed(context, routh);
+    },
     child: Container(
       width: MediaQuery.of(context).size.width - 150,
       height: 55,

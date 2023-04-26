@@ -22,6 +22,7 @@ Widget InputText(BuildContext context, String hint, bool obscureText,
           icon,
           color: const Color.fromARGB(255, 10, 190, 106),
         ),
+        border: InputBorder.none,
         focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(15),
             borderSide: const BorderSide(
