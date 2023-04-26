@@ -17,6 +17,12 @@ class ROUTE {
         return Login.route();
       case SignUp.routeName:
         return SignUp.route();
+      case Verify.routeName:
+        return Verify.route();
+      case ForgetPassword.routeName:
+        return ForgetPassword.route();
+      case NewPassword.routeName:
+        return NewPassword.route();
       default:
         return _errorRoute();
     }

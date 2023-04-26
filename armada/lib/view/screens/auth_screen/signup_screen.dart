@@ -40,18 +40,18 @@ class _SignUpState extends State<SignUp> {
                     style: Theme.of(context).textTheme.displayLarge),
               ),
               addVerticalSpace(30.0),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(left: 50),
-                    child: Text(
-                      "Sign Up",
-                      style: Theme.of(context).textTheme.displayMedium,
-                    ),
-                  ),
-                ],
-              ),
+              // Row(
+              //   crossAxisAlignment: CrossAxisAlignment.start,
+              //   children: [
+              //     Padding(
+              //       padding: const EdgeInsets.only(left: 50),
+              //       child: Text(
+              //         "Sign Up",
+              //         style: Theme.of(context).textTheme.displayMedium,
+              //       ),
+              //     ),
+              //   ],
+              // ),
               addVerticalSpace(20.0),
               InputText(context, "Full name", false, Icons.person_3_sharp,
                   TextInputType.name),
@@ -61,6 +61,12 @@ class _SignUpState extends State<SignUp> {
               addVerticalSpace(21.0),
               InputText(context, "Email (optional)", false, Icons.email_sharp,
                   TextInputType.emailAddress),
+              addVerticalSpace(21.0),
+              InputText(context, "Password", true, Icons.lock_sharp,
+                  TextInputType.text),
+              addVerticalSpace(21.0),
+              InputText(context, "Confirm Password", true, Icons.lock_sharp,
+                  TextInputType.text),
               addVerticalSpace(21.0),
               Container(
                 width: MediaQuery.of(context).size.width - 120,
@@ -116,12 +122,6 @@ class _SignUpState extends State<SignUp> {
                   ],
                 ),
               ),
-              addVerticalSpace(21.0),
-              InputText(context, "Password", true, Icons.lock_sharp,
-                  TextInputType.text),
-              addVerticalSpace(21.0),
-              InputText(context, "Confirm Password", true, Icons.lock_sharp,
-                  TextInputType.text),
               addVerticalSpace(10.0),
               Row(
                 children: [
@@ -143,28 +143,42 @@ class _SignUpState extends State<SignUp> {
                   ),
                 ],
               ),
-              addVerticalSpace(10.0),
-              Button(context, "Register"),
+              addVerticalSpace(20.0),
+              Button(context, "Register", '/verify'),
               addVerticalSpace(24.0),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    "Already have an account. ",
-                    style: Theme.of(context).textTheme.bodyLarge,
-                  ),
-                  addVerticalSpace(1.0),
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.pushNamed(context, '/login');
-                    },
-                    child: Text(
-                      " login",
-                      style: Theme.of(context).textTheme.displaySmall,
-                    ),
-                  ),
-                ],
+              Text(
+                "Already have an account.",
+                style: Theme.of(context).textTheme.bodyLarge,
               ),
+              addVerticalSpace(1.0),
+              GestureDetector(
+                onTap: () {
+                  Navigator.pushNamed(context, '/login');
+                },
+                child: Text(
+                  "Login",
+                  style: Theme.of(context).textTheme.displaySmall,
+                ),
+              ),
+              // Row(
+              //   mainAxisAlignment: MainAxisAlignment.center,
+              //   children: [
+              //     Text(
+              //       "Already have an account. ",
+              //       style: Theme.of(context).textTheme.bodyLarge,
+              //     ),
+              //     addVerticalSpace(1.0),
+              //     GestureDetector(
+              //       onTap: () {
+              //         Navigator.pushNamed(context, '/login');
+              //       },
+              //       child: Text(
+              //         " login",
+              //         style: Theme.of(context).textTheme.displaySmall,
+              //       ),
+              //     ),
+              //   ],
+              // ),
             ],
           ),
         ),

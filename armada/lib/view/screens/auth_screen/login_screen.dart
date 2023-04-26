@@ -86,15 +86,20 @@ class _LoginState extends State<Login> {
                       "Forget password? ",
                       style: Theme.of(context).textTheme.titleLarge,
                     ),
-                    Text(
-                      "Reset",
-                      style: Theme.of(context).textTheme.titleMedium,
-                    )
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.pushNamed(context, '/forgetpassword');
+                      },
+                      child: Text(
+                        "Reset",
+                        style: Theme.of(context).textTheme.titleMedium,
+                      ),
+                    ),
                   ],
                 ),
               ),
               addVerticalSpace(60.0),
-              Button(context, "LogIn"),
+              Button(context, "LogIn", '/'),
               addVerticalSpace(24.0),
               Text(
                 "Don't have an account?",
