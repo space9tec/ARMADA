@@ -49,146 +49,10 @@ class _VerifyState extends State<Verify> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      SizedBox(
-                        height: 68.0,
-                        width: 64.0,
-                        child: TextFormField(
-                          onChanged: (value) {
-                            if (value.length == 1) {
-                              FocusScope.of(context).nextFocus();
-                            }
-                          },
-                          onSaved: (pin1) {},
-                          style: Theme.of(context).textTheme.displayLarge,
-                          keyboardType: TextInputType.number,
-                          textAlign: TextAlign.center,
-                          inputFormatters: [
-                            LengthLimitingTextInputFormatter(1),
-                            FilteringTextInputFormatter.digitsOnly,
-                          ],
-                          decoration: InputDecoration(
-                            border: InputBorder.none,
-                            focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(15),
-                                borderSide: const BorderSide(
-                                  width: 1,
-                                  color: Colors.green,
-                                )),
-                            contentPadding: EdgeInsets.only(bottom: 25),
-                            enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(15),
-                                borderSide: const BorderSide(
-                                  width: 1,
-                                  color: Colors.green,
-                                )),
-                          ),
-                        ),
-                      ),
-                      SizedBox(
-                        height: 68.0,
-                        width: 64.0,
-                        child: TextFormField(
-                          onChanged: (value) {
-                            if (value.length == 1) {
-                              FocusScope.of(context).nextFocus();
-                            }
-                          },
-                          onSaved: (pin2) {},
-                          style: Theme.of(context).textTheme.displayLarge,
-                          keyboardType: TextInputType.number,
-                          textAlign: TextAlign.center,
-                          inputFormatters: [
-                            LengthLimitingTextInputFormatter(1),
-                            FilteringTextInputFormatter.digitsOnly,
-                          ],
-                          decoration: InputDecoration(
-                            border: InputBorder.none,
-                            focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(15),
-                                borderSide: const BorderSide(
-                                  width: 1,
-                                  color: Colors.green,
-                                )),
-                            contentPadding: EdgeInsets.only(bottom: 25),
-                            enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(15),
-                                borderSide: const BorderSide(
-                                  width: 1,
-                                  color: Colors.green,
-                                )),
-                          ),
-                        ),
-                      ),
-                      SizedBox(
-                        height: 68.0,
-                        width: 64.0,
-                        child: TextFormField(
-                          onChanged: (value) {
-                            if (value.length == 1) {
-                              FocusScope.of(context).nextFocus();
-                            }
-                          },
-                          onSaved: (pin3) {},
-                          style: Theme.of(context).textTheme.displayLarge,
-                          keyboardType: TextInputType.number,
-                          textAlign: TextAlign.center,
-                          inputFormatters: [
-                            LengthLimitingTextInputFormatter(1),
-                            FilteringTextInputFormatter.digitsOnly,
-                          ],
-                          decoration: InputDecoration(
-                            border: InputBorder.none,
-                            focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(15),
-                                borderSide: const BorderSide(
-                                  width: 1,
-                                  color: Colors.green,
-                                )),
-                            contentPadding: EdgeInsets.only(bottom: 25),
-                            enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(15),
-                                borderSide: const BorderSide(
-                                  width: 1,
-                                  color: Colors.green,
-                                )),
-                          ),
-                        ),
-                      ),
-                      SizedBox(
-                        height: 68.0,
-                        width: 64.0,
-                        child: TextFormField(
-                          onChanged: (value) {
-                            if (value.length == 1) {
-                              FocusScope.of(context).nextFocus();
-                            }
-                          },
-                          onSaved: (pin4) {},
-                          style: Theme.of(context).textTheme.displayLarge,
-                          keyboardType: TextInputType.number,
-                          textAlign: TextAlign.center,
-                          inputFormatters: [
-                            LengthLimitingTextInputFormatter(1),
-                            FilteringTextInputFormatter.digitsOnly,
-                          ],
-                          decoration: InputDecoration(
-                            border: InputBorder.none,
-                            focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(15),
-                                borderSide: const BorderSide(
-                                  width: 1,
-                                  color: Colors.green,
-                                )),
-                            contentPadding: EdgeInsets.only(bottom: 25),
-                            enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(15),
-                                borderSide: const BorderSide(
-                                  width: 1,
-                                  color: Colors.green,
-                                )),
-                          ),
-                        ),
-                      ),
+                      verifyInputBox(context, "pin1"),
+                      verifyInputBox(context, "pin2"),
+                      verifyInputBox(context, "pin3"),
+                      verifyInputBox(context, "pin4"),
                     ],
                   ),
                 ),
@@ -215,6 +79,44 @@ class _VerifyState extends State<Verify> {
               Button(context, "Verify", '/'),
             ],
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget verifyInputBox(BuildContext context, String p) {
+    return SizedBox(
+      height: 68.0,
+      width: 64.0,
+      child: TextFormField(
+        onChanged: (value) {
+          if (value.length == 1) {
+            FocusScope.of(context).nextFocus();
+          }
+        },
+        onSaved: (p) {},
+        style: Theme.of(context).textTheme.displayLarge,
+        keyboardType: TextInputType.number,
+        textAlign: TextAlign.center,
+        inputFormatters: [
+          LengthLimitingTextInputFormatter(1),
+          FilteringTextInputFormatter.digitsOnly,
+        ],
+        decoration: InputDecoration(
+          border: InputBorder.none,
+          focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(15),
+              borderSide: const BorderSide(
+                width: 1,
+                color: Colors.green,
+              )),
+          contentPadding: EdgeInsets.only(bottom: 25),
+          enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(15),
+              borderSide: const BorderSide(
+                width: 1,
+                color: Colors.green,
+              )),
         ),
       ),
     );

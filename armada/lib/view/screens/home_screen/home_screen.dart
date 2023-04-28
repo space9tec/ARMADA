@@ -1,6 +1,8 @@
 import 'package:armada/utils/helper_widget.dart';
 import 'package:flutter/material.dart';
 
+import '../../widgets/widgets.dart';
+
 class HomeScreen extends StatelessWidget {
   static const String routeName = '/';
 
@@ -16,53 +18,7 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        elevation: 0,
-        backgroundColor: Theme.of(context).primaryColor,
-        actions: [
-          IconButton(
-            onPressed: () {},
-            icon: Icon(Icons.notifications_sharp),
-          ),
-        ],
-        bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(50),
-          child: SizedBox(
-            width: MediaQuery.of(context).size.width - 90,
-            child: Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: TextField(
-                style: const TextStyle(
-                  color: Colors.grey,
-                ),
-                decoration: InputDecoration(
-                  hintText: 'Search',
-                  prefixIcon: const Icon(
-                    Icons.search,
-                    color: Color.fromARGB(255, 10, 190, 106),
-                  ),
-                  border: InputBorder.none,
-                  contentPadding: EdgeInsets.zero,
-                  filled: true,
-                  fillColor: Colors.white,
-                  focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(15),
-                      borderSide: const BorderSide(
-                        width: 1,
-                        color: Colors.green,
-                      )),
-                  enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(15),
-                      borderSide: const BorderSide(
-                        width: 1,
-                        color: Colors.green,
-                      )),
-                ),
-              ),
-            ),
-          ),
-        ),
-      ),
+      appBar: customAppBar(context),
       drawer: navigationDrawer(),
       bottomNavigationBar: BottomAppBar(
           color: Theme.of(context).bottomAppBarTheme.color,
@@ -93,7 +49,7 @@ class HomeScreen extends StatelessWidget {
                       color: Colors.white,
                     ),
                     onPressed: () {
-                      Navigator.pushNamed(context, '/login');
+                      Navigator.pushNamed(context, '/main_service');
                     }),
               ],
             ),
