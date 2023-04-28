@@ -23,6 +23,8 @@ class ROUTE {
         return ForgetPassword.route();
       case NewPassword.routeName:
         return NewPassword.route();
+      case Main_Screen.routeName:
+        return Main_Screen.route();
       default:
         return _errorRoute();
     }
