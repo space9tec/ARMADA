@@ -15,9 +15,9 @@ Widget addHorizontalSpace(double width) {
 Widget listTileUpperLine(double leftPadding) {
   return Padding(
     padding: EdgeInsets.only(left: leftPadding),
-    child: const SizedBox(
+    child: SizedBox(
       height: 1,
-      child: ColoredBox(color: Colors.black),
+      child: ColoredBox(color: Colors.grey.withOpacity(0.6)),
     ),
   );
 }
