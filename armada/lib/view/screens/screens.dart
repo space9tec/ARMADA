@@ -7,6 +7,8 @@ export 'auth_screen/newpassword_screeen.dart';
 export 'home_screen/home_screen.dart';
 export 'home_screen/main_service_screen/main_Service_screen.dart';
 
+export 'item_screen/itemPage_screen.dart';
+
 export 'on_boarding/splash_screen.dart';
 export 'on_boarding/walk_through.dart';
 

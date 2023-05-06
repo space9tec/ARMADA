@@ -6,6 +6,7 @@ Widget InputText(BuildContext context, String hint, bool obscureText,
     width: MediaQuery.of(context).size.width - 120,
     height: 50,
     child: TextFormField(
+      controller: null,
       keyboardType: ktype,
       obscureText: obscureText,
       style: const TextStyle(
