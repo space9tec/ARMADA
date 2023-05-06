@@ -5,6 +5,8 @@ import 'package:provider/provider.dart';
 import 'configuration/routing.dart';
 import 'configuration/theme_manager.dart';
 import 'provider/drop_down_provider.dart';
+import 'provider/drower_provider.dart';
+import 'provider/item_provider.dart';
 
 void main() {
   runApp(const MyApp());
@@ -19,6 +21,8 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => DropDownProvider()),
+        ChangeNotifierProvider(create: (_) => ItemNotifire()),
+        ChangeNotifierProvider(create: (_) => DrawerNotifire()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

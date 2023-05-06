@@ -8,6 +8,7 @@ import '../../../provider/drop_down_provider.dart';
 class SignUp extends StatefulWidget {
   static const String routeName = '/signup';
 
+// till line 19 route code
   static Route route() {
     return MaterialPageRoute(
       settings: const RouteSettings(name: routeName),
@@ -39,20 +40,7 @@ class _SignUpState extends State<SignUp> {
                 child: Text("Create Account.",
                     style: Theme.of(context).textTheme.displayLarge),
               ),
-              addVerticalSpace(30.0),
-              // Row(
-              //   crossAxisAlignment: CrossAxisAlignment.start,
-              //   children: [
-              //     Padding(
-              //       padding: const EdgeInsets.only(left: 50),
-              //       child: Text(
-              //         "Sign Up",
-              //         style: Theme.of(context).textTheme.displayMedium,
-              //       ),
-              //     ),
-              //   ],
-              // ),
-              addVerticalSpace(20.0),
+              addVerticalSpace(50.0),
               InputText(context, "Full name", false, Icons.person_3_sharp,
                   TextInputType.name),
               addVerticalSpace(21.0),
@@ -68,60 +56,7 @@ class _SignUpState extends State<SignUp> {
               InputText(context, "Confirm Password", true, Icons.lock_sharp,
                   TextInputType.text),
               addVerticalSpace(21.0),
-              Container(
-                width: MediaQuery.of(context).size.width - 120,
-                child: Row(
-                  children: [
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width - 322,
-                      // padding: EdgeInsets.only(right: 28.0),
-                      child: Text(
-                        "Account ",
-                        style: Theme.of(context).textTheme.titleMedium,
-                      ),
-                    ),
-                    Consumer<DropDownProvider>(
-                      builder: (context, value, child) => Container(
-                        width: MediaQuery.of(context).size.width - 210,
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            color: Colors.green,
-                          ),
-                          borderRadius: BorderRadius.circular(15),
-                        ),
-                        child: DropdownButtonFormField(
-                          value: value.selectedAccount,
-                          items: value.accountType
-                              .map((e) => DropdownMenuItem(
-                                    value: e,
-                                    child: Padding(
-                                      padding:
-                                          const EdgeInsets.only(left: 15.0),
-                                      child: Text(e),
-                                    ),
-                                  ))
-                              .toList(),
-                          onChanged: (val) {
-                            value.setAccountType(val);
-                          },
-                          decoration: InputDecoration(border: InputBorder.none),
-                          style: const TextStyle(
-                            fontSize: 17,
-                            color: Colors.grey,
-                          ),
-                          icon: const Padding(
-                            padding: EdgeInsets.only(right: 15.0),
-                            child: Icon(
-                              Icons.arrow_drop_down_circle_sharp,
-                              color: Colors.green,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+              accountSelector(context),
               addVerticalSpace(10.0),
               Row(
                 children: [
@@ -160,25 +95,6 @@ class _SignUpState extends State<SignUp> {
                   style: Theme.of(context).textTheme.displaySmall,
                 ),
               ),
-              // Row(
-              //   mainAxisAlignment: MainAxisAlignment.center,
-              //   children: [
-              //     Text(
-              //       "Already have an account. ",
-              //       style: Theme.of(context).textTheme.bodyLarge,
-              //     ),
-              //     addVerticalSpace(1.0),
-              //     GestureDetector(
-              //       onTap: () {
-              //         Navigator.pushNamed(context, '/login');
-              //       },
-              //       child: Text(
-              //         " login",
-              //         style: Theme.of(context).textTheme.displaySmall,
-              //       ),
-              //     ),
-              //   ],
-              // ),
             ],
           ),
         ),

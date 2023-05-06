@@ -25,6 +25,8 @@ class ROUTE {
         return NewPassword.route();
       case Main_Screen.routeName:
         return Main_Screen.route();
+      case ItemPage.routeName:
+        return ItemPage.route();
       default:
         return _errorRoute();
     }

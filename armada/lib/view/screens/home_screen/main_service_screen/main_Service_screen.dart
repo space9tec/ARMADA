@@ -267,9 +267,14 @@ class itemcards extends StatelessWidget {
       ),
       itemCount: 6,
       itemBuilder: (context, index) {
-        return ItemCard(
-          name: "Trackter",
-          price: "\$ 4",
+        return GestureDetector(
+          onTap: () {
+            Navigator.pushNamed(context, '/itemPage');
+          },
+          child: ItemCard(
+            name: "Trackter",
+            price: "\$ 4",
+          ),
         );
       },
     );
