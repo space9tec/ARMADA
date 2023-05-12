@@ -1,10 +1,7 @@
-import 'package:armada/configuration/theme_manager.dart';
 import 'package:armada/models/viewModel/drawerModel.dart';
-import 'package:armada/utils/helper_widget.dart';
-import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
-import '../../../provider/drower_provider.dart';
+import 'package:flutter/material.dart';
+
 import '../../widgets/widgets.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -22,14 +19,148 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      // appbar
-      appBar: customAppBar(context),
-      body: Text("to be .."),
-      // side drawer
-      drawer: navigationDrawer(),
-      // bottom navbar
-      bottomNavigationBar: bottomAppbar(context),
+    return DefaultTabController(
+      length: 3,
+      child: Scaffold(
+        // appbar
+        appBar: AppBar(
+          elevation: 0,
+          backgroundColor: Theme.of(context).primaryColor,
+          actions: [
+            IconButton(
+              onPressed: () {},
+              icon: Icon(Icons.notifications_sharp),
+            ),
+          ],
+          bottom: PreferredSize(
+            preferredSize: const Size.fromHeight(90),
+            child: Column(
+              children: [
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width - 300,
+                      height: 65,
+                      child: Padding(
+                        padding: const EdgeInsets.all(10.0),
+                        child: TextField(
+                          style: const TextStyle(
+                            color: Colors.grey,
+                          ),
+                          decoration: InputDecoration(
+                            hintText: 'Search',
+                            prefixIcon: const Icon(
+                              Icons.search,
+                              color: Color.fromARGB(255, 10, 190, 106),
+                            ),
+                            border: InputBorder.none,
+                            contentPadding: EdgeInsets.zero,
+                            filled: true,
+                            fillColor: Colors.white,
+                            focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(15),
+                                borderSide: const BorderSide(
+                                  width: 1,
+                                  color: Colors.green,
+                                )),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(15),
+                              borderSide: const BorderSide(
+                                width: 1,
+                                color: Colors.green,
+                              ),
+                            ),
+                            suffixIcon: Container(
+                              margin: EdgeInsets.all(7),
+                              height: 30,
+                              width: 30,
+                              decoration: BoxDecoration(
+                                color: Theme.of(context).primaryColor,
+                                borderRadius: BorderRadius.circular(9),
+                              ),
+                              child: const Center(
+                                  child: Icon(
+                                Icons.filter_list_sharp,
+                                color: Colors.white,
+                              )),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width - 300,
+                      height: 65,
+                      child: Padding(
+                        padding: const EdgeInsets.all(10.0),
+                        child: TextField(
+                          style: const TextStyle(
+                            color: Colors.grey,
+                          ),
+                          decoration: InputDecoration(
+                            hintText: 'Search',
+                            prefixIcon: const Icon(
+                              Icons.search,
+                              color: Color.fromARGB(255, 10, 190, 106),
+                            ),
+                            border: InputBorder.none,
+                            contentPadding: EdgeInsets.zero,
+                            filled: true,
+                            fillColor: Colors.white,
+                            focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(15),
+                                borderSide: const BorderSide(
+                                  width: 1,
+                                  color: Colors.green,
+                                )),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(15),
+                              borderSide: const BorderSide(
+                                width: 1,
+                                color: Colors.green,
+                              ),
+                            ),
+                            suffixIcon: Container(
+                              margin: EdgeInsets.all(7),
+                              height: 30,
+                              width: 30,
+                              decoration: BoxDecoration(
+                                color: Theme.of(context).primaryColor,
+                                borderRadius: BorderRadius.circular(9),
+                              ),
+                              child: const Center(
+                                  child: Icon(
+                                Icons.filter_list_sharp,
+                                color: Colors.white,
+                              )),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const TabBar(tabs: [
+                  Tab(text: 'All'),
+                  Tab(text: 'Location 1'),
+                  Tab(text: 'Location 2'),
+                ])
+              ],
+            ),
+          ),
+        ),
+        body: const TabBarView(children: [
+          Center(child: Text("data")),
+          Center(child: Text("Insert Your farm location")),
+          Center(child: Text("data")),
+        ]),
+        // side drawer
+        drawer: navigationDrawer(),
+        // bottom navbar
+        bottomNavigationBar: bottomAppbar(context),
+      ),
     );
   }
 }
@@ -46,13 +177,23 @@ class navigationDrawer extends StatelessWidget {
           UserAccountsDrawerHeader(
             onDetailsPressed: () {},
             otherAccountsPictures: [],
-            accountName: const Padding(
-              padding: EdgeInsets.only(left: 12.0),
-              child: Text('Login'),
+            accountName: GestureDetector(
+              onTap: () {
+                Navigator.pushNamed(context, '/login');
+              },
+              child: const Padding(
+                padding: EdgeInsets.only(left: 12.0),
+                child: Text('Login'),
+              ),
             ),
-            accountEmail: const Padding(
-              padding: EdgeInsets.only(left: 12.0),
-              child: Text('SignUp'),
+            accountEmail: GestureDetector(
+              onTap: () {
+                Navigator.pushNamed(context, '/signup');
+              },
+              child: const Padding(
+                padding: EdgeInsets.only(left: 12.0),
+                child: Text('SignUp'),
+              ),
             ),
             currentAccountPicture: CircleAvatar(
               child: ClipOval(
@@ -97,6 +238,9 @@ class navigationDrawer extends StatelessWidget {
               },
               itemCount: DrawerItem.length,
             ),
+          ),
+          const Divider(
+            color: Colors.black,
           ),
         ],
       ),

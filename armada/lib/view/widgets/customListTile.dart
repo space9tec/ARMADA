@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:armada/provider/drower_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -31,12 +29,11 @@ class _CustomListTileState extends State<CustomListTile> {
           switch (widget.ind) {
             case 0:
               value.setCurrentDrawer(0);
-              Navigator.pushNamed(context, '/login');
-
+              Navigator.pushNamed(context, '/Profile');
               break;
             case 1:
               value.setCurrentDrawer(1);
-              Navigator.pushNamed(context, '/register');
+              Navigator.pushNamed(context, '/Farm');
               break;
             case 2:
               value.setCurrentDrawer(2);

@@ -99,7 +99,8 @@ class _LoginState extends State<Login> {
                 ),
               ),
               addVerticalSpace(60.0),
-              Button(context, "LogIn", '/'),
+              Button(context, "LogIn", '/', Theme.of(context).primaryColor, 150,
+                  55),
               addVerticalSpace(24.0),
               Text(
                 "Don't have an account?",
