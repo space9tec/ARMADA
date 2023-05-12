@@ -9,8 +9,7 @@ class DrawerModel {
 }
 
 List<DrawerModel> DrawerItem = [
-  DrawerModel(icon: Icons.home, title: "Home"),
-  DrawerModel(icon: Icons.check, title: "Market"),
-  DrawerModel(icon: Icons.person, title: "Profile"),
+  DrawerModel(icon: Icons.home, title: "Profile"),
+  DrawerModel(icon: Icons.check, title: "Farm"),
   DrawerModel(icon: Icons.person, title: "Profile"),
 ];

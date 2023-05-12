@@ -1,21 +1,17 @@
 import 'package:flutter/material.dart';
 
-Widget Button(BuildContext context, String login, String routh) {
+Widget Button(BuildContext context, String login, String routh, Color colors,
+    double width, double height) {
   return InkWell(
     onTap: () {
       Navigator.pushNamed(context, routh);
     },
     child: Container(
-      width: MediaQuery.of(context).size.width - 150,
-      height: 55,
+      width: MediaQuery.of(context).size.width - width,
+      height: height,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(15),
-        gradient: const LinearGradient(
-          colors: [
-            Color.fromARGB(255, 8, 204, 113),
-            Color.fromARGB(255, 10, 190, 106),
-          ],
-        ),
+        color: colors,
       ),
       child: Center(
         child: Text(

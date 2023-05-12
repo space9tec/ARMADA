@@ -1,9 +1,6 @@
 import 'package:armada/utils/helper_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:armada/view/widgets/widgets.dart';
-import 'package:provider/provider.dart';
-
-import '../../../provider/drop_down_provider.dart';
 
 class SignUp extends StatefulWidget {
   static const String routeName = '/signup';
@@ -79,7 +76,8 @@ class _SignUpState extends State<SignUp> {
                 ],
               ),
               addVerticalSpace(20.0),
-              Button(context, "Register", '/verify'),
+              Button(context, "Register", '/verify',
+                  Theme.of(context).primaryColor, 150, 55),
               addVerticalSpace(24.0),
               Text(
                 "Already have an account.",

@@ -27,6 +27,8 @@ class ROUTE {
         return Main_Screen.route();
       case ItemPage.routeName:
         return ItemPage.route();
+      case VerifyFarm.routeName:
+        return VerifyFarm.route();
       default:
         return _errorRoute();
     }
