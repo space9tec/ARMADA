@@ -7,12 +7,13 @@ Widget accountSelector(BuildContext context) {
   return Container(
     width: MediaQuery.of(context).size.width - 120,
     child: Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         SizedBox(
           width: MediaQuery.of(context).size.width - 322,
           // padding: EdgeInsets.only(right: 28.0),
           child: Text(
-            "Account ",
+            "Account",
             style: Theme.of(context).textTheme.titleMedium,
           ),
         ),
@@ -36,7 +37,7 @@ Widget accountSelector(BuildContext context) {
                         ),
                       ))
                   .toList(),
-              onChanged: (val) {
+                onChanged: (val) {
                 value.setAccountType(val);
               },
               decoration: InputDecoration(border: InputBorder.none),
