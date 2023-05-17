@@ -1,3 +1,4 @@
+import 'package:armada/provider/location_drop_down.dart';
 import 'package:armada/view/screens/screens.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -23,6 +24,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => DropDownProvider()),
         ChangeNotifierProvider(create: (_) => ItemNotifire()),
         ChangeNotifierProvider(create: (_) => DrawerNotifire()),
+         ChangeNotifierProvider(create: (_) => LocationSelectorProvider()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
