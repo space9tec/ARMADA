@@ -4,7 +4,7 @@ Widget bottomAppbar(BuildContext context) {
   return BottomAppBar(
       color: Theme.of(context).bottomAppBarTheme.color,
       child: Container(
-        height: 50,
+        height: 65,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
@@ -31,7 +31,7 @@ Widget bottomAppbar(BuildContext context) {
                   color: Colors.white,
                 ),
                 onPressed: () {
-                  Navigator.pushNamed(context, '/main_service');
+                  // Navigator.pushNamed(context, '/main_service');
                 }),
           ],
         ),

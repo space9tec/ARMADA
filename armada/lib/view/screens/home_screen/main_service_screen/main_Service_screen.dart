@@ -52,8 +52,18 @@ class _Main_ScreenState extends State<Main_Screen> {
                 ),
               ),
             ),
-            const Text(
-              "Category",
+            Padding(
+              padding: const EdgeInsets.only(left: 28.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Text(
+                    "Category",
+                    textAlign: TextAlign.left,
+                    style: Theme.of(context).textTheme.displayMedium,
+                  ),
+                ],
+              ),
             ),
             Padding(
               padding: const EdgeInsets.all(25.0),
@@ -236,12 +246,13 @@ class _Main_ScreenState extends State<Main_Screen> {
             SingleChildScrollView(
               scrollDirection: Axis.vertical,
               child: Container(
-                  height: 500,
-                  width: MediaQuery.of(context).size.width,
-                  child: Padding(
-                    padding: const EdgeInsets.all(24.0),
-                    child: itemcards(),
-                  )),
+                height: 500,
+                width: MediaQuery.of(context).size.width,
+                child: Padding(
+                  padding: const EdgeInsets.all(24.0),
+                  child: itemcards(),
+                ),
+              ),
             ),
           ],
         ),

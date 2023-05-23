@@ -144,6 +144,25 @@ class _ItemPageState extends State<ItemPage> {
           );
         }),
       ),
+      floatingActionButton: Container(
+        width: MediaQuery.of(context).size.width * 0.70,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(20.0),
+        ),
+        child: Positioned(
+          bottom: 100,
+          child: FloatingActionButton.extended(
+            backgroundColor: Theme.of(context).primaryColor,
+            onPressed: () {},
+            elevation: 0,
+            label: Text(
+              "BOOK NOW",
+              style: TextStyle(fontSize: 18.0),
+            ),
+          ),
+        ),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
 }
