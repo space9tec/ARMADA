@@ -22,6 +22,13 @@ class SignUp extends StatefulWidget {
 }
 
 class _SignUpState extends State<SignUp> {
+  final TextEditingController _Numbercontroller = TextEditingController();
+  final TextEditingController _Emailcontroller = TextEditingController();
+
+  final TextEditingController _passwordcontroller = TextEditingController();
+  final TextEditingController _userNamecontroller = TextEditingController();
+  final TextEditingController _confirmPasswordcontroller =
+      TextEditingController();
   bool value = false;
   @override
   Widget build(BuildContext context) {
@@ -38,21 +45,38 @@ class _SignUpState extends State<SignUp> {
                     style: Theme.of(context).textTheme.displayLarge),
               ),
               addVerticalSpace(50.0),
-              InputText(context, "Full name", false, Icons.person_3_sharp,
-                  TextInputType.name),
-              addVerticalSpace(21.0),
-              InputText(context, "Phone", false, Icons.phone_sharp,
-                  TextInputType.phone),
-              addVerticalSpace(21.0),
-              InputText(context, "Email (optional)", false, Icons.email_sharp,
-                  TextInputType.emailAddress),
-              addVerticalSpace(21.0),
-              InputText(context, "Password", true, Icons.lock_sharp,
-                  TextInputType.text),
-              addVerticalSpace(21.0),
-              InputText(context, "Confirm Password", true, Icons.lock_sharp,
-                  TextInputType.text),
-              addVerticalSpace(21.0),
+              InputText(
+                  context,
+                  "Full name",
+                  "abebe",
+                  false,
+                  Icons.person_3_sharp,
+                  TextInputType.name,
+                  _userNamecontroller),
+              addVerticalSpace(15.0),
+              // InputText(context, "Phone", "0912345678", false,
+              //     Icons.phone_sharp, TextInputType.phone, _Numbercontroller),
+              addVerticalSpace(15.0),
+              InputText(
+                  context,
+                  "Email (optional)",
+                  "example@gmail.com",
+                  false,
+                  Icons.email_sharp,
+                  TextInputType.emailAddress,
+                  _Emailcontroller),
+              addVerticalSpace(15.0),
+              // InputTextPassword(context, "Password", true, Icons.lock_sharp,
+              //     TextInputType.text, _passwordcontroller),
+              addVerticalSpace(15.0),
+              // InputTextPassword(
+              //     context,
+              //     "Confirm Password",
+              //     true,
+              //     Icons.lock_sharp,
+              //     TextInputType.text,
+              //     _confirmPasswordcontroller),
+              addVerticalSpace(15.0),
               accountSelector(context),
               addVerticalSpace(10.0),
               Row(

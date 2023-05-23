@@ -29,6 +29,12 @@ class ROUTE {
         return ItemPage.route();
       case VerifyFarm.routeName:
         return VerifyFarm.route();
+      case FarmScreen.routeName:
+        return FarmScreen.route();
+      case AddFarm.routeName:
+        return AddFarm.route();
+      case DisplayNotification.routeName:
+        return DisplayNotification.route();
       default:
         return _errorRoute();
     }

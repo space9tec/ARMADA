@@ -7,4 +7,7 @@ export 'accountSelector.dart';
 export 'customListTile.dart';
 export 'homeCustomAppBar.dart';
 export 'locationSelector.dart';
+export 'CategoryIcon.dart';
+export 'navigationDrawer.dart';
+
 //export 'homePageCarouse.dart';

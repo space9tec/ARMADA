@@ -6,7 +6,9 @@ AppBar HomecustomAppBar(BuildContext context) {
     backgroundColor: Theme.of(context).primaryColor,
     actions: [
       IconButton(
-        onPressed: () {},
+        onPressed: () {
+          Navigator.pushNamed(context, '/display_notification');
+        },
         icon: Icon(Icons.notifications_sharp),
       ),
     ],
