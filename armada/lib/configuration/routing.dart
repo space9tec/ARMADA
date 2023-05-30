@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-
 import '../view/screens/screens.dart';
+import '../view/widgets/widgets.dart';
 
 class ROUTE {
   static Route onGenerateRouth(RouteSettings settings) {
@@ -23,8 +23,8 @@ class ROUTE {
         return ForgetPassword.route();
       case NewPassword.routeName:
         return NewPassword.route();
-      case Main_Screen.routeName:
-        return Main_Screen.route();
+      case MainScreen.routeName:
+        return MainScreen.route();
       case ItemPage.routeName:
         return ItemPage.route();
       case VerifyFarm.routeName:
@@ -35,6 +35,12 @@ class ROUTE {
         return AddFarm.route();
       case DisplayNotification.routeName:
         return DisplayNotification.route();
+      case FarmerProfile.routeName:
+        return FarmerProfile.route();
+      case UploadTap.routeName:
+        return UploadTap.route();
+      case SearchScreen.routeName:
+        return SearchScreen.route();
       default:
         return _errorRoute();
     }

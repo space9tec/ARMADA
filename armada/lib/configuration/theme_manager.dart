@@ -23,7 +23,7 @@ TextTheme textTheme() {
       ),
       displayMedium: GoogleFonts.inter(
         color: Colors.black,
-        fontSize: 33,
+        fontSize: 27,
         fontWeight: FontWeight.w400,
       ),
       displaySmall: GoogleFonts.poppins(
@@ -38,7 +38,7 @@ TextTheme textTheme() {
       ),
       bodyMedium: const TextStyle(
         color: Colors.black,
-        fontSize: 10,
+        fontSize: 14,
         fontWeight: FontWeight.bold,
       ),
       bodySmall: GoogleFonts.poppins(
@@ -46,12 +46,12 @@ TextTheme textTheme() {
         fontSize: 8,
         fontWeight: FontWeight.bold,
       ),
-      titleMedium: GoogleFonts.poppins(
-        color: const Color.fromARGB(255, 10, 190, 106),
-        fontSize: 18,
-      ),
       titleLarge: GoogleFonts.poppins(
         color: Colors.black54,
+        fontSize: 21,
+      ),
+      titleMedium: GoogleFonts.poppins(
+        color: const Color.fromARGB(255, 10, 190, 106),
         fontSize: 18,
       ),
       titleSmall: GoogleFonts.poppins(

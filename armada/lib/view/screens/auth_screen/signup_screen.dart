@@ -30,6 +30,8 @@ class _SignUpState extends State<SignUp> {
   final TextEditingController _confirmPasswordcontroller =
       TextEditingController();
   bool value = false;
+  // bool value = false;
+  bool isHidden = true;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -66,8 +68,61 @@ class _SignUpState extends State<SignUp> {
                   TextInputType.emailAddress,
                   _Emailcontroller),
               addVerticalSpace(15.0),
-              // InputTextPassword(context, "Password", true, Icons.lock_sharp,
-              //     TextInputType.text, _passwordcontroller),
+              SizedBox(
+                width: MediaQuery.of(context).size.width - 120,
+                height: 67,
+                child: TextFormField(
+                  controller: _passwordcontroller,
+                  keyboardType: TextInputType.text,
+                  obscureText: isHidden,
+                  validator: (value) {
+                    if (value == null || value.length < 4) {
+                      return "More than 4 character needed";
+                    }
+                  },
+                  style: const TextStyle(
+                    fontSize: 17,
+                    color: Colors.grey,
+                  ),
+                  decoration: InputDecoration(
+                    labelText: "password",
+                    labelStyle: const TextStyle(
+                      fontSize: 17,
+                      color: Colors.grey,
+                    ),
+                    prefixIcon: const Icon(
+                      Icons.lock_sharp,
+                      color: Color.fromARGB(255, 10, 190, 106),
+                    ),
+                    suffixIcon: IconButton(
+                      onPressed: _togglePasswordView,
+                      icon: isHidden
+                          ? Icon(Icons.visibility_off)
+                          : Icon(Icons.visibility),
+                    ),
+                    // errorText: etext,
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15),
+                        borderSide: const BorderSide(
+                          width: 1,
+                          color: Colors.green,
+                        )),
+                    // border: InputBorder.none,
+                    // focusedBorder: OutlineInputBorder(
+                    //     borderRadius: BorderRadius.circular(15),
+                    //     borderSide: const BorderSide(
+                    //       width: 1,
+                    //       color: Colors.green,
+                    //     )),
+                    // enabledBorder: OutlineInputBorder(
+                    //     borderRadius: BorderRadius.circular(15),
+                    //     borderSide: const BorderSide(
+                    //       width: 1,
+                    //       color: Colors.green,
+                    //     )),
+                  ),
+                ),
+              ),
               addVerticalSpace(15.0),
               // InputTextPassword(
               //     context,
@@ -76,6 +131,61 @@ class _SignUpState extends State<SignUp> {
               //     Icons.lock_sharp,
               //     TextInputType.text,
               //     _confirmPasswordcontroller),
+              SizedBox(
+                width: MediaQuery.of(context).size.width - 120,
+                height: 67,
+                child: TextFormField(
+                  controller: _passwordcontroller,
+                  keyboardType: TextInputType.text,
+                  obscureText: isHidden,
+                  validator: (value) {
+                    if (value == null || value.length < 4) {
+                      return "More than 4 character needed";
+                    }
+                  },
+                  style: const TextStyle(
+                    fontSize: 17,
+                    color: Colors.grey,
+                  ),
+                  decoration: InputDecoration(
+                    labelText: "Confirm password",
+                    labelStyle: const TextStyle(
+                      fontSize: 17,
+                      color: Colors.grey,
+                    ),
+                    prefixIcon: const Icon(
+                      Icons.lock_sharp,
+                      color: Color.fromARGB(255, 10, 190, 106),
+                    ),
+                    suffixIcon: IconButton(
+                      onPressed: _togglePasswordView,
+                      icon: isHidden
+                          ? Icon(Icons.visibility_off)
+                          : Icon(Icons.visibility),
+                    ),
+                    // errorText: etext,
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15),
+                        borderSide: const BorderSide(
+                          width: 1,
+                          color: Colors.green,
+                        )),
+                    // border: InputBorder.none,
+                    // focusedBorder: OutlineInputBorder(
+                    //     borderRadius: BorderRadius.circular(15),
+                    //     borderSide: const BorderSide(
+                    //       width: 1,
+                    //       color: Colors.green,
+                    //     )),
+                    // enabledBorder: OutlineInputBorder(
+                    //     borderRadius: BorderRadius.circular(15),
+                    //     borderSide: const BorderSide(
+                    //       width: 1,
+                    //       color: Colors.green,
+                    //     )),
+                  ),
+                ),
+              ),
               addVerticalSpace(15.0),
               accountSelector(context),
               addVerticalSpace(10.0),
@@ -122,5 +232,11 @@ class _SignUpState extends State<SignUp> {
         ),
       ),
     );
+  }
+
+  void _togglePasswordView() {
+    setState(() {
+      isHidden = !isHidden;
+    });
   }
 }
