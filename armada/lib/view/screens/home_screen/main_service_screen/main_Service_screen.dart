@@ -3,25 +3,25 @@ import 'package:flutter/material.dart';
 
 import '../../../widgets/widgets.dart';
 
-class Main_Screen extends StatefulWidget {
+class MainScreen extends StatefulWidget {
   static const String routeName = '/main_service';
 
   static Route route() {
     return MaterialPageRoute(
       settings: const RouteSettings(name: routeName),
       builder: (context) {
-        return const Main_Screen();
+        return const MainScreen();
       },
     );
   }
 
-  const Main_Screen({super.key});
+  const MainScreen({super.key});
 
   @override
-  State<Main_Screen> createState() => _Main_ScreenState();
+  State<MainScreen> createState() => _MainScreenState();
 }
 
-class _Main_ScreenState extends State<Main_Screen> {
+class _MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,9 +33,10 @@ class _Main_ScreenState extends State<Main_Screen> {
             SizedBox(
               height: 230.0,
               child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 25.0, vertical: 25.0),
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 25.0, vertical: 25.0),
                 child: Container(
-                  padding: EdgeInsets.all(20),
+                  padding: const EdgeInsets.all(20),
                   decoration: BoxDecoration(
                     color: Theme.of(context).primaryColor,
                     borderRadius: BorderRadius.circular(15),
@@ -77,7 +78,7 @@ class _Main_ScreenState extends State<Main_Screen> {
                   height: 120,
                   child: Row(
                     children: [
-                      Container(
+                      SizedBox(
                         width: 250.0,
                         child: ListView(children: [
                           listTileUpperLine(30),
@@ -100,7 +101,7 @@ class _Main_ScreenState extends State<Main_Screen> {
                             dense: true,
                             visualDensity: VisualDensity(vertical: -3),
                             contentPadding: EdgeInsets.zero,
-                            title: const Text("MACHINERY."),
+                            title: Text("MACHINERY."),
                             trailing: Icon(
                               Icons.arrow_forward_ios,
                               size: 20,
@@ -115,7 +116,7 @@ class _Main_ScreenState extends State<Main_Screen> {
                             dense: true,
                             visualDensity: VisualDensity(vertical: -3),
                             contentPadding: EdgeInsets.zero,
-                            title: const Text("MACHINERY."),
+                            title: Text("MACHINERY."),
                             trailing: Icon(
                               Icons.arrow_forward_ios,
                               size: 20,
@@ -131,7 +132,7 @@ class _Main_ScreenState extends State<Main_Screen> {
                       const SizedBox(
                         width: 25.0,
                       ),
-                      Container(
+                      SizedBox(
                         width: 250.0,
                         child: ListView(children: const [
                           SizedBox(
@@ -142,7 +143,7 @@ class _Main_ScreenState extends State<Main_Screen> {
                             dense: true,
                             visualDensity: VisualDensity(vertical: -3),
                             contentPadding: EdgeInsets.zero,
-                            title: const Text("MACHINERY"),
+                            title: Text("MACHINERY"),
                             trailing: Icon(
                               Icons.arrow_forward_ios,
                               size: 20,
@@ -161,7 +162,7 @@ class _Main_ScreenState extends State<Main_Screen> {
                             dense: true,
                             visualDensity: VisualDensity(vertical: -3),
                             contentPadding: EdgeInsets.zero,
-                            title: const Text("MACHINERY."),
+                            title: Text("MACHINERY."),
                             trailing: Icon(
                               Icons.arrow_forward_ios,
                               size: 20,
@@ -180,7 +181,7 @@ class _Main_ScreenState extends State<Main_Screen> {
                             dense: true,
                             visualDensity: VisualDensity(vertical: -3),
                             contentPadding: EdgeInsets.zero,
-                            title: const Text("MACHINERY"),
+                            title: Text("MACHINERY"),
                             trailing: Icon(
                               Icons.arrow_forward_ios,
                               size: 20,
@@ -200,7 +201,7 @@ class _Main_ScreenState extends State<Main_Screen> {
                       const SizedBox(
                         width: 25.0,
                       ),
-                      Container(
+                      SizedBox(
                         width: 250.0,
                         child: ListView(
                           children: [
@@ -245,12 +246,12 @@ class _Main_ScreenState extends State<Main_Screen> {
             ),
             SingleChildScrollView(
               scrollDirection: Axis.vertical,
-              child: Container(
+              child: SizedBox(
                 height: 500,
                 width: MediaQuery.of(context).size.width,
-                child: Padding(
-                  padding: const EdgeInsets.all(24.0),
-                  child: itemcards(),
+                child: const Padding(
+                  padding: EdgeInsets.all(24.0),
+                  child: ItemCards(),
                 ),
               ),
             ),
@@ -261,8 +262,8 @@ class _Main_ScreenState extends State<Main_Screen> {
   }
 }
 
-class itemcards extends StatelessWidget {
-  const itemcards({
+class ItemCards extends StatelessWidget {
+  const ItemCards({
     super.key,
   });
 
@@ -281,7 +282,7 @@ class itemcards extends StatelessWidget {
           onTap: () {
             Navigator.pushNamed(context, '/itemPage');
           },
-          child: ItemCard(
+          child: const ItemCard(
             name: "Trackter",
             price: "\$ 4",
           ),

@@ -29,7 +29,7 @@ class _CustomListTileState extends State<CustomListTile> {
           switch (widget.ind) {
             case 0:
               value.setCurrentDrawer(0);
-              Navigator.pushNamed(context, '/Profile');
+              Navigator.pushNamed(context, '/farmer_profile');
               break;
             case 1:
               value.setCurrentDrawer(1);

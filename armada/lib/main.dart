@@ -24,7 +24,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => DropDownProvider()),
         ChangeNotifierProvider(create: (_) => ItemNotifire()),
         ChangeNotifierProvider(create: (_) => DrawerNotifire()),
-         ChangeNotifierProvider(create: (_) => LocationSelectorProvider()),
+        ChangeNotifierProvider(create: (_) => LocationSelectorProvider()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

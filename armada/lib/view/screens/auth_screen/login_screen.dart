@@ -1,7 +1,6 @@
 import 'package:armada/utils/helper_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:armada/view/widgets/widgets.dart';
-import 'package:flutter/services.dart';
 
 class Login extends StatefulWidget {
   static const String routeName = '/login';
@@ -20,7 +19,6 @@ class Login extends StatefulWidget {
   @override
   State<Login> createState() => _LoginState();
 }
-
 class _LoginState extends State<Login> {
   final formKey = GlobalKey<FormState>();
   final TextEditingController _Numbercontroller = TextEditingController();
@@ -64,15 +62,6 @@ class _LoginState extends State<Login> {
                 InputTextNumber(context, "Phone", false, Icons.phone_sharp,
                     TextInputType.phone, _Numbercontroller),
                 addVerticalSpace(31.0),
-                // InputTextPassword(
-                //     context,
-                //     "Password",
-                //     isHidden,
-                //     Icons.lock_sharp,
-                //     TextInputType.text,
-                //     _passwordcontroller,
-                //     _togglePasswordView),
-
                 SizedBox(
                   width: MediaQuery.of(context).size.width - 120,
                   height: 67,
@@ -107,32 +96,15 @@ class _LoginState extends State<Login> {
                       ),
                       // errorText: etext,
                       border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(15),
-                          borderSide: const BorderSide(
-                            width: 1,
-                            color: Colors.green,
-                          )),
-                      // border: InputBorder.none,
-                      // focusedBorder: OutlineInputBorder(
-                      //     borderRadius: BorderRadius.circular(15),
-                      //     borderSide: const BorderSide(
-                      //       width: 1,
-                      //       color: Colors.green,
-                      //     )),
-                      // enabledBorder: OutlineInputBorder(
-                      //     borderRadius: BorderRadius.circular(15),
-                      //     borderSide: const BorderSide(
-                      //       width: 1,
-                      //       color: Colors.green,
-                      //     )),
+                        borderRadius: BorderRadius.circular(15),
+                        borderSide: const BorderSide(
+                          width: 1,
+                          color: Colors.green,
+                        ),
+                      ),
                     ),
                   ),
                 ),
-
-                // sdfg
-                // sdfg
-                // sdfg
-                // sdfgsdfg
                 addVerticalSpace(10.0),
                 Row(
                   children: [
@@ -177,58 +149,31 @@ class _LoginState extends State<Login> {
                   ),
                 ),
                 addVerticalSpace(60.0),
-                // Button(context, "LogIn", '/', Theme.of(context).primaryColor,
-                //     150, 55),
-                // LoginButton(context),
                 Container(
-                    child: InkWell(
-                  onTap: () {
-                    // Navigator.pushNamed(context, routh);
-                    if (formKey.currentState!.validate()) {}
-                  },
-                  child: Container(
-                    width: MediaQuery.of(context).size.width - 150,
-                    height: 55,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(15),
-                      color: Theme.of(context).primaryColor,
-                    ),
-                    child: const Center(
-                      child: Text(
-                        "login",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 20,
+                  child: InkWell(
+                    onTap: () {
+                      // Navigator.pushNamed(context, routh);
+                      if (formKey.currentState!.validate()) {}
+                    },
+                    child: Container(
+                      width: MediaQuery.of(context).size.width - 150,
+                      height: 55,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(15),
+                        color: Theme.of(context).primaryColor,
+                      ),
+                      child: const Center(
+                        child: Text(
+                          "login",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 20,
+                          ),
                         ),
                       ),
                     ),
                   ),
-                )
-                    // width: MediaQuery.of(context).size.width - 150,
-                    // child: ElevatedButton(
-                    //   onPressed: () {
-                    //     if (formKey.currentState!.validate()) {}
-                    //   },
-                    //   style: ButtonStyle(),
-                    //   child: Container(
-                    //     height: 55,
-                    //     decoration: BoxDecoration(
-                    //       borderRadius: BorderRadius.circular(15),
-                    //       color: Theme.of(context).primaryColor,
-                    //     ),
-                    //     child: const Center(
-                    //       child: Text(
-                    //         "login",
-                    //         style: TextStyle(
-                    //           color: Colors.white,
-                    //           fontSize: 20,
-                    //         ),
-                    //       ),
-                    //     ),
-                    //   ),
-                    // ),
-                    ),
-
+                ),
                 addVerticalSpace(24.0),
                 Text(
                   "Don't have an account?",
@@ -258,30 +203,3 @@ class _LoginState extends State<Login> {
     });
   }
 }
-
-// Widget LoginButton(
-//   BuildContext context,
-// ) {
-//   return ElevatedButton(
-//     onPressed: () {
-//       if (formKey.currentState!.validate()) {}
-//     },
-//     child: Container(
-//       width: MediaQuery.of(context).size.width - 150,
-//       height: 55,
-//       decoration: BoxDecoration(
-//         borderRadius: BorderRadius.circular(15),
-//         color: Theme.of(context).primaryColor,
-//       ),
-//       child: const Center(
-//         child: Text(
-//           "login",
-//           style: TextStyle(
-//             color: Colors.white,
-//             fontSize: 20,
-//           ),
-//         ),
-//       ),
-//     ),
-//   );
-// }
