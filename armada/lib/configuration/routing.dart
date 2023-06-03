@@ -37,8 +37,10 @@ class ROUTE {
         return DisplayNotification.route();
       case FarmerProfile.routeName:
         return FarmerProfile.route();
-      case UploadTap.routeName:
-        return UploadTap.route();
+      case EditFarmerProfile.routeName:
+        return EditFarmerProfile.route();
+      case UploadFarm.routeName:
+        return UploadFarm.route();
       case SearchScreen.routeName:
         return SearchScreen.route();
       default:

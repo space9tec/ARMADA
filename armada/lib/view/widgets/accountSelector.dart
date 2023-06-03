@@ -37,7 +37,7 @@ Widget accountSelector(BuildContext context) {
                         ),
                       ))
                   .toList(),
-                onChanged: (val) {
+              onChanged: (val) {
                 value.setAccountType(val);
               },
               decoration: InputDecoration(border: InputBorder.none),

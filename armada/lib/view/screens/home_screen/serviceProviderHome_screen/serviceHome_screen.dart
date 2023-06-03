@@ -40,7 +40,7 @@ class _ServiceProviderHomeScreenState extends State<ServiceProviderHomeScreen> {
 
       drawer: const navigationDrawer(),
       // bottom navbar
-      bottomNavigationBar: SbottomAppbar(context),
+      bottomNavigationBar: ServiceProviderbottomAppbar(context),
       // ),
     );
   }

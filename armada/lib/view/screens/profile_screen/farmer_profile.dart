@@ -1,6 +1,5 @@
 import 'package:armada/utils/user_preferences.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
 
 import '../../widgets/widgets.dart';
 import 'package:armada/models/user.dart';
@@ -25,9 +24,24 @@ class _FarmerProfileState extends State<FarmerProfile> {
     final user = UserPreferences.myUser;
 
     return Scaffold(
+      appBar: AppBar(
+        elevation: 0,
+        backgroundColor: Theme.of(context).primaryColor,
+        actions: [
+          IconButton(
+            onPressed: () {
+              Navigator.pushNamed(context, '/edit_farmer_profile');
+            },
+            icon: Icon(Icons.edit_sharp),
+          ),
+        ],
+      ),
       body: ListView(
         physics: BouncingScrollPhysics(),
         children: [
+          SizedBox(
+            height: 20,
+          ),
           ProfileWidget(
             imagePath: user.imagePath,
             onClicked: () async {},
