@@ -57,7 +57,7 @@ class _FarmScreenState extends State<FarmScreen> {
       ),
       floatingActionButton: FloatingActionButton(
           onPressed: () {
-            Navigator.pushNamed(context, '/add_farm1');
+            Navigator.pushNamed(context, '/upload_farm');
           },
           child: Icon(Icons.add),
           backgroundColor: Theme.of(context).primaryColor),

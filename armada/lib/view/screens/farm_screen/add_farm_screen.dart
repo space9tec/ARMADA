@@ -4,7 +4,7 @@ import '../../widgets/widgets.dart';
 import '../screens.dart';
 
 class AddFarm extends StatefulWidget {
-  static const String routeName = '/add_farm';
+  static const String routeName = '/add_farms';
 
 // till line 19 route code
   static Route route() {
@@ -36,6 +36,18 @@ class _AddFarmState extends State<AddFarm> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        appBar: AppBar(
+          elevation: 0,
+          backgroundColor: Theme.of(context).primaryColor,
+          actions: [
+            IconButton(
+              onPressed: () {
+                Navigator.pushNamed(context, '/display_notification');
+              },
+              icon: Icon(Icons.notifications_sharp),
+            ),
+          ],
+        ),
         body: SingleChildScrollView(
           child: Column(
             children: [
@@ -44,21 +56,21 @@ class _AddFarmState extends State<AddFarm> {
                 padding: const EdgeInsets.all(20),
                 child: Column(
                   children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        TextButton(
-                            onPressed: () {},
-                            child: Text(
-                              "Cancel",
-                              style: Theme.of(context).textTheme.bodyLarge,
-                            )),
-                        Text(
-                          "2/2",
-                          style: Theme.of(context).textTheme.bodyMedium,
-                        ),
-                      ],
-                    ),
+                    // Row(
+                    //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    //   children: [
+                    //     TextButton(
+                    //         onPressed: () {},
+                    //         child: Text(
+                    //           "Cancel",
+                    //           style: Theme.of(context).textTheme.bodyLarge,
+                    //         )),
+                    //     Text(
+                    //       "2/2",
+                    //       style: Theme.of(context).textTheme.bodyMedium,
+                    //     ),
+                    //   ],
+                    // ),
                     const SizedBox(
                       height: 20,
                     ),

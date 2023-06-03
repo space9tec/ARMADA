@@ -3,21 +3,21 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
-class ProfileWidget extends StatefulWidget {
+class ProfileEdit extends StatefulWidget {
   final String imagePath;
   final VoidCallback onClicked;
 
-  const ProfileWidget({
+  const ProfileEdit({
     Key? key,
     required this.imagePath,
     required this.onClicked,
   }) : super(key: key);
 
   @override
-  State<ProfileWidget> createState() => _ProfileWidgetState();
+  State<ProfileEdit> createState() => _ProfileEditState();
 }
 
-class _ProfileWidgetState extends State<ProfileWidget> {
+class _ProfileEditState extends State<ProfileEdit> {
   XFile? imageFile;
   final ImagePicker picker = ImagePicker();
   @override
@@ -25,12 +25,15 @@ class _ProfileWidgetState extends State<ProfileWidget> {
     final color = Theme.of(context).colorScheme.primary;
 
     return Center(
-      child: Container(
-        child: Column(
-          children: [
-            buildImage(),
-          ],
-        ),
+      child: Stack(
+        children: [
+          buildImage(),
+          Positioned(
+            bottom: 0,
+            right: 4,
+            child: buildEditIcon(context, color),
+          ),
+        ],
       ),
     );
   }
@@ -119,12 +122,12 @@ class _ProfileWidgetState extends State<ProfileWidget> {
           all: 8,
           child: InkWell(
             onTap: () {
-              Navigator.pushNamed(context, '/edit_farmer_profile');
+              // Navigator.pushNamed(context, '/edit_farmer_profile');
 
-              // showModalBottomSheet(
-              //   context: context,
-              //   builder: ((builder) => bottomSheat()),
-              // );
+              showModalBottomSheet(
+                context: context,
+                builder: ((builder) => bottomSheat()),
+              );
             },
             child: Icon(
               Icons.edit,

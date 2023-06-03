@@ -19,13 +19,11 @@ class Login extends StatefulWidget {
   @override
   State<Login> createState() => _LoginState();
 }
+
 class _LoginState extends State<Login> {
   final formKey = GlobalKey<FormState>();
-  final TextEditingController _Numbercontroller = TextEditingController();
+  final TextEditingController _numbercontroller = TextEditingController();
   final TextEditingController _passwordcontroller = TextEditingController();
-  final TextEditingController _userNamecontroller = TextEditingController();
-  final TextEditingController _confirmPasswordcontroller =
-      TextEditingController();
 
   bool value = false;
   bool isHidden = true;
@@ -60,7 +58,7 @@ class _LoginState extends State<Login> {
                 ),
                 addVerticalSpace(64.0),
                 InputTextNumber(context, "Phone", false, Icons.phone_sharp,
-                    TextInputType.phone, _Numbercontroller),
+                    TextInputType.phone, _numbercontroller),
                 addVerticalSpace(31.0),
                 SizedBox(
                   width: MediaQuery.of(context).size.width - 120,
@@ -73,6 +71,7 @@ class _LoginState extends State<Login> {
                       if (value == null || value.length < 4) {
                         return "More than 4 character needed";
                       }
+                      return null;
                     },
                     style: const TextStyle(
                       fontSize: 17,
@@ -153,7 +152,13 @@ class _LoginState extends State<Login> {
                   child: InkWell(
                     onTap: () {
                       // Navigator.pushNamed(context, routh);
-                      if (formKey.currentState!.validate()) {}
+                      if (formKey.currentState!.validate()) {
+                        Map<String, String> data = {
+                          "phone": _numbercontroller.text,
+                          "password": _passwordcontroller.text,
+                        };
+                        print(data);
+                      }
                     },
                     child: Container(
                       width: MediaQuery.of(context).size.width - 150,

@@ -7,6 +7,7 @@ export 'auth_screen/newpassword_screeen.dart';
 export 'farm_screen/add_farm_screen.dart';
 export 'farm_screen/farm_profile_screen.dart';
 export 'farm_screen/farms_screen.dart';
+export 'farm_screen/upload_farm.dart';
 
 export 'home_screen/home_screen.dart';
 export 'home_screen/main_service_screen/main_Service_screen.dart';
@@ -19,6 +20,7 @@ export 'notification_screen/displayNotification_screen.dart';
 export 'on_boarding/splash_screen.dart';
 export 'on_boarding/walk_through.dart';
 
+export 'profile_screen/edit_farmer_profile.dart';
 export 'profile_screen/farmer_profile.dart';
 export 'profile_screen/serviceProvider_profile.dart';
 

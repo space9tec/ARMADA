@@ -16,6 +16,6 @@ export 'CustomBinaryOption.dart';
 export 'CustomProductItemWidget.dart';
 export 'profile_widget.dart';
 export 'numbers_widget.dart';
-export 'upload_tap.dart';
-export 'SbottomAppbar.dart';
+export 'ServiceProviderbottomAppbar.dart';
+export 'profileEdit.dart';
 //export 'homePageCarouse.dart';

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-Widget SbottomAppbar(BuildContext context) {
+Widget ServiceProviderbottomAppbar(BuildContext context) {
   return BottomAppBar(
       color: Theme.of(context).bottomAppBarTheme.color,
       child: Container(
