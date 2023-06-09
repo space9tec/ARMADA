@@ -31,6 +31,8 @@ class ROUTE {
         return VerifyFarm.route();
       case FarmScreen.routeName:
         return FarmScreen.route();
+      case VerifyServiceProvider.routeName:
+        return VerifyServiceProvider.route();
       case AddFarm.routeName:
         return AddFarm.route();
       case DisplayNotification.routeName:

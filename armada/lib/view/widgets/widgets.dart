@@ -18,4 +18,7 @@ export 'profile_widget.dart';
 export 'numbers_widget.dart';
 export 'ServiceProviderbottomAppbar.dart';
 export 'profileEdit.dart';
+export 'machineStatusSelector.dart';
+export 'ServiceProvidernavigationDrawer.dart';
+export 'CustomServiceProviderListTile.dart';
 //export 'homePageCarouse.dart';

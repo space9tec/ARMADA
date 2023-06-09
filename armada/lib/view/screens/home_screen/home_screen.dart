@@ -22,7 +22,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   late PageController _pageController;
-  String userRole = 'farmer';
+  String userRole = 'service_provider';
   List<String> images = [
     "assets/images/tracter1.png",
     "assets/images/tracter2.png",
