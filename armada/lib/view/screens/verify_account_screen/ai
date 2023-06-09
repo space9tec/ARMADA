@@ -1,0 +1,192 @@
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+class Sedan {
+  String model;
+  String color;
+  int year;
+
+  Sedan({this.model, this.color, this.year});
+}
+
+class SUV {
+  // Define properties for SUV class
+}
+
+class Hatchback {
+  // Define properties for Hatchback class
+}
+
+class PickupTruck {
+  // Define properties for PickupTruck class
+}
+
+class CarForm extends StatefulWidget {
+  @override
+  _CarFormState createState() => _CarFormState();
+}
+
+class _CarFormState extends State<CarForm> {
+  String _currentCarType = '';
+
+  final _formKey = GlobalKey<FormState>();
+
+  Widget _buildSedanInputs() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        TextFormField(
+          decoration: InputDecoration(labelText: 'Model'),
+          validator: (value) {
+            if (value.isEmpty) {
+              return 'Please enter a model';
+            }
+            return null;
+          },
+          onSaved: (value) {
+            Provider.of<Sedan>(context, listen: false).model = value;
+          },
+        ),
+        TextFormField(
+          decoration: InputDecoration(labelText: 'Color'),
+          validator: (value) {
+            if (value.isEmpty) {
+              return 'Please enter a color';
+            }
+            return null;
+          },
+          onSaved: (value) {
+            Provider.of<Sedan>(context, listen: false).color = value;
+          },
+        ),
+        TextFormField(
+          decoration: InputDecoration(labelText: 'Year'),
+          keyboardType: TextInputType.number,
+          validator: (value) {
+            if (value.isEmpty) {
+              return 'Please enter a year';
+            }
+            return null;
+          },
+          onSaved: (value) {
+            Provider.of<Sedan>(context, listen: false).year = int.parse(value);
+          },
+        ),
+      ],
+    );
+  }
+
+  Widget _buildSUVInputs() {
+    // Return input fields for SUV class
+  }
+
+  Widget _buildHatchbackInputs() {
+    // Return input fields for Hatchback class
+  }
+
+  Widget _buildPickupTruckInputs() {
+    // Return input fields for PickupTruck class
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Car Form'),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Text('Select a car type:'),
+              Row(
+                children: [
+                  Radio(
+                    value: 'sedan',
+                    groupValue: _currentCarType,
+                    onChanged: (value) {
+                      setState(() {
+                        _currentCarType = value;
+                      });
+                    },
+                  ),
+                  Text('Sedan'),
+                  Radio(
+                    value: 'suv',
+                    groupValue: _currentCarType,
+                    onChanged: (value) {
+                      setState(() {
+                        _currentCarType = value;
+                      });
+                    },
+                  ),
+                  Text('SUV'),
+                  Radio(
+                    value: 'hatchback',
+                    groupValue: _currentCarType,
+                    onChanged: (value) {
+                      setState(() {
+                        _currentCarType = value;
+                      });
+                    },
+                  ),
+                  Text('Hatchback'),
+                  Radio(
+                    value: 'pickup_truck',
+                    groupValue: _currentCarType,
+                    onChanged: (value) {
+                      setState(() {
+                        _currentCarType = value;
+                      });
+                    },
+                  ),
+                  Text('Pickup Truck'),
+                ],
+              ),
+              if (_currentCarType == 'sedan')
+                _buildSedanInputs(),
+              if (_currentCarType == 'suv')
+                _buildSUVInputs(),
+              if (_currentCarType == 'hatchback')
+                _buildHatchbackInputs(),
+              if (_currentCarType == 'pickup_truck')
+                _buildPickupTruckInputs(),
+              SizedBox(height: 16.0),
+              RaisedButton(
+                onPressed: () {
+                  if (_formKey.currentState.validate()) {
+                    _formKey.currentState.save();
+                    // Create new car instance based on current car type and input values
+                    switch (_currentCarType) {
+                      case 'sedan':
+                        Provider.of<Sedan>(context, listen: false).model;
+                        Provider.of<Sedan>(context, listen: false).color;
+                        Provider.of<Sedan>(context, listen: false).year;
+                        break;
+                      case 'suv':
+                        // Get properties for SUV class
+                        break;
+                      case 'hatchback':
+                        // Get properties for Hatchback class
+               break;
+                  case 'pickup_truck':
+                    // Get properties for PickupTruck class
+                    break;
+                }
+                // Clear the form and display a success message
+                _formKey.currentState.reset();
+                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                  content: Text('Car added successfully!'),
+                ));
+              }
+            },
+            child: Text('Submit'),
+          ),
+        ],
+      ),
+    ),
+  ),
+);

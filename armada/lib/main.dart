@@ -8,6 +8,7 @@ import 'configuration/theme_manager.dart';
 import 'provider/drop_down_provider.dart';
 import 'provider/drower_provider.dart';
 import 'provider/item_provider.dart';
+import 'provider/machine_status_provider.dart';
 
 void main() {
   runApp(const MyApp());
@@ -25,6 +26,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => ItemNotifire()),
         ChangeNotifierProvider(create: (_) => DrawerNotifire()),
         ChangeNotifierProvider(create: (_) => LocationSelectorProvider()),
+        ChangeNotifierProvider(create: (_) => MachineStatusProvider()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

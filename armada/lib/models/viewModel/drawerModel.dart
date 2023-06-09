@@ -19,3 +19,8 @@ List<DrawerModel> BDrawerItem = [
   DrawerModel(icon: Icons.help, title: "Help"),
   DrawerModel(icon: Icons.logout, title: "Logout"),
 ];
+List<DrawerModel> ServiceProviderDrawerItem = [
+  DrawerModel(icon: Icons.settings, title: "Profile"),
+  DrawerModel(icon: Icons.car_repair_rounded, title: "Machinery"),
+  DrawerModel(icon: Icons.logout, title: "Logout"),
+];
