@@ -90,11 +90,17 @@ class _LoginState extends State<Login> {
                       suffixIcon: IconButton(
                         onPressed: _togglePasswordView,
                         icon: isHidden
-                            ? Icon(Icons.visibility_off)
-                            : Icon(Icons.visibility),
+                            ? Icon(Icons.visibility_off, color: Colors.grey)
+                            : Icon(Icons.visibility, color: Colors.green),
                       ),
-                      // errorText: etext,
                       border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15),
+                        borderSide: const BorderSide(
+                          width: 1,
+                          color: Colors.green,
+                        ),
+                      ),
+                      focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(15),
                         borderSide: const BorderSide(
                           width: 1,
@@ -151,7 +157,6 @@ class _LoginState extends State<Login> {
                 Container(
                   child: InkWell(
                     onTap: () {
-                      // Navigator.pushNamed(context, routh);
                       if (formKey.currentState!.validate()) {
                         Map<String, String> data = {
                           "phone": _numbercontroller.text,

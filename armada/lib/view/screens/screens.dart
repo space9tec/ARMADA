@@ -35,3 +35,4 @@ export 'service_provider_screen/service_provider_profile.dart';
 
 export 'verify_account_screen/verify_farmer_account_screen.dart';
 export 'verify_account_screen/verify_serviceProvider_account_screen.dart';
+export 'verify_account_screen/VerifyFarm.dart';

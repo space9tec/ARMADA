@@ -4,7 +4,6 @@ import '../../widgets/widgets.dart';
 import '../screens.dart';
 
 class HomeScreen extends StatefulWidget {
-  // till line 16 route code
   static const String routeName = '/';
 
   static Route route() {
@@ -22,7 +21,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   late PageController _pageController;
-  String userRole = 'service_provider';
+  String userRole = 'farmer';
   List<String> images = [
     "assets/images/tracter1.png",
     "assets/images/tracter2.png",
@@ -44,7 +43,6 @@ class _HomeScreenState extends State<HomeScreen> {
         return DefaultTabController(
           length: 3,
           child: Scaffold(
-            // appbar
             appBar: AppBar(
               elevation: 0,
               backgroundColor: Theme.of(context).primaryColor,
@@ -60,7 +58,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 preferredSize: const Size.fromHeight(90),
                 child: Column(
                   children: [
-                    // locationSelector(context),
                     SizedBox(
                       width: MediaQuery.of(context).size.width - 100,
                       height: 65,
@@ -81,11 +78,12 @@ class _HomeScreenState extends State<HomeScreen> {
                             filled: true,
                             fillColor: Colors.white,
                             focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(15),
-                                borderSide: const BorderSide(
-                                  width: 1,
-                                  color: Colors.green,
-                                )),
+                              borderRadius: BorderRadius.circular(15),
+                              borderSide: const BorderSide(
+                                width: 1,
+                                color: Colors.green,
+                              ),
+                            ),
                             enabledBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(15),
                               borderSide: const BorderSide(
@@ -114,24 +112,33 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                           ),
                         ),
-                        // ),
                       ),
                     ),
-                    const TabBar(tabs: [
-                      Tab(text: 'All'),
-                      Tab(text: 'Location 1'),
-                      Tab(text: 'Location 2'),
-                    ])
+                    const TabBar(
+                      tabs: [
+                        Tab(text: 'All'),
+                        Tab(text: 'Location 1'),
+                        Tab(text: 'Location 2'),
+                      ],
+                      indicatorColor: Colors.white,
+                      indicatorSize: TabBarIndicatorSize.tab,
+                      indicatorWeight: 3,
+                      labelColor: Colors.white,
+                      labelStyle: TextStyle(
+                          fontSize: 15.0, fontWeight: FontWeight.bold),
+                    ),
                   ],
                 ),
               ),
             ),
             body: SingleChildScrollView(
               scrollDirection: Axis.vertical,
+              physics: const BouncingScrollPhysics(
+                  decelerationRate: ScrollDecelerationRate.fast),
               child: Column(
                 children: [
                   SizedBox(
-                    height: 600.0,
+                    height: MediaQuery.of(context).size.height,
                     child: TabBarView(
                       children: [
                         Center(
@@ -147,7 +154,6 @@ class _HomeScreenState extends State<HomeScreen> {
                                           color: const Color.fromARGB(
                                                   255, 192, 233, 192)
                                               .withOpacity(0.5),
-                                          // spreadRadius: 5,
                                           blurRadius: 3,
                                         ),
                                       ],
@@ -189,6 +195,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               addVerticalSpace(25),
                               Expanded(
                                 child: GridView.count(
+                                  physics: NeverScrollableScrollPhysics(),
                                   crossAxisCount: 2,
                                   childAspectRatio: 1 / 1.5,
                                   children: List.generate(
@@ -208,9 +215,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ],
               ),
             ),
-            // side drawer
             drawer: const navigationDrawer(),
-            // bottom navbar
             bottomNavigationBar: bottomAppbar(context),
           ),
         );

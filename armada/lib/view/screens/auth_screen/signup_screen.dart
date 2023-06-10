@@ -7,7 +7,6 @@ import 'package:provider/provider.dart';
 class SignUp extends StatefulWidget {
   static const String routeName = '/signup';
 
-// till line 19 route code
   static Route route() {
     return MaterialPageRoute(
       settings: const RouteSettings(name: routeName),
@@ -26,9 +25,7 @@ class SignUp extends StatefulWidget {
 class _SignUpState extends State<SignUp> {
   final formKey = GlobalKey<FormState>();
 
-  final TextEditingController _Numbercontroller = TextEditingController();
-  final TextEditingController _Emailcontroller = TextEditingController();
-
+  final TextEditingController _numberController = TextEditingController();
   final TextEditingController _passwordcontroller = TextEditingController();
   final TextEditingController _firstNamecontroller = TextEditingController();
   final TextEditingController _lastNamecontroller = TextEditingController();
@@ -64,7 +61,6 @@ class _SignUpState extends State<SignUp> {
                     TextInputType.name,
                     _firstNamecontroller),
                 addVerticalSpace(15.0),
-
                 InputText(
                     context,
                     "Last Name",
@@ -73,10 +69,9 @@ class _SignUpState extends State<SignUp> {
                     Icons.person_3_sharp,
                     TextInputType.name,
                     _lastNamecontroller),
-
                 addVerticalSpace(15.0),
                 InputTextNumber(context, "Phone", false, Icons.phone_sharp,
-                    TextInputType.phone, _Numbercontroller),
+                    TextInputType.phone, _numberController),
                 addVerticalSpace(15.0),
                 SizedBox(
                   width: MediaQuery.of(context).size.width - 120,
@@ -117,18 +112,24 @@ class _SignUpState extends State<SignUp> {
                                 color: Color.fromARGB(255, 10, 190, 106),
                               ),
                       ),
-                      // errorText: etext,
                       border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(15),
-                          borderSide: const BorderSide(
-                            width: 1,
-                            color: Colors.green,
-                          )),
+                        borderRadius: BorderRadius.circular(15),
+                        borderSide: const BorderSide(
+                          width: 1,
+                          color: Colors.green,
+                        ),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15),
+                        borderSide: const BorderSide(
+                          width: 1,
+                          color: Colors.green,
+                        ),
+                      ),
                     ),
                   ),
                 ),
                 addVerticalSpace(15.0),
-
                 SizedBox(
                   width: MediaQuery.of(context).size.width - 120,
                   height: 67,
@@ -168,8 +169,14 @@ class _SignUpState extends State<SignUp> {
                                 color: Color.fromARGB(255, 10, 190, 106),
                               ),
                       ),
-                      // errorText: etext,
                       border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15),
+                        borderSide: const BorderSide(
+                          width: 1,
+                          color: Colors.green,
+                        ),
+                      ),
+                      focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(15),
                         borderSide: const BorderSide(
                           width: 1,
@@ -203,19 +210,16 @@ class _SignUpState extends State<SignUp> {
                   ],
                 ),
                 addVerticalSpace(20.0),
-                // Button(context, "Register", '/verify',
-                //     Theme.of(context).primaryColor, 150, 55),
                 Consumer<DropDownProvider>(
                   builder: (context, value, child) => Container(
                     child: InkWell(
                       onTap: () {
                         _selectedAccountType = value.selectedAccount;
-                        // Navigator.pushNamed(context, routh);
                         if (formKey.currentState!.validate()) {
                           Map<String, String> data = {
                             "first_name": _firstNamecontroller.text,
                             "last_name": _lastNamecontroller.text,
-                            "phone": _Numbercontroller.text,
+                            "phone": _numberController.text,
                             "password": _passwordcontroller.text,
                             "role": _selectedAccountType!,
                           };
