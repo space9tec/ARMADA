@@ -20,5 +20,5 @@ export 'ServiceProviderbottomAppbar.dart';
 export 'profileEdit.dart';
 export 'machineStatusSelector.dart';
 export 'ServiceProvidernavigationDrawer.dart';
-export 'CustomServiceProviderListTile.dart';
+export 'CustomServiceProviderListTile.dart';  
 //export 'homePageCarouse.dart';

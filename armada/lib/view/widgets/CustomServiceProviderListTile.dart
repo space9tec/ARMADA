@@ -31,11 +31,11 @@ class _CustomServiceProviderListTileState
           switch (widget.ind) {
             case 0:
               value.setCurrentDrawer(0);
-              Navigator.pushNamed(context, '/farmer_profile');
+              Navigator.pushNamed(context, '/serviceProvider_profile');
               break;
             case 1:
               value.setCurrentDrawer(1);
-              Navigator.pushNamed(context, '/Machinery_screen');
+              Navigator.pushNamed(context, '/machie_screen');
               break;
             case 2:
               value.setCurrentDrawer(2);

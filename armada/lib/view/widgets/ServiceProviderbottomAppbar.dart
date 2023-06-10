@@ -31,7 +31,7 @@ Widget ServiceProviderbottomAppbar(BuildContext context) {
                   color: Colors.white,
                 ),
                 onPressed: () {
-                  // Navigator.pushNamed(context, '/main_service');
+                  Navigator.pushNamed(context, '/contrat_page');
                 }),
             IconButton(
                 icon: const Icon(

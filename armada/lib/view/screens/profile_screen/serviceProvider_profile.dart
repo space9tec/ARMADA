@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../../widgets/widgets.dart';
 
 class ServiceProviderProfile extends StatelessWidget {
-  static const String routeName = '/farmer_profile';
+  static const String routeName = '/serviceProvider_profile';
 
   static Route route() {
     return MaterialPageRoute(
@@ -26,15 +26,29 @@ class ServiceProviderProfile extends StatelessWidget {
         elevation: 0,
         actions: [
           Padding(
-            padding: const EdgeInsets.only(right: 20),
-            child: IconButton(
-              onPressed: () {},
-              icon: const Icon(
-                Icons.share,
-                color: Colors.black,
-              ),
-            ),
+            padding: const EdgeInsets.all(10.0),
+            child: showFollowBottomInProfile == false
+                ? InkWell(
+                    onTap: () {},
+                    child: IconButton(
+                      onPressed: () {},
+                      icon: const Icon(
+                        Icons.mode_edit_outline_outlined,
+                        color: Colors.black,
+                        size: 30.0,
+                      ),
+                    ),
+                    // ),
+                  )
+                : const SizedBox(),
           ),
+          // child: IconButton(
+          //   onPressed: () {},
+          //   icon: const Icon(
+          //     Icons.share,
+          //     color: Colors.black,
+          //   ),
+          // ),
         ],
         leading: showFollowBottomInProfile == true
             ? Padding(
@@ -68,27 +82,13 @@ class ServiceProviderProfile extends StatelessWidget {
                           backgroundImage:
                               AssetImage("assets/images/tracter1.png"),
                         ),
-                        showFollowBottomInProfile == false
-                            ? InkWell(
-                                onTap: () {},
-                                child: const CircleAvatar(
-                                  radius: 12,
-                                  backgroundColor: Colors.greenAccent,
-                                  child: Icon(
-                                    Icons.edit,
-                                    size: 15,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                              )
-                            : const SizedBox(),
                       ],
                     ),
                     Padding(
                       padding: const EdgeInsets.all(20.0),
                       child: Text(
-                        "Choirul Syafril",
-                        style: Theme.of(context).textTheme.headline2,
+                        "Alfoz Plc.",
+                        style: Theme.of(context).textTheme.displayLarge,
                       ),
                     ),
                     Row(
@@ -98,7 +98,7 @@ class ServiceProviderProfile extends StatelessWidget {
                           children: [
                             Text(
                               "32",
-                              style: Theme.of(context).textTheme.headline2,
+                              style: Theme.of(context).textTheme.bodyMedium,
                             ),
                             const SizedBox(
                               height: 15,
@@ -117,20 +117,18 @@ class ServiceProviderProfile extends StatelessWidget {
                               height: 15,
                             ),
                             Text("Following",
-                                style: Theme.of(context).textTheme.bodySmall)
+                                style: Theme.of(context).textTheme.bodyMedium)
                           ],
                         ),
                         Column(
                           children: [
                             Text("1.200",
-                                style:
-                                    Theme.of(context).textTheme.displayMedium),
+                                style: Theme.of(context).textTheme.bodyMedium),
                             const SizedBox(
                               height: 15,
                             ),
                             Text("Followers",
-                                style:
-                                    Theme.of(context).textTheme.displayMedium)
+                                style: Theme.of(context).textTheme.bodyMedium)
                           ],
                         ),
                       ],
@@ -153,8 +151,8 @@ class ServiceProviderProfile extends StatelessWidget {
               child: Column(
                 children: [
                   CustomBinaryOption(
-                    textLeft: "Recipes",
-                    textRight: "Liked",
+                    textLeft: "All",
+                    textRight: "Booked",
                   ),
                   GridView.count(
                     physics: const NeverScrollableScrollPhysics(),
@@ -162,11 +160,12 @@ class ServiceProviderProfile extends StatelessWidget {
                     shrinkWrap: true,
                     childAspectRatio: 1 / 1.3,
                     children: List.generate(
-                        5,
-                        (index) => CustomProductItemWidget(
-                              showUser: false,
-                            )),
-                  )
+                      5,
+                      (index) => CustomProductItemWidget(
+                        showUser: false,
+                      ),
+                    ),
+                  ),
                 ],
               ),
             )

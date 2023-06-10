@@ -210,7 +210,7 @@ class _UploadFarmState extends State<UploadFarm> {
   addCoverPhoto() {
     return InkWell(
       onTap: () {
-        // add image to firbase
+        // add image to mongo
       },
       // This is ana external package
       child: DottedBorder(

@@ -45,6 +45,16 @@ class ROUTE {
         return UploadFarm.route();
       case SearchScreen.routeName:
         return SearchScreen.route();
+      case ServiceProviderProfile.routeName:
+        return ServiceProviderProfile.route();
+      case AddMachine.routeName:
+        return AddMachine.route();
+      case MachineScreen.routeName:
+        return MachineScreen.route();
+      case ContractPage.routeName:
+        return ContractPage.route();
+      case ContractDetailPage.routeName:
+        return ContractDetailPage.route();
       default:
         return _errorRoute();
     }

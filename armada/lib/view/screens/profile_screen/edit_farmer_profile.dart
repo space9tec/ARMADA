@@ -67,15 +67,16 @@ class _EditFarmerProfileState extends State<EditFarmerProfile> {
             padding: EdgeInsets.only(left: 28.0, right: 28.0),
             child: TextField(
               decoration: InputDecoration(
-                  contentPadding: EdgeInsets.only(bottom: 3),
-                  labelText: "Last Name",
-                  floatingLabelBehavior: FloatingLabelBehavior.always,
-                  hintText: "Last name",
-                  hintStyle: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                  )),
+                contentPadding: EdgeInsets.only(bottom: 3),
+                labelText: "Last Name",
+                floatingLabelBehavior: FloatingLabelBehavior.always,
+                hintText: "Last name",
+                hintStyle: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
+              ),
             ),
           ),
           SizedBox(
