@@ -51,12 +51,12 @@ Widget InputTextNumber(BuildContext context, String labelhint, bool obscureText,
               width: 1,
               color: Colors.green,
             )),
-        // focusedBorder: OutlineInputBorder(
-        //     borderRadius: BorderRadius.circular(15),
-        //     borderSide: const BorderSide(
-        //       width: 1,
-        //       color: Colors.green,
-        //     )),
+        focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(15),
+            borderSide: const BorderSide(
+              width: 1,
+              color: Colors.green,
+            )),
         // enabledBorder: OutlineInputBorder(
         //     borderRadius: BorderRadius.circular(15),
         //     borderSide: const BorderSide(
@@ -238,7 +238,7 @@ Widget InputText(
       },
       style: const TextStyle(
         fontSize: 17,
-        color: Colors.grey,
+        color: Colors.black,
       ),
       decoration: InputDecoration(
         labelText: labelhint,
@@ -259,12 +259,13 @@ Widget InputText(
             )),
 
         // border: InputBorder.none,ss
-        // focusedBorder: OutlineInputBorder(
-        //     borderRadius: BorderRadius.circular(15),
-        //     borderSide: const BorderSide(
-        //       width: 1,
-        //       color: Colors.green,
-        //     )),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(15),
+          borderSide: const BorderSide(
+            width: 1,
+            color: Colors.green,
+          ),
+        ),
         // enabledBorder: OutlineInputBorder(
         //     borderRadius: BorderRadius.circular(15),
         //     borderSide: const BorderSide(
