@@ -2,8 +2,15 @@ import 'package:armada/view/widgets/homePageCarouse.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 
-Widget InputTextNumber(BuildContext context, String labelhint, bool obscureText,
-    IconData icon, TextInputType ktype, TextEditingController controller) {
+Widget InputTextNumber(
+    BuildContext context,
+    String labelhint,
+    bool obscureText,
+    IconData icon,
+    TextInputType ktype,
+    TextEditingController controller,
+    String? errortext,
+    bool validate) {
   return SizedBox(
     width: MediaQuery.of(context).size.width - 120,
     height: 67,
@@ -11,17 +18,12 @@ Widget InputTextNumber(BuildContext context, String labelhint, bool obscureText,
       controller: controller,
       keyboardType: ktype,
       obscureText: false,
-      validator: (value) {
-        if (value == null || value.length < 9) {
-          return "10 digit Number is expected.";
-        }
-        return null;
-      },
       style: const TextStyle(
         fontSize: 17,
         color: Colors.grey,
       ),
       decoration: InputDecoration(
+        errorText: validate ? null : errortext,
         labelText: labelhint,
 
         labelStyle: const TextStyle(

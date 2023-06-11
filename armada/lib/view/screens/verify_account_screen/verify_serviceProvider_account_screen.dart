@@ -36,9 +36,18 @@ class _VerifyServiceProviderState extends State<VerifyServiceProvider> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               addVerticalSpace(55.0),
-              Text('Select a car type:'),
+              Center(
+                child: Text(
+                  "Verify Account",
+                  style: Theme.of(context).textTheme.displayLarge,
+                ),
+              ),
               Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  addVerticalSpace(25.0),
+                  Text('Select a machinery type:'),
+                  addVerticalSpace(15.0),
                   Row(
                     children: [
                       Radio(
@@ -173,30 +182,26 @@ class _VerifyServiceProviderState extends State<VerifyServiceProvider> {
         TextFormField(
           decoration: InputDecoration(labelText: 'Year'),
           validator: (value) {},
-          onSaved: (value) {
-            // Provider.of<Sedan>(context, listen: false).color = value;
+          onSaved: (value) {          
           },
         ),
         TextFormField(
           decoration: InputDecoration(labelText: 'Horsepower '),
           keyboardType: TextInputType.number,
           validator: (value) {},
-          onSaved: (value) {
-            // Provider.of<Sedan>(context, listen: false).year = int.parse(value);
+          onSaved: (value) {            
           },
         ),
         TextFormField(
           decoration: InputDecoration(labelText: 'Hour meter'),
           validator: (value) {},
-          onSaved: (value) {
-            // Provider.of<Sedan>(context, listen: false).color = value;
+          onSaved: (value) {          
           },
         ),
         TextFormField(
           decoration: InputDecoration(labelText: 'Region'),
           validator: (value) {},
-          onSaved: (value) {
-            // Provider.of<Sedan>(context, listen: false).color = value;
+          onSaved: (value) {          
           },
         ),
         machineStatusSelector(context),
@@ -205,7 +210,7 @@ class _VerifyServiceProviderState extends State<VerifyServiceProvider> {
   }
 
   Widget _buildSUVInputs() {
-    // Return input fields for SUV class
+   
     return Column(
       children: [
         TextFormField(
@@ -216,16 +221,14 @@ class _VerifyServiceProviderState extends State<VerifyServiceProvider> {
         TextFormField(
           decoration: InputDecoration(labelText: 'Model'),
           validator: (value) {},
-          onSaved: (value) {
-            // Provider.of<Sedan>(context, listen: false).color = value;
+          onSaved: (value) {         
           },
         ),
         TextFormField(
           decoration: InputDecoration(labelText: 'Year'),
           keyboardType: TextInputType.number,
           validator: (value) {},
-          onSaved: (value) {
-            // Provider.of<Sedan>(context, listen: false).year = int.parse(value);
+          onSaved: (value) {           
           },
         ),
         TextFormField(
@@ -236,16 +239,14 @@ class _VerifyServiceProviderState extends State<VerifyServiceProvider> {
         TextFormField(
           decoration: InputDecoration(labelText: 'Grain Types'),
           validator: (value) {},
-          onSaved: (value) {
-            // Provider.of<Sedan>(context, listen: false).color = value;
+          onSaved: (value) {          
           },
         ),
         TextFormField(
           decoration: InputDecoration(labelText: 'Region'),
           keyboardType: TextInputType.number,
           validator: (value) {},
-          onSaved: (value) {
-            // Provider.of<Sedan>(context, listen: false).year = int.parse(value);
+          onSaved: (value) {           
           },
         ),
         machineStatusSelector(context),
@@ -254,7 +255,7 @@ class _VerifyServiceProviderState extends State<VerifyServiceProvider> {
   }
 
   Widget _buildHatchbackInputs() {
-    // Return input fields for Hatchback class
+
     return Column(
       children: [
         TextFormField(
@@ -265,31 +266,27 @@ class _VerifyServiceProviderState extends State<VerifyServiceProvider> {
         TextFormField(
           decoration: InputDecoration(labelText: 'Model'),
           validator: (value) {},
-          onSaved: (value) {
-            // Provider.of<Sedan>(context, listen: false).color = value;
+          onSaved: (value) {         
           },
         ),
         TextFormField(
           decoration: InputDecoration(labelText: 'Required power (hp)'),
           keyboardType: TextInputType.number,
           validator: (value) {},
-          onSaved: (value) {
-            // Provider.of<Sedan>(context, listen: false).year = int.parse(value);
+          onSaved: (value) {           
           },
         ),
         TextFormField(
           decoration: InputDecoration(labelText: 'Working Capacity (kg/hr)'),
           validator: (value) {},
-          onSaved: (value) {
-            // Provider.of<Sedan>(context, listen: false).color = value;
+          onSaved: (value) {         
           },
         ),
         TextFormField(
           decoration: InputDecoration(labelText: 'Region'),
           keyboardType: TextInputType.number,
           validator: (value) {},
-          onSaved: (value) {
-            // Provider.of<Sedan>(context, listen: false).year = int.parse(value);
+          onSaved: (value) {      
           },
         ),
         machineStatusSelector(context),
@@ -298,7 +295,7 @@ class _VerifyServiceProviderState extends State<VerifyServiceProvider> {
   }
 
   Widget _buildHatchbackInputsO() {
-    // Return input fields for Hatchback class
+  
     return Column(
       children: [
         TextFormField(
@@ -309,8 +306,7 @@ class _VerifyServiceProviderState extends State<VerifyServiceProvider> {
         TextFormField(
           decoration: InputDecoration(labelText: 'Model'),
           validator: (value) {},
-          onSaved: (value) {
-            // Provider.of<Sedan>(context, listen: false).color = value;
+          onSaved: (value) {          
           },
         ),
         TextFormField(
@@ -318,14 +314,12 @@ class _VerifyServiceProviderState extends State<VerifyServiceProvider> {
           keyboardType: TextInputType.number,
           validator: (value) {},
           onSaved: (value) {
-            // Provider.of<Sedan>(context, listen: false).year = int.parse(value);
           },
         ),
         TextFormField(
           decoration: InputDecoration(labelText: 'Region'),
           validator: (value) {},
-          onSaved: (value) {
-            // Provider.of<Sedan>(context, listen: false).color = value;
+          onSaved: (value) {         
           },
         ),
         machineStatusSelector(context),
@@ -334,7 +328,7 @@ class _VerifyServiceProviderState extends State<VerifyServiceProvider> {
   }
 
   Widget _buildPickupTruckInputs() {
-    // Return input fields for PickupTruck class
+ 
     return Column(
       children: [
         Row(
@@ -436,8 +430,7 @@ class _VerifyServiceProviderState extends State<VerifyServiceProvider> {
         TextFormField(
           decoration: InputDecoration(labelText: 'Number of Discs'),
           validator: (value) {},
-          onSaved: (value) {
-            // Provider.of<Sedan>(context, listen: false).color = value;
+          onSaved: (value) {         
           },
         ),
         machineStatusSelector(context),
@@ -462,8 +455,7 @@ class _VerifyServiceProviderState extends State<VerifyServiceProvider> {
         TextFormField(
           decoration: InputDecoration(labelText: 'Number of Discs'),
           validator: (value) {},
-          onSaved: (value) {
-            // Provider.of<Sedan>(context, listen: false).color = value;
+          onSaved: (value) {          
           },
         ),
         machineStatusSelector(context),
@@ -488,8 +480,7 @@ class _VerifyServiceProviderState extends State<VerifyServiceProvider> {
         TextFormField(
           decoration: InputDecoration(labelText: 'Number of Discs'),
           validator: (value) {},
-          onSaved: (value) {
-            // Provider.of<Sedan>(context, listen: false).color = value;
+          onSaved: (value) {         
           },
         ),
         machineStatusSelector(context),
@@ -514,8 +505,7 @@ class _VerifyServiceProviderState extends State<VerifyServiceProvider> {
         TextFormField(
           decoration: InputDecoration(labelText: 'Number of Rows'),
           validator: (value) {},
-          onSaved: (value) {
-            // Provider.of<Sedan>(context, listen: false).color = value;
+          onSaved: (value) {         
           },
         ),
         machineStatusSelector(context),
@@ -540,8 +530,7 @@ class _VerifyServiceProviderState extends State<VerifyServiceProvider> {
         TextFormField(
           decoration: InputDecoration(labelText: 'Tank Capacity'),
           validator: (value) {},
-          onSaved: (value) {
-            // Provider.of<Sedan>(context, listen: false).color = value;
+          onSaved: (value) {         
           },
         ),
         machineStatusSelector(context),
@@ -567,7 +556,6 @@ class _VerifyServiceProviderState extends State<VerifyServiceProvider> {
           decoration: InputDecoration(labelText: 'Required power (hp)'),
           validator: (value) {},
           onSaved: (value) {
-            // Provider.of<Sedan>(context, listen: false).color = value;
           },
         ),
         machineStatusSelector(context),
@@ -592,29 +580,25 @@ class _VerifyServiceProviderState extends State<VerifyServiceProvider> {
         TextFormField(
           decoration: InputDecoration(labelText: 'Loading Capacity (ton)'),
           validator: (value) {},
-          onSaved: (value) {
-            // Provider.of<Sedan>(context, listen: false).color = value;
+          onSaved: (value) {         
           },
         ),
         TextFormField(
           decoration: InputDecoration(labelText: 'Platform dimension(m)'),
           validator: (value) {},
-          onSaved: (value) {
-            // Provider.of<Sedan>(context, listen: false).color = value;
+          onSaved: (value) {         
           },
         ),
         TextFormField(
           decoration: InputDecoration(labelText: 'Sideboard Height (m)'),
           validator: (value) {},
-          onSaved: (value) {
-            // Provider.of<Sedan>(context, listen: false).color = value;
+          onSaved: (value) {       
           },
         ),
         TextFormField(
           decoration: InputDecoration(labelText: 'Number of tires'),
           validator: (value) {},
-          onSaved: (value) {
-            // Provider.of<Sedan>(context, listen: false).color = value;
+          onSaved: (value) { 
           },
         ),
         machineStatusSelector(context),
@@ -640,7 +624,6 @@ class _VerifyServiceProviderState extends State<VerifyServiceProvider> {
           decoration: InputDecoration(labelText: 'Additional Information'),
           validator: (value) {},
           onSaved: (value) {
-            // Provider.of<Sedan>(context, listen: false).color = value;
           },
         ),
         machineStatusSelector(context),
