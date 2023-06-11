@@ -2,6 +2,7 @@ import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 
 import '../../../utils/helper_widget.dart';
+import 'package:image_picker/image_picker.dart';
 import '../../widgets/widgets.dart';
 
 class UploadFarm extends StatefulWidget {
@@ -28,6 +29,15 @@ class _UploadFarmState extends State<UploadFarm> {
 
   final TextEditingController _farmSize = TextEditingController();
   final TextEditingController _userNamecontroller = TextEditingController();
+
+  XFile? imageFile;
+  final ImagePicker picker = ImagePicker();
+
+  final image = Image.asset(
+    // fit: BoxFit.scaleDown,
+    height: 50,
+    "assets/images/tracter1.png",
+  );
 
   @override
   Widget build(BuildContext context) {

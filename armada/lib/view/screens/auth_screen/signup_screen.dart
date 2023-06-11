@@ -1,3 +1,4 @@
+import 'package:armada/networkhandler.dart';
 import 'package:armada/provider/drop_down_provider.dart';
 import 'package:armada/utils/helper_widget.dart';
 import 'package:flutter/material.dart';
@@ -35,6 +36,10 @@ class _SignUpState extends State<SignUp> {
   bool value = false;
   bool isHidden = true;
   bool isHiddenConfirm = true;
+
+  NetworkHandler networkHandler = NetworkHandler();
+  bool validate = false;
+  String? errorText;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -70,8 +75,15 @@ class _SignUpState extends State<SignUp> {
                     TextInputType.name,
                     _lastNamecontroller),
                 addVerticalSpace(15.0),
-                InputTextNumber(context, "Phone", false, Icons.phone_sharp,
-                    TextInputType.phone, _numberController),
+                InputTextNumber(
+                    context,
+                    "Phone",
+                    false,
+                    Icons.phone_sharp,
+                    TextInputType.phone,
+                    _numberController,
+                    errorText,
+                    validate),
                 addVerticalSpace(15.0),
                 SizedBox(
                   width: MediaQuery.of(context).size.width - 120,
@@ -213,9 +225,10 @@ class _SignUpState extends State<SignUp> {
                 Consumer<DropDownProvider>(
                   builder: (context, value, child) => Container(
                     child: InkWell(
-                      onTap: () {
+                      onTap: () async {
+                        await checkUser();
                         _selectedAccountType = value.selectedAccount;
-                        if (formKey.currentState!.validate()) {
+                        if (formKey.currentState!.validate() && validate) {
                           Map<String, String> data = {
                             "first_name": _firstNamecontroller.text,
                             "last_name": _lastNamecontroller.text,
@@ -223,8 +236,10 @@ class _SignUpState extends State<SignUp> {
                             "password": _passwordcontroller.text,
                             "role": _selectedAccountType!,
                           };
-                          print(data);
-                          Navigator.pushNamed(context, '/verify');
+                          await networkHandler.post("", data);
+                          // networkHandler.get("");
+                          // print(data);
+                          // Navigator.pushNamed(context, '/verify');
                         }
                       },
                       child: Container(
@@ -268,6 +283,32 @@ class _SignUpState extends State<SignUp> {
         ),
       ),
     );
+  }
+
+  checkUser() async {
+    if (_numberController.text.isEmpty) {
+      setState(() {
+        validate = false;
+        errorText = "Phone can't be empty";
+      });
+    } else if (_numberController.text.length != 10) {
+      setState(() {
+        validate = false;
+        errorText = "Phone must be 10 digit.";
+      });
+    } else {
+      var response = await networkHandler.get("/$_numberController");
+      if (response['Status']) {
+        setState(() {
+          validate = false;
+          errorText = " Phone number already taken";
+        });
+      } else {
+        setState(() {
+          validate = true;
+        });
+      }
+    }
   }
 
   void _togglePasswordView() {

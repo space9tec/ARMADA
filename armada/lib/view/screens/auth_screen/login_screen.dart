@@ -27,6 +27,9 @@ class _LoginState extends State<Login> {
 
   bool value = false;
   bool isHidden = true;
+
+  bool validate = false;
+  String? errorText;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -57,8 +60,15 @@ class _LoginState extends State<Login> {
                   ],
                 ),
                 addVerticalSpace(64.0),
-                InputTextNumber(context, "Phone", false, Icons.phone_sharp,
-                    TextInputType.phone, _numbercontroller),
+                InputTextNumber(
+                    context,
+                    "Phone",
+                    false,
+                    Icons.phone_sharp,
+                    TextInputType.phone,
+                    _numbercontroller,
+                    errorText,
+                    validate),
                 addVerticalSpace(31.0),
                 SizedBox(
                   width: MediaQuery.of(context).size.width - 120,
@@ -157,7 +167,8 @@ class _LoginState extends State<Login> {
                 Container(
                   child: InkWell(
                     onTap: () {
-                      if (formKey.currentState!.validate()) {
+                      checkUser();
+                      if (formKey.currentState!.validate() && validate) {
                         Map<String, String> data = {
                           "phone": _numbercontroller.text,
                           "password": _passwordcontroller.text,
@@ -205,6 +216,20 @@ class _LoginState extends State<Login> {
         ),
       ),
     );
+  }
+
+  checkUser() {
+    if (_numbercontroller.text.isEmpty) {
+      setState(() {
+        validate = false;
+        errorText = "Phone can't be empty";
+      });
+    } else if (_numbercontroller.text.length != 10) {
+      setState(() {
+        validate = false;
+        errorText = "Phone must be 10 digit.";
+      });
+    }
   }
 
   void _togglePasswordView() {
