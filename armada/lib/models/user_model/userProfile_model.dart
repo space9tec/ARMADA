@@ -1,5 +1,3 @@
-import 'package:flutter/material.dart';
-
 class userProfileModel {
   final String firstName;
   final String lastName;

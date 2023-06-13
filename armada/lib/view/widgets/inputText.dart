@@ -1,4 +1,3 @@
-import 'package:armada/view/widgets/homePageCarouse.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 
@@ -106,6 +105,7 @@ Widget InputTextPassword(
         if (value == null || value.length < 4) {
           return "More than 4 character needed";
         }
+        return null;
       },
       style: const TextStyle(
         fontSize: 17,
@@ -186,18 +186,6 @@ Widget InputTextEmail(
           icon,
           color: const Color.fromARGB(255, 10, 190, 106),
         ),
-        suffixIcon: obscureText
-            ? IconButton(
-                onPressed: () {
-                  setState(() {
-                    isPasswordVisible = !isPasswordVisible;
-                  });
-                },
-                icon: isPasswordVisible
-                    ? Icon(Icons.visibility_off)
-                    : Icon(Icons.visibility),
-              )
-            : null,
         border: InputBorder.none,
         focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(15),
@@ -285,22 +273,14 @@ Widget InputText(
   );
 }
 
-Widget InputTextFarmSize(
-    BuildContext context,
-    String hint,
-    String labelhint,
-    bool obscureText,
-    IconData icon,
-    TextInputType ktype,
-    TextEditingController controller) {
-  bool isPasswordVisible = false;
+Widget InputTextFarmSize(BuildContext context, String hint, String labelhint,
+    TextInputType ktype, TextEditingController controller) {
   return SizedBox(
-    width: MediaQuery.of(context).size.width - 280,
+    width: MediaQuery.of(context).size.width - 240,
     height: 67,
     child: TextFormField(
       controller: controller,
       keyboardType: ktype,
-      obscureText: isPasswordVisible,
       validator: (value) {
         if (value == null || value.isEmpty) {
           return "Can't be Empity.";
@@ -314,17 +294,69 @@ Widget InputTextFarmSize(
       decoration: InputDecoration(
         labelText: labelhint,
         hintText: hint,
+        suffixText: "Sq.",
         labelStyle: const TextStyle(
           fontSize: 17,
           color: Colors.grey,
         ),
-        suffixIcon: Icon(Icons.square_foot),
         border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(15),
             borderSide: const BorderSide(
               width: 1,
               color: Colors.green,
             )),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(15),
+          borderSide: const BorderSide(
+            width: 1,
+            color: Colors.green,
+          ),
+        ),
+      ),
+    ),
+  );
+}
+
+//
+Widget InputTextSoilType(BuildContext context, String hint, String labelhint,
+    TextInputType ktype, TextEditingController controller) {
+  return SizedBox(
+    width: MediaQuery.of(context).size.width - 240,
+    height: 67,
+    child: TextFormField(
+      controller: controller,
+      keyboardType: ktype,
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return "Can't be Empity.";
+        }
+        return null;
+      },
+      style: const TextStyle(
+        fontSize: 17,
+        color: Colors.grey,
+      ),
+      decoration: InputDecoration(
+        labelText: labelhint,
+        hintText: hint,
+        // suffixText: "Sq.",
+        labelStyle: const TextStyle(
+          fontSize: 17,
+          color: Colors.grey,
+        ),
+        border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(15),
+            borderSide: const BorderSide(
+              width: 1,
+              color: Colors.green,
+            )),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(15),
+          borderSide: const BorderSide(
+            width: 1,
+            color: Colors.green,
+          ),
+        ),
       ),
     ),
   );
@@ -363,13 +395,23 @@ Widget InputTextFarmLocation(
           fontSize: 17,
           color: Colors.grey,
         ),
-        suffixIcon: Icon(Icons.location_on_sharp),
+        suffixIcon: Icon(
+          icon,
+          color: Theme.of(context).primaryColor,
+        ),
         border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(15),
             borderSide: const BorderSide(
               width: 1,
               color: Colors.green,
             )),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(15),
+          borderSide: const BorderSide(
+            width: 1,
+            color: Colors.green,
+          ),
+        ),
       ),
     ),
   );

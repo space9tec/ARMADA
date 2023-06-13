@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-
-import 'package:armada/models/viewModel/drawerModel.dart';
-
 import '../../widgets/widgets.dart';
 
 class FarmScreen extends StatefulWidget {

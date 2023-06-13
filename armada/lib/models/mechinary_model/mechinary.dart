@@ -1,5 +1,3 @@
-import 'package:flutter/material.dart';
-
 class Trackter {
   final String Manufacturer;
   final String Model;

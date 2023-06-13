@@ -23,13 +23,8 @@ class AddFarm extends StatefulWidget {
 }
 
 class _AddFarmState extends State<AddFarm> {
-  final TextEditingController _Numbercontroller = TextEditingController();
-  final TextEditingController _Emailcontroller = TextEditingController();
-
-  final TextEditingController _passwordcontroller = TextEditingController();
   final TextEditingController _userNamecontroller = TextEditingController();
-  final TextEditingController _confirmPasswordcontroller =
-      TextEditingController();
+
   List ingrediants = [1];
   List steps = [1];
   @override

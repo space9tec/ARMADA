@@ -150,7 +150,6 @@ class ContractPage extends StatefulWidget {
 
 class _ContractPageState extends State<ContractPage>
     with SingleTickerProviderStateMixin {
-  int _currentIndex = 0;
   late TabController _tabController;
   @override
   void initState() {
@@ -164,29 +163,29 @@ class _ContractPageState extends State<ContractPage>
     super.dispose();
   }
 
-  final List<ContractCard> _contracts = const [
-    ContractCard(
-      serviceName: 'Service Name 1',
-      serviceImage: 'assets/images/tracter1.png',
-      day: 'Monday',
-      userProfile: 'User Profile 1',
-      status: 'Pending',
-    ),
-    ContractCard(
-      serviceName: 'Service Name 2',
-      serviceImage: 'assets/images/tracter1.png',
-      day: 'Tuesday',
-      userProfile: 'User Profile 2',
-      status: 'Completed',
-    ),
-    ContractCard(
-      serviceName: 'Service Name 3',
-      serviceImage: 'assets/images/tracter1.png',
-      day: 'Wednesday',
-      userProfile: 'User Profile 3',
-      status: 'Rejected',
-    ),
-  ];
+  // final List<ContractCard> _contracts = const [
+  //   ContractCard(
+  //     serviceName: 'Service Name 1',
+  //     serviceImage: 'assets/images/tracter1.png',
+  //     day: 'Monday',
+  //     userProfile: 'User Profile 1',
+  //     status: 'Pending',
+  //   ),
+  //   ContractCard(
+  //     serviceName: 'Service Name 2',
+  //     serviceImage: 'assets/images/tracter1.png',
+  //     day: 'Tuesday',
+  //     userProfile: 'User Profile 2',
+  //     status: 'Completed',
+  //   ),
+  //   ContractCard(
+  //     serviceName: 'Service Name 3',
+  //     serviceImage: 'assets/images/tracter1.png',
+  //     day: 'Wednesday',
+  //     userProfile: 'User Profile 3',
+  //     status: 'Rejected',
+  //   ),
+  // ];
 
   @override
   Widget build(BuildContext context) {
@@ -204,7 +203,7 @@ class _ContractPageState extends State<ContractPage>
         ],
         bottom: TabBar(
           controller: _tabController,
-          tabs: [
+          tabs: const [
             Tab(text: 'Pending'),
             Tab(text: 'Completed'),
             Tab(text: 'Rejected'),

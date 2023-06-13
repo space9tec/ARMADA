@@ -1,9 +1,12 @@
+import 'dart:convert';
+
 import 'package:armada/networkhandler.dart';
 import 'package:armada/provider/drop_down_provider.dart';
 import 'package:armada/utils/helper_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:armada/view/widgets/widgets.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class SignUp extends StatefulWidget {
   static const String routeName = '/signup';
@@ -36,6 +39,8 @@ class _SignUpState extends State<SignUp> {
   bool value = false;
   bool isHidden = true;
   bool isHiddenConfirm = true;
+
+  final storage = new FlutterSecureStorage();
 
   NetworkHandler networkHandler = NetworkHandler();
   bool validate = false;
@@ -236,10 +241,25 @@ class _SignUpState extends State<SignUp> {
                             "password": _passwordcontroller.text,
                             "role": _selectedAccountType!,
                           };
-                          await networkHandler.post("", data);
+                          var response = await networkHandler.post(
+                              "/api/auth/register", data);
+
+                          if (response.statusCode == 200 ||
+                              response.statusCode == 201) {
+                            await storage.write(
+                                key: 'phone', value: _numberController.text);
+                            Navigator.pushNamed(context, '/verify');
+                          } else {
+                            print("faild");
+
+                            String output = json.decode(response.body);
+                            setState(() {
+                              validate = false;
+                              errorText = output;
+                            });
+                          }
                           // networkHandler.get("");
                           // print(data);
-                          // Navigator.pushNamed(context, '/verify');
                         }
                       },
                       child: Container(
@@ -291,23 +311,26 @@ class _SignUpState extends State<SignUp> {
         validate = false;
         errorText = "Phone can't be empty";
       });
-    } else if (_numberController.text.length != 10) {
+    } else if (_numberController.text.length != 13) {
       setState(() {
         validate = false;
         errorText = "Phone must be 10 digit.";
       });
     } else {
-      var response = await networkHandler.get("/$_numberController");
-      if (response['Status']) {
-        setState(() {
-          validate = false;
-          errorText = " Phone number already taken";
-        });
-      } else {
-        setState(() {
-          validate = true;
-        });
-      }
+      // var response = await networkHandler.get("/$_numberController");
+      // if (response['Status']) {
+      //   setState(() {
+      //     validate = false;
+      //     errorText = " Phone number already taken";
+      //   });
+      // } else {
+      //   setState(() {
+      //     validate = true;
+      //   });
+      // }
+      setState(() {
+        validate = true;
+      });
     }
   }
 

@@ -25,7 +25,7 @@ class _VerifyServiceProviderState extends State<VerifyServiceProvider> {
   String _currentCarType = '';
   String _currentTractorAttachmentsType = '';
 
-  final _formKey = GlobalKey<FormState>();
+  // final _formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -171,38 +171,64 @@ class _VerifyServiceProviderState extends State<VerifyServiceProvider> {
       children: [
         TextFormField(
           decoration: InputDecoration(labelText: 'Manufacturer'),
-          validator: (value) {},
+          validator: (value) {
+            if (value == null || value.length < 4) {
+              return "More than 4 character needed";
+            }
+            return null;
+          },
           onSaved: (value) {},
         ),
         TextFormField(
           decoration: InputDecoration(labelText: 'Model'),
-          validator: (value) {},
+          validator: (value) {
+            if (value == null || value.length < 4) {
+              return "More than 4 character needed";
+            }
+            return null;
+          },
           onSaved: (value) {},
         ),
         TextFormField(
           decoration: InputDecoration(labelText: 'Year'),
-          validator: (value) {},
-          onSaved: (value) {          
+          validator: (value) {
+            if (value == null || value.length < 4) {
+              return "More than 4 character needed";
+            }
+            return null;
           },
+          onSaved: (value) {},
         ),
         TextFormField(
           decoration: InputDecoration(labelText: 'Horsepower '),
           keyboardType: TextInputType.number,
-          validator: (value) {},
-          onSaved: (value) {            
+          validator: (value) {
+            if (value == null || value.length < 4) {
+              return "More than 4 character needed";
+            }
+            return null;
           },
+          onSaved: (value) {},
         ),
         TextFormField(
           decoration: InputDecoration(labelText: 'Hour meter'),
-          validator: (value) {},
-          onSaved: (value) {          
+          validator: (value) {
+            if (value == null || value.length < 4) {
+              return "More than 4 character needed";
+            }
+            return null;
           },
+          onSaved: (value) {},
         ),
         TextFormField(
           decoration: InputDecoration(labelText: 'Region'),
-          validator: (value) {},
-          onSaved: (value) {          
+          validator: (value) {
+            if (value == null || value.length < 4) {
+              return "More than 4 character needed";
+            }
+            return null;
           },
+          onSaved: (value) {},
         ),
         machineStatusSelector(context),
       ],
@@ -210,44 +236,69 @@ class _VerifyServiceProviderState extends State<VerifyServiceProvider> {
   }
 
   Widget _buildSUVInputs() {
-   
     return Column(
       children: [
         TextFormField(
           decoration: InputDecoration(labelText: 'Manufacturer'),
-          validator: (value) {},
+          validator: (value) {
+            if (value == null || value.length < 4) {
+              return "More than 4 character needed";
+            }
+            return null;
+          },
           onSaved: (value) {},
         ),
         TextFormField(
           decoration: InputDecoration(labelText: 'Model'),
-          validator: (value) {},
-          onSaved: (value) {         
+          validator: (value) {
+            if (value == null || value.length < 4) {
+              return "More than 4 character needed";
+            }
+            return null;
           },
+          onSaved: (value) {},
         ),
         TextFormField(
           decoration: InputDecoration(labelText: 'Year'),
           keyboardType: TextInputType.number,
-          validator: (value) {},
-          onSaved: (value) {           
+          validator: (value) {
+            if (value == null || value.length < 4) {
+              return "More than 4 character needed";
+            }
+            return null;
           },
+          onSaved: (value) {},
         ),
         TextFormField(
           decoration: InputDecoration(labelText: 'Grain Tank Capacity'),
-          validator: (value) {},
+          validator: (value) {
+            if (value == null || value.length < 4) {
+              return "More than 4 character needed";
+            }
+            return null;
+          },
           onSaved: (value) {},
         ),
         TextFormField(
           decoration: InputDecoration(labelText: 'Grain Types'),
-          validator: (value) {},
-          onSaved: (value) {          
+          validator: (value) {
+            if (value == null || value.length < 4) {
+              return "More than 4 character needed";
+            }
+            return null;
           },
+          onSaved: (value) {},
         ),
         TextFormField(
           decoration: InputDecoration(labelText: 'Region'),
           keyboardType: TextInputType.number,
-          validator: (value) {},
-          onSaved: (value) {           
+          validator: (value) {
+            if (value == null || value.length < 4) {
+              return "More than 4 character needed";
+            }
+            return null;
           },
+          onSaved: (value) {},
         ),
         machineStatusSelector(context),
       ],
@@ -255,39 +306,59 @@ class _VerifyServiceProviderState extends State<VerifyServiceProvider> {
   }
 
   Widget _buildHatchbackInputs() {
-
     return Column(
       children: [
         TextFormField(
           decoration: InputDecoration(labelText: 'Manufacturer'),
-          validator: (value) {},
+          validator: (value) {
+            if (value == null || value.length < 4) {
+              return "More than 4 character needed";
+            }
+            return null;
+          },
           onSaved: (value) {},
         ),
         TextFormField(
           decoration: InputDecoration(labelText: 'Model'),
-          validator: (value) {},
-          onSaved: (value) {         
+          validator: (value) {
+            if (value == null || value.length < 4) {
+              return "More than 4 character needed";
+            }
+            return null;
           },
+          onSaved: (value) {},
         ),
         TextFormField(
           decoration: InputDecoration(labelText: 'Required power (hp)'),
           keyboardType: TextInputType.number,
-          validator: (value) {},
-          onSaved: (value) {           
+          validator: (value) {
+            if (value == null || value.length < 4) {
+              return "More than 4 character needed";
+            }
+            return null;
           },
+          onSaved: (value) {},
         ),
         TextFormField(
           decoration: InputDecoration(labelText: 'Working Capacity (kg/hr)'),
-          validator: (value) {},
-          onSaved: (value) {         
+          validator: (value) {
+            if (value == null || value.length < 4) {
+              return "More than 4 character needed";
+            }
+            return null;
           },
+          onSaved: (value) {},
         ),
         TextFormField(
           decoration: InputDecoration(labelText: 'Region'),
           keyboardType: TextInputType.number,
-          validator: (value) {},
-          onSaved: (value) {      
+          validator: (value) {
+            if (value == null || value.length < 4) {
+              return "More than 4 character needed";
+            }
+            return null;
           },
+          onSaved: (value) {},
         ),
         machineStatusSelector(context),
       ],
@@ -295,32 +366,48 @@ class _VerifyServiceProviderState extends State<VerifyServiceProvider> {
   }
 
   Widget _buildHatchbackInputsO() {
-  
     return Column(
       children: [
         TextFormField(
           decoration: InputDecoration(labelText: 'Manufacturer'),
-          validator: (value) {},
+          validator: (value) {
+            if (value == null || value.length < 4) {
+              return "More than 4 character needed";
+            }
+            return null;
+          },
           onSaved: (value) {},
         ),
         TextFormField(
           decoration: InputDecoration(labelText: 'Model'),
-          validator: (value) {},
-          onSaved: (value) {          
+          validator: (value) {
+            if (value == null || value.length < 4) {
+              return "More than 4 character needed";
+            }
+            return null;
           },
+          onSaved: (value) {},
         ),
         TextFormField(
           decoration: InputDecoration(labelText: 'Additional Information'),
           keyboardType: TextInputType.number,
-          validator: (value) {},
-          onSaved: (value) {
+          validator: (value) {
+            if (value == null || value.length < 4) {
+              return "More than 4 character needed";
+            }
+            return null;
           },
+          onSaved: (value) {},
         ),
         TextFormField(
           decoration: InputDecoration(labelText: 'Region'),
-          validator: (value) {},
-          onSaved: (value) {         
+          validator: (value) {
+            if (value == null || value.length < 4) {
+              return "More than 4 character needed";
+            }
+            return null;
           },
+          onSaved: (value) {},
         ),
         machineStatusSelector(context),
       ],
@@ -328,7 +415,6 @@ class _VerifyServiceProviderState extends State<VerifyServiceProvider> {
   }
 
   Widget _buildPickupTruckInputs() {
- 
     return Column(
       children: [
         Row(
@@ -419,19 +505,33 @@ class _VerifyServiceProviderState extends State<VerifyServiceProvider> {
       children: [
         TextFormField(
           decoration: InputDecoration(labelText: 'Manufacturer'),
-          validator: (value) {},
+          validator: (value) {
+            if (value == null || value.length < 4) {
+              return "More than 4 character needed";
+            }
+            return null;
+          },
           onSaved: (value) {},
         ),
         TextFormField(
           decoration: InputDecoration(labelText: 'Model'),
-          validator: (value) {},
+          validator: (value) {
+            if (value == null || value.length < 4) {
+              return "More than 4 character needed";
+            }
+            return null;
+          },
           onSaved: (value) {},
         ),
         TextFormField(
           decoration: InputDecoration(labelText: 'Number of Discs'),
-          validator: (value) {},
-          onSaved: (value) {         
+          validator: (value) {
+            if (value == null || value.length < 4) {
+              return "More than 4 character needed";
+            }
+            return null;
           },
+          onSaved: (value) {},
         ),
         machineStatusSelector(context),
       ],
@@ -444,19 +544,33 @@ class _VerifyServiceProviderState extends State<VerifyServiceProvider> {
       children: [
         TextFormField(
           decoration: InputDecoration(labelText: 'Manufacturer'),
-          validator: (value) {},
+          validator: (value) {
+            if (value == null || value.length < 4) {
+              return "More than 4 character needed";
+            }
+            return null;
+          },
           onSaved: (value) {},
         ),
         TextFormField(
           decoration: InputDecoration(labelText: 'Model'),
-          validator: (value) {},
+          validator: (value) {
+            if (value == null || value.length < 4) {
+              return "More than 4 character needed";
+            }
+            return null;
+          },
           onSaved: (value) {},
         ),
         TextFormField(
           decoration: InputDecoration(labelText: 'Number of Discs'),
-          validator: (value) {},
-          onSaved: (value) {          
+          validator: (value) {
+            if (value == null || value.length < 4) {
+              return "More than 4 character needed";
+            }
+            return null;
           },
+          onSaved: (value) {},
         ),
         machineStatusSelector(context),
       ],
@@ -469,19 +583,33 @@ class _VerifyServiceProviderState extends State<VerifyServiceProvider> {
       children: [
         TextFormField(
           decoration: InputDecoration(labelText: 'Manufacturer'),
-          validator: (value) {},
+          validator: (value) {
+            if (value == null || value.length < 4) {
+              return "More than 4 character needed";
+            }
+            return null;
+          },
           onSaved: (value) {},
         ),
         TextFormField(
           decoration: InputDecoration(labelText: 'Model'),
-          validator: (value) {},
+          validator: (value) {
+            if (value == null || value.length < 4) {
+              return "More than 4 character needed";
+            }
+            return null;
+          },
           onSaved: (value) {},
         ),
         TextFormField(
           decoration: InputDecoration(labelText: 'Number of Discs'),
-          validator: (value) {},
-          onSaved: (value) {         
+          validator: (value) {
+            if (value == null || value.length < 4) {
+              return "More than 4 character needed";
+            }
+            return null;
           },
+          onSaved: (value) {},
         ),
         machineStatusSelector(context),
       ],
@@ -494,19 +622,33 @@ class _VerifyServiceProviderState extends State<VerifyServiceProvider> {
       children: [
         TextFormField(
           decoration: InputDecoration(labelText: 'Manufacturer'),
-          validator: (value) {},
+          validator: (value) {
+            if (value == null || value.length < 4) {
+              return "More than 4 character needed";
+            }
+            return null;
+          },
           onSaved: (value) {},
         ),
         TextFormField(
           decoration: InputDecoration(labelText: 'Model'),
-          validator: (value) {},
+          validator: (value) {
+            if (value == null || value.length < 4) {
+              return "More than 4 character needed";
+            }
+            return null;
+          },
           onSaved: (value) {},
         ),
         TextFormField(
           decoration: InputDecoration(labelText: 'Number of Rows'),
-          validator: (value) {},
-          onSaved: (value) {         
+          validator: (value) {
+            if (value == null || value.length < 4) {
+              return "More than 4 character needed";
+            }
+            return null;
           },
+          onSaved: (value) {},
         ),
         machineStatusSelector(context),
       ],
@@ -519,19 +661,33 @@ class _VerifyServiceProviderState extends State<VerifyServiceProvider> {
       children: [
         TextFormField(
           decoration: InputDecoration(labelText: 'Manufacturer'),
-          validator: (value) {},
+          validator: (value) {
+            if (value == null || value.length < 4) {
+              return "More than 4 character needed";
+            }
+            return null;
+          },
           onSaved: (value) {},
         ),
         TextFormField(
           decoration: InputDecoration(labelText: 'Model'),
-          validator: (value) {},
+          validator: (value) {
+            if (value == null || value.length < 4) {
+              return "More than 4 character needed";
+            }
+            return null;
+          },
           onSaved: (value) {},
         ),
         TextFormField(
           decoration: InputDecoration(labelText: 'Tank Capacity'),
-          validator: (value) {},
-          onSaved: (value) {         
+          validator: (value) {
+            if (value == null || value.length < 4) {
+              return "More than 4 character needed";
+            }
+            return null;
           },
+          onSaved: (value) {},
         ),
         machineStatusSelector(context),
       ],
@@ -544,19 +700,33 @@ class _VerifyServiceProviderState extends State<VerifyServiceProvider> {
       children: [
         TextFormField(
           decoration: InputDecoration(labelText: 'Manufacturer'),
-          validator: (value) {},
+          validator: (value) {
+            if (value == null || value.length < 4) {
+              return "More than 4 character needed";
+            }
+            return null;
+          },
           onSaved: (value) {},
         ),
         TextFormField(
           decoration: InputDecoration(labelText: 'Model'),
-          validator: (value) {},
+          validator: (value) {
+            if (value == null || value.length < 4) {
+              return "More than 4 character needed";
+            }
+            return null;
+          },
           onSaved: (value) {},
         ),
         TextFormField(
           decoration: InputDecoration(labelText: 'Required power (hp)'),
-          validator: (value) {},
-          onSaved: (value) {
+          validator: (value) {
+            if (value == null || value.length < 4) {
+              return "More than 4 character needed";
+            }
+            return null;
           },
+          onSaved: (value) {},
         ),
         machineStatusSelector(context),
       ],
@@ -569,37 +739,63 @@ class _VerifyServiceProviderState extends State<VerifyServiceProvider> {
       children: [
         TextFormField(
           decoration: InputDecoration(labelText: 'Manufacturer'),
-          validator: (value) {},
+          validator: (value) {
+            if (value == null || value.length < 4) {
+              return "More than 4 character needed";
+            }
+            return null;
+          },
           onSaved: (value) {},
         ),
         TextFormField(
           decoration: InputDecoration(labelText: 'Model'),
-          validator: (value) {},
+          validator: (value) {
+            if (value == null || value.length < 4) {
+              return "More than 4 character needed";
+            }
+            return null;
+          },
           onSaved: (value) {},
         ),
         TextFormField(
           decoration: InputDecoration(labelText: 'Loading Capacity (ton)'),
-          validator: (value) {},
-          onSaved: (value) {         
+          validator: (value) {
+            if (value == null || value.length < 4) {
+              return "More than 4 character needed";
+            }
+            return null;
           },
+          onSaved: (value) {},
         ),
         TextFormField(
           decoration: InputDecoration(labelText: 'Platform dimension(m)'),
-          validator: (value) {},
-          onSaved: (value) {         
+          validator: (value) {
+            if (value == null || value.length < 4) {
+              return "More than 4 character needed";
+            }
+            return null;
           },
+          onSaved: (value) {},
         ),
         TextFormField(
           decoration: InputDecoration(labelText: 'Sideboard Height (m)'),
-          validator: (value) {},
-          onSaved: (value) {       
+          validator: (value) {
+            if (value == null || value.length < 4) {
+              return "More than 4 character needed";
+            }
+            return null;
           },
+          onSaved: (value) {},
         ),
         TextFormField(
           decoration: InputDecoration(labelText: 'Number of tires'),
-          validator: (value) {},
-          onSaved: (value) { 
+          validator: (value) {
+            if (value == null || value.length < 4) {
+              return "More than 4 character needed";
+            }
+            return null;
           },
+          onSaved: (value) {},
         ),
         machineStatusSelector(context),
       ],
@@ -612,19 +808,33 @@ class _VerifyServiceProviderState extends State<VerifyServiceProvider> {
       children: [
         TextFormField(
           decoration: InputDecoration(labelText: 'Manufacturer'),
-          validator: (value) {},
+          validator: (value) {
+            if (value == null || value.length < 4) {
+              return "More than 4 character needed";
+            }
+            return null;
+          },
           onSaved: (value) {},
         ),
         TextFormField(
           decoration: InputDecoration(labelText: 'Model'),
-          validator: (value) {},
+          validator: (value) {
+            if (value == null || value.length < 4) {
+              return "More than 4 character needed";
+            }
+            return null;
+          },
           onSaved: (value) {},
         ),
         TextFormField(
           decoration: InputDecoration(labelText: 'Additional Information'),
-          validator: (value) {},
-          onSaved: (value) {
+          validator: (value) {
+            if (value == null || value.length < 4) {
+              return "More than 4 character needed";
+            }
+            return null;
           },
+          onSaved: (value) {},
         ),
         machineStatusSelector(context),
       ],

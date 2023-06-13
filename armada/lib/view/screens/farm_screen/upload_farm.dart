@@ -1,9 +1,12 @@
+// import 'dart:convert';
+
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
-
+import 'package:armada/networkhandler.dart';
 import '../../../utils/helper_widget.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../widgets/widgets.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class UploadFarm extends StatefulWidget {
   static const String routeName = '/upload_farm';
@@ -28,7 +31,16 @@ class _UploadFarmState extends State<UploadFarm> {
   final formKey = GlobalKey<FormState>();
 
   final TextEditingController _farmSize = TextEditingController();
-  final TextEditingController _userNamecontroller = TextEditingController();
+  final TextEditingController _farmName = TextEditingController();
+  final TextEditingController _location = TextEditingController();
+  final TextEditingController _croptype = TextEditingController();
+  final TextEditingController _soiltype = TextEditingController();
+  final TextEditingController _polygonlocation = TextEditingController();
+  NetworkHandler networkHandler = NetworkHandler();
+  final storage = new FlutterSecureStorage();
+
+  bool validate = false;
+  String? errorText;
 
   XFile? imageFile;
   final ImagePicker picker = ImagePicker();
@@ -79,14 +91,8 @@ class _UploadFarmState extends State<UploadFarm> {
                     const SizedBox(
                       height: 30,
                     ),
-                    InputText(
-                        context,
-                        "Full name",
-                        "Farm Name",
-                        false,
-                        Icons.person_3_sharp,
-                        TextInputType.name,
-                        _userNamecontroller),
+                    InputText(context, "Full name", "Farm Name", false,
+                        Icons.person_3_sharp, TextInputType.name, _farmName),
                     const SizedBox(
                       height: 20,
                     ),
@@ -95,14 +101,8 @@ class _UploadFarmState extends State<UploadFarm> {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            InputTextFarmSize(
-                                context,
-                                "",
-                                "Farm Size",
-                                false,
-                                Icons.person_3_sharp,
-                                TextInputType.number,
-                                _farmSize),
+                            InputTextFarmSize(context, "", "Farm Size",
+                                TextInputType.number, _farmSize),
                           ],
                         ),
                         const SizedBox(
@@ -117,8 +117,8 @@ class _UploadFarmState extends State<UploadFarm> {
                                 "Location",
                                 false,
                                 Icons.person_3_sharp,
-                                TextInputType.text,
-                                _farmSize),
+                                TextInputType.number,
+                                _location),
                           ],
                         ),
                       ],
@@ -131,14 +131,8 @@ class _UploadFarmState extends State<UploadFarm> {
                     const SizedBox(
                       height: 30,
                     ),
-                    InputText(
-                        context,
-                        "",
-                        "Crop type",
-                        false,
-                        Icons.person_3_sharp,
-                        TextInputType.name,
-                        _userNamecontroller),
+                    InputText(context, "", "Crop type", false,
+                        Icons.person_3_sharp, TextInputType.name, _croptype),
                     const SizedBox(
                       height: 20,
                     ),
@@ -147,14 +141,8 @@ class _UploadFarmState extends State<UploadFarm> {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            InputTextFarmSize(
-                                context,
-                                "",
-                                "Soil type",
-                                false,
-                                Icons.person_3_sharp,
-                                TextInputType.number,
-                                _farmSize),
+                            InputTextFarmSize(context, "", "Soil type",
+                                TextInputType.text, _soiltype),
                           ],
                         ),
                         const SizedBox(
@@ -169,8 +157,8 @@ class _UploadFarmState extends State<UploadFarm> {
                                 "Type",
                                 false,
                                 Icons.person_3_sharp,
-                                TextInputType.text,
-                                _farmSize),
+                                TextInputType.number,
+                                _polygonlocation),
                           ],
                         ),
                       ],
@@ -181,14 +169,40 @@ class _UploadFarmState extends State<UploadFarm> {
                   ],
                 ),
                 InkWell(
-                  onTap: () {
+                  onTap: () async {
                     // Navigator.pushNamed(context, routh);
+                    String? userid = await storage.read(key: "userid");
+                    print(userid);
+                    // String? owner_ID = user!['_id'];
+                    // print(owner_ID);
                     if (formKey.currentState!.validate()) {
                       Map<String, String> data = {
                         "farm_size": _farmSize.text,
+                        "farm_name": _farmName.text,
+                        "latitude": _location.text,
+                        "crops_grown": _croptype.text,
+                        "soil_type": _soiltype.text,
+                        "longitude": _polygonlocation.text,
+                        "owner_id": userid!,
                       };
                       print(data);
-                      Navigator.pushNamed(context, '/verify');
+
+                      var response =
+                          await networkHandler.post("/api/farm/", data);
+
+                      if (response.statusCode == 201) {
+                        // await storage.write(
+                        //     key: 'phone', value: _numberController.text);
+                        Navigator.pushNamed(context, '/');
+                      } else {
+                        // String output = json.decode(response.toString());
+                        print(response.body.toString());
+                        setState(() {
+                          validate = false;
+                          // errorText = output;
+                        });
+                      }
+                      // Navigator.pushNamed(context, '/');
                     }
                   },
                   child: Container(

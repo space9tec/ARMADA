@@ -1,6 +1,11 @@
+import 'dart:convert';
+// import 'dart:html';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:armada/utils/helper_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:armada/view/widgets/widgets.dart';
+import 'package:armada/networkhandler.dart';
+// import 'package:http/http.dart' as http;
 
 class Login extends StatefulWidget {
   static const String routeName = '/login';
@@ -28,7 +33,12 @@ class _LoginState extends State<Login> {
   bool value = false;
   bool isHidden = true;
 
-  bool validate = false;
+  NetworkHandler networkHandler = NetworkHandler();
+  final storage = new FlutterSecureStorage();
+  // Map<String, String> storageone =
+  //     new FlutterSecureStorage() as Map<String, String>;
+
+  bool validate = true;
   String? errorText;
   @override
   Widget build(BuildContext context) {
@@ -166,14 +176,86 @@ class _LoginState extends State<Login> {
                 addVerticalSpace(60.0),
                 Container(
                   child: InkWell(
-                    onTap: () {
+                    onTap: () async {
                       checkUser();
+                      print("object");
                       if (formKey.currentState!.validate() && validate) {
                         Map<String, String> data = {
                           "phone": _numbercontroller.text,
                           "password": _passwordcontroller.text,
                         };
+// +251977389783
                         print(data);
+
+                        try {
+                          var response = await networkHandler.post(
+                              "/api/auth/login", data);
+                          if (response.statusCode == 200) {
+                            Map<String, dynamic> output =
+                                json.decode(response.body);
+                            // String jsonString = json.encode(output);
+                            print("yes");
+                            // print("Token: $output['Token']");
+                            await storage.write(
+                                key: 'token', value: output['Token']);
+
+                            String? tok = await storage.read(key: "token");
+                            print(tok);
+
+                            await storage.write(
+                                key: 'userid', value: output['user_id']);
+
+                            String? userid = await storage.read(key: "userid");
+                            print(userid);
+
+                            // await storage.write(key: 'user', value: jsonString);
+//                             String storedJsonString = await storage.read(key: 'userData');
+// Map<String, dynamic> storedData = json.decode(storedJsonString);
+                            // String? storedJsonString =
+                            //     await storage.read(key: 'user');
+                            // Map<String, dynamic> storedData =
+                            //     json.decode(storedJsonString!);
+
+                            // print("Hello: $storedData['_id']");
+                            // String? user = await storage.read(key: "user");
+                            // print(user);
+
+                            // await storage.write(
+                            //     key: 'user', value: output['user']);
+
+                            // Map<String, String>? user = (await storage.read(
+                            //     key: "user")) as Map<String, String>?;
+                            // print("hello: $user");
+                            // setState(() {
+                            //   validate = true;
+                            // });
+                            // Navigator.pushAndRemoveUntil(
+                            //     context, '/', (route) => false);
+                            Navigator.of(context).pushNamedAndRemoveUntil(
+                                '/', (Route<dynamic> route) => false);
+                            // Navigator.pushAndRemoveUntil(context,
+                            //     '/' as Route<Object?>, (route) => false);
+                          } else if (response.statusCode == 408) {
+                            print("408");
+                          } else if (response.statusCode == 500) {
+                            // handle server error
+                            print("500");
+                          } else {
+                            throw Exception(
+                                'Failed to login: ${response.statusCode}');
+                          }
+                        } catch (e) {
+                          print("dont work:${e}");
+                        }
+                        //else {
+                        //   print("dontwork");
+                        //   String output = json.decode(response.body);
+                        //   setState(() {
+                        //     validate = false;
+                        //     errorText = output;
+                        //   });
+                        // }
+                        print("data");
                       }
                     },
                     child: Container(
@@ -224,10 +306,10 @@ class _LoginState extends State<Login> {
         validate = false;
         errorText = "Phone can't be empty";
       });
-    } else if (_numbercontroller.text.length != 10) {
+    } else if (_numbercontroller.text.length != 13) {
       setState(() {
         validate = false;
-        errorText = "Phone must be 10 digit.";
+        errorText = "Phone must be 13 digit.";
       });
     }
   }

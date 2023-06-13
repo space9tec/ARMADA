@@ -20,6 +20,12 @@ class EditFarmerProfile extends StatefulWidget {
 }
 
 class _EditFarmerProfileState extends State<EditFarmerProfile> {
+  final TextEditingController _firstName = TextEditingController();
+  final TextEditingController _lastName = TextEditingController();
+  final TextEditingController _phone = TextEditingController();
+  final TextEditingController _location = TextEditingController();
+  // final TextEditingController _about = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     final user = UserPreferences.myUser;
@@ -48,10 +54,11 @@ class _EditFarmerProfileState extends State<EditFarmerProfile> {
           const SizedBox(
             height: 35,
           ),
-          const Padding(
-            padding: EdgeInsets.all(28.0),
+          Padding(
+            padding: const EdgeInsets.all(28.0),
             child: TextField(
-              decoration: InputDecoration(
+              controller: _firstName,
+              decoration: const InputDecoration(
                   contentPadding: EdgeInsets.only(bottom: 3),
                   labelText: "First Name",
                   floatingLabelBehavior: FloatingLabelBehavior.always,
@@ -63,10 +70,11 @@ class _EditFarmerProfileState extends State<EditFarmerProfile> {
                   )),
             ),
           ),
-          const Padding(
-            padding: EdgeInsets.only(left: 28.0, right: 28.0),
+          Padding(
+            padding: const EdgeInsets.only(left: 28.0, right: 28.0),
             child: TextField(
-              decoration: InputDecoration(
+              controller: _lastName,
+              decoration: const InputDecoration(
                 contentPadding: EdgeInsets.only(bottom: 3),
                 labelText: "Last Name",
                 floatingLabelBehavior: FloatingLabelBehavior.always,
@@ -79,13 +87,14 @@ class _EditFarmerProfileState extends State<EditFarmerProfile> {
               ),
             ),
           ),
-          SizedBox(
+          const SizedBox(
             height: 25,
           ),
-          const Padding(
-            padding: EdgeInsets.only(left: 28.0, right: 28.0),
+          Padding(
+            padding: const EdgeInsets.only(left: 28.0, right: 28.0),
             child: TextField(
-              decoration: InputDecoration(
+              controller: _phone,
+              decoration: const InputDecoration(
                   contentPadding: EdgeInsets.only(bottom: 3),
                   labelText: "Phone no.",
                   floatingLabelBehavior: FloatingLabelBehavior.always,
@@ -100,10 +109,11 @@ class _EditFarmerProfileState extends State<EditFarmerProfile> {
           const SizedBox(
             height: 25,
           ),
-          const Padding(
-            padding: EdgeInsets.only(left: 28.0, right: 28.0),
+          Padding(
+            padding: const EdgeInsets.only(left: 28.0, right: 28.0),
             child: TextField(
-              decoration: InputDecoration(
+              controller: _location,
+              decoration: const InputDecoration(
                   contentPadding: EdgeInsets.only(bottom: 3),
                   labelText: "Location",
                   floatingLabelBehavior: FloatingLabelBehavior.always,
@@ -115,6 +125,38 @@ class _EditFarmerProfileState extends State<EditFarmerProfile> {
                   )),
             ),
           ),
+          const SizedBox(
+            height: 25,
+          ),
+          // Padding(
+          //   padding: const EdgeInsets.only(left: 28.0, right: 28.0),
+          //   child: TextFormField(
+          //     controller: _about,
+          //     maxLength: 200,
+          //     maxLines: 4,
+          //     keyboardType: TextInputType.multiline,
+          //     decoration: InputDecoration(
+          //       border: OutlineInputBorder(
+          //           borderRadius: BorderRadius.circular(15),
+          //           borderSide: const BorderSide(
+          //             width: 1,
+          //             color: Colors.green,
+          //           )),
+          //       focusedBorder: OutlineInputBorder(
+          //           borderRadius: BorderRadius.circular(15),
+          //           borderSide: const BorderSide(
+          //             width: 1,
+          //             color: Colors.green,
+          //           )),
+          //       prefixIcon: Icon(
+          //         Icons.person,
+          //         color: Theme.of(context).primaryColor,
+          //       ),
+          //       labelText: "About",
+          //       helperText: "Write about you.",
+          //     ),
+          //   ),
+          // )
         ],
       ),
     );

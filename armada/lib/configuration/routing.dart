@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../view/screens/screens.dart';
-import '../view/widgets/widgets.dart';
 
 class ROUTE {
   static Route onGenerateRouth(RouteSettings settings) {

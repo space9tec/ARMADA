@@ -29,7 +29,7 @@ class _AddMachineState extends State<AddMachine> {
   XFile? imageFile;
   final ImagePicker picker = ImagePicker();
 
-  final _formKey = GlobalKey<FormState>();
+  // final _formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -166,17 +166,32 @@ class _AddMachineState extends State<AddMachine> {
       children: [
         TextFormField(
           decoration: InputDecoration(labelText: 'Manufacturer'),
-          validator: (value) {},
+          validator: (value) {
+            if (value == null || value.length < 4) {
+              return "More than 4 character needed";
+            }
+            return null;
+          },
           onSaved: (value) {},
         ),
         TextFormField(
           decoration: InputDecoration(labelText: 'Model'),
-          validator: (value) {},
+          validator: (value) {
+            if (value == null || value.length < 4) {
+              return "More than 4 character needed";
+            }
+            return null;
+          },
           onSaved: (value) {},
         ),
         TextFormField(
           decoration: InputDecoration(labelText: 'Year'),
-          validator: (value) {},
+          validator: (value) {
+            if (value == null || value.length < 4) {
+              return "More than 4 character needed";
+            }
+            return null;
+          },
           onSaved: (value) {
             // Provider.of<Sedan>(context, listen: false).color = value;
           },
@@ -184,21 +199,36 @@ class _AddMachineState extends State<AddMachine> {
         TextFormField(
           decoration: InputDecoration(labelText: 'Horsepower '),
           keyboardType: TextInputType.number,
-          validator: (value) {},
+          validator: (value) {
+            if (value == null || value.length < 4) {
+              return "More than 4 character needed";
+            }
+            return null;
+          },
           onSaved: (value) {
             // Provider.of<Sedan>(context, listen: false).year = int.parse(value);
           },
         ),
         TextFormField(
           decoration: InputDecoration(labelText: 'Hour meter'),
-          validator: (value) {},
+          validator: (value) {
+            if (value == null || value.length < 4) {
+              return "More than 4 character needed";
+            }
+            return null;
+          },
           onSaved: (value) {
             // Provider.of<Sedan>(context, listen: false).color = value;
           },
         ),
         TextFormField(
           decoration: InputDecoration(labelText: 'Region'),
-          validator: (value) {},
+          validator: (value) {
+            if (value == null || value.length < 4) {
+              return "More than 4 character needed";
+            }
+            return null;
+          },
           onSaved: (value) {
             // Provider.of<Sedan>(context, listen: false).color = value;
           },
@@ -337,12 +367,22 @@ class _AddMachineState extends State<AddMachine> {
       children: [
         TextFormField(
           decoration: InputDecoration(labelText: 'Manufacturer'),
-          validator: (value) {},
+          validator: (value) {
+            if (value == null || value.length < 4) {
+              return "More than 4 character needed";
+            }
+            return null;
+          },
           onSaved: (value) {},
         ),
         TextFormField(
           decoration: InputDecoration(labelText: 'Model'),
-          validator: (value) {},
+          validator: (value) {
+            if (value == null || value.length < 4) {
+              return "More than 4 character needed";
+            }
+            return null;
+          },
           onSaved: (value) {
             // Provider.of<Sedan>(context, listen: false).color = value;
           },
@@ -350,25 +390,45 @@ class _AddMachineState extends State<AddMachine> {
         TextFormField(
           decoration: InputDecoration(labelText: 'Year'),
           keyboardType: TextInputType.number,
-          validator: (value) {},
+          validator: (value) {
+            if (value == null || value.length < 4) {
+              return "More than 4 character needed";
+            }
+            return null;
+          },
           onSaved: (value) {
             // Provider.of<Sedan>(context, listen: false).year = int.parse(value);
           },
         ),
         TextFormField(
           decoration: InputDecoration(labelText: 'Grain Tank Capacity'),
-          validator: (value) {},
+          validator: (value) {
+            if (value == null || value.length < 4) {
+              return "More than 4 character needed";
+            }
+            return null;
+          },
           onSaved: (value) {},
         ),
         TextFormField(
           decoration: InputDecoration(labelText: 'Grain Types'),
-          validator: (value) {},
+          validator: (value) {
+            if (value == null || value.length < 4) {
+              return "More than 4 character needed";
+            }
+            return null;
+          },
           onSaved: (value) {},
         ),
         TextFormField(
           decoration: InputDecoration(labelText: 'Region'),
           keyboardType: TextInputType.number,
-          validator: (value) {},
+          validator: (value) {
+            if (value == null || value.length < 4) {
+              return "More than 4 character needed";
+            }
+            return null;
+          },
           onSaved: (value) {},
         ),
         machineStatusSelector(context),
@@ -393,29 +453,54 @@ class _AddMachineState extends State<AddMachine> {
       children: [
         TextFormField(
           decoration: InputDecoration(labelText: 'Manufacturer'),
-          validator: (value) {},
+          validator: (value) {
+            if (value == null || value.length < 4) {
+              return "More than 4 character needed";
+            }
+            return null;
+          },
           onSaved: (value) {},
         ),
         TextFormField(
           decoration: InputDecoration(labelText: 'Model'),
-          validator: (value) {},
+          validator: (value) {
+            if (value == null || value.length < 4) {
+              return "More than 4 character needed";
+            }
+            return null;
+          },
           onSaved: (value) {},
         ),
         TextFormField(
           decoration: InputDecoration(labelText: 'Required power (hp)'),
           keyboardType: TextInputType.number,
-          validator: (value) {},
+          validator: (value) {
+            if (value == null || value.length < 4) {
+              return "More than 4 character needed";
+            }
+            return null;
+          },
           onSaved: (value) {},
         ),
         TextFormField(
           decoration: InputDecoration(labelText: 'Working Capacity (kg/hr)'),
-          validator: (value) {},
+          validator: (value) {
+            if (value == null || value.length < 4) {
+              return "More than 4 character needed";
+            }
+            return null;
+          },
           onSaved: (value) {},
         ),
         TextFormField(
           decoration: InputDecoration(labelText: 'Region'),
           keyboardType: TextInputType.number,
-          validator: (value) {},
+          validator: (value) {
+            if (value == null || value.length < 4) {
+              return "More than 4 character needed";
+            }
+            return null;
+          },
           onSaved: (value) {},
         ),
         machineStatusSelector(context),
@@ -440,23 +525,43 @@ class _AddMachineState extends State<AddMachine> {
       children: [
         TextFormField(
           decoration: InputDecoration(labelText: 'Manufacturer'),
-          validator: (value) {},
+          validator: (value) {
+            if (value == null || value.length < 4) {
+              return "More than 4 character needed";
+            }
+            return null;
+          },
           onSaved: (value) {},
         ),
         TextFormField(
           decoration: InputDecoration(labelText: 'Model'),
-          validator: (value) {},
+          validator: (value) {
+            if (value == null || value.length < 4) {
+              return "More than 4 character needed";
+            }
+            return null;
+          },
           onSaved: (value) {},
         ),
         TextFormField(
           decoration: InputDecoration(labelText: 'Additional Information'),
           keyboardType: TextInputType.number,
-          validator: (value) {},
+          validator: (value) {
+            if (value == null || value.length < 4) {
+              return "More than 4 character needed";
+            }
+            return null;
+          },
           onSaved: (value) {},
         ),
         TextFormField(
           decoration: InputDecoration(labelText: 'Region'),
-          validator: (value) {},
+          validator: (value) {
+            if (value == null || value.length < 4) {
+              return "More than 4 character needed";
+            }
+            return null;
+          },
           onSaved: (value) {},
         ),
         machineStatusSelector(context),
@@ -567,17 +672,32 @@ class _AddMachineState extends State<AddMachine> {
       children: [
         TextFormField(
           decoration: InputDecoration(labelText: 'Manufacturer'),
-          validator: (value) {},
+          validator: (value) {
+            if (value == null || value.length < 4) {
+              return "More than 4 character needed";
+            }
+            return null;
+          },
           onSaved: (value) {},
         ),
         TextFormField(
           decoration: InputDecoration(labelText: 'Model'),
-          validator: (value) {},
+          validator: (value) {
+            if (value == null || value.length < 4) {
+              return "More than 4 character needed";
+            }
+            return null;
+          },
           onSaved: (value) {},
         ),
         TextFormField(
           decoration: InputDecoration(labelText: 'Number of Discs'),
-          validator: (value) {},
+          validator: (value) {
+            if (value == null || value.length < 4) {
+              return "More than 4 character needed";
+            }
+            return null;
+          },
           onSaved: (value) {},
         ),
         machineStatusSelector(context),
@@ -603,17 +723,32 @@ class _AddMachineState extends State<AddMachine> {
       children: [
         TextFormField(
           decoration: InputDecoration(labelText: 'Manufacturer'),
-          validator: (value) {},
+          validator: (value) {
+            if (value == null || value.length < 4) {
+              return "More than 4 character needed";
+            }
+            return null;
+          },
           onSaved: (value) {},
         ),
         TextFormField(
           decoration: InputDecoration(labelText: 'Model'),
-          validator: (value) {},
+          validator: (value) {
+            if (value == null || value.length < 4) {
+              return "More than 4 character needed";
+            }
+            return null;
+          },
           onSaved: (value) {},
         ),
         TextFormField(
           decoration: InputDecoration(labelText: 'Number of Discs'),
-          validator: (value) {},
+          validator: (value) {
+            if (value == null || value.length < 4) {
+              return "More than 4 character needed";
+            }
+            return null;
+          },
           onSaved: (value) {},
         ),
         machineStatusSelector(context),
@@ -639,17 +774,32 @@ class _AddMachineState extends State<AddMachine> {
       children: [
         TextFormField(
           decoration: InputDecoration(labelText: 'Manufacturer'),
-          validator: (value) {},
+          validator: (value) {
+            if (value == null || value.length < 4) {
+              return "More than 4 character needed";
+            }
+            return null;
+          },
           onSaved: (value) {},
         ),
         TextFormField(
           decoration: InputDecoration(labelText: 'Model'),
-          validator: (value) {},
+          validator: (value) {
+            if (value == null || value.length < 4) {
+              return "More than 4 character needed";
+            }
+            return null;
+          },
           onSaved: (value) {},
         ),
         TextFormField(
           decoration: InputDecoration(labelText: 'Number of Discs'),
-          validator: (value) {},
+          validator: (value) {
+            if (value == null || value.length < 4) {
+              return "More than 4 character needed";
+            }
+            return null;
+          },
           onSaved: (value) {},
         ),
         machineStatusSelector(context),
@@ -675,17 +825,32 @@ class _AddMachineState extends State<AddMachine> {
       children: [
         TextFormField(
           decoration: InputDecoration(labelText: 'Manufacturer'),
-          validator: (value) {},
+          validator: (value) {
+            if (value == null || value.length < 4) {
+              return "More than 4 character needed";
+            }
+            return null;
+          },
           onSaved: (value) {},
         ),
         TextFormField(
           decoration: InputDecoration(labelText: 'Model'),
-          validator: (value) {},
+          validator: (value) {
+            if (value == null || value.length < 4) {
+              return "More than 4 character needed";
+            }
+            return null;
+          },
           onSaved: (value) {},
         ),
         TextFormField(
           decoration: InputDecoration(labelText: 'Number of Rows'),
-          validator: (value) {},
+          validator: (value) {
+            if (value == null || value.length < 4) {
+              return "More than 4 character needed";
+            }
+            return null;
+          },
           onSaved: (value) {},
         ),
         machineStatusSelector(context),
@@ -711,17 +876,32 @@ class _AddMachineState extends State<AddMachine> {
       children: [
         TextFormField(
           decoration: InputDecoration(labelText: 'Manufacturer'),
-          validator: (value) {},
+          validator: (value) {
+            if (value == null || value.length < 4) {
+              return "More than 4 character needed";
+            }
+            return null;
+          },
           onSaved: (value) {},
         ),
         TextFormField(
           decoration: InputDecoration(labelText: 'Model'),
-          validator: (value) {},
+          validator: (value) {
+            if (value == null || value.length < 4) {
+              return "More than 4 character needed";
+            }
+            return null;
+          },
           onSaved: (value) {},
         ),
         TextFormField(
           decoration: InputDecoration(labelText: 'Tank Capacity'),
-          validator: (value) {},
+          validator: (value) {
+            if (value == null || value.length < 4) {
+              return "More than 4 character needed";
+            }
+            return null;
+          },
           onSaved: (value) {},
         ),
         machineStatusSelector(context),
@@ -747,17 +927,32 @@ class _AddMachineState extends State<AddMachine> {
       children: [
         TextFormField(
           decoration: InputDecoration(labelText: 'Manufacturer'),
-          validator: (value) {},
+          validator: (value) {
+            if (value == null || value.length < 4) {
+              return "More than 4 character needed";
+            }
+            return null;
+          },
           onSaved: (value) {},
         ),
         TextFormField(
           decoration: InputDecoration(labelText: 'Model'),
-          validator: (value) {},
+          validator: (value) {
+            if (value == null || value.length < 4) {
+              return "More than 4 character needed";
+            }
+            return null;
+          },
           onSaved: (value) {},
         ),
         TextFormField(
           decoration: InputDecoration(labelText: 'Required power (hp)'),
-          validator: (value) {},
+          validator: (value) {
+            if (value == null || value.length < 4) {
+              return "More than 4 character needed";
+            }
+            return null;
+          },
           onSaved: (value) {},
         ),
         machineStatusSelector(context),
@@ -783,32 +978,62 @@ class _AddMachineState extends State<AddMachine> {
       children: [
         TextFormField(
           decoration: InputDecoration(labelText: 'Manufacturer'),
-          validator: (value) {},
+          validator: (value) {
+            if (value == null || value.length < 4) {
+              return "More than 4 character needed";
+            }
+            return null;
+          },
           onSaved: (value) {},
         ),
         TextFormField(
           decoration: InputDecoration(labelText: 'Model'),
-          validator: (value) {},
+          validator: (value) {
+            if (value == null || value.length < 4) {
+              return "More than 4 character needed";
+            }
+            return null;
+          },
           onSaved: (value) {},
         ),
         TextFormField(
           decoration: InputDecoration(labelText: 'Loading Capacity (ton)'),
-          validator: (value) {},
+          validator: (value) {
+            if (value == null || value.length < 4) {
+              return "More than 4 character needed";
+            }
+            return null;
+          },
           onSaved: (value) {},
         ),
         TextFormField(
           decoration: InputDecoration(labelText: 'Platform dimension(m)'),
-          validator: (value) {},
+          validator: (value) {
+            if (value == null || value.length < 4) {
+              return "More than 4 character needed";
+            }
+            return null;
+          },
           onSaved: (value) {},
         ),
         TextFormField(
           decoration: InputDecoration(labelText: 'Sideboard Height (m)'),
-          validator: (value) {},
+          validator: (value) {
+            if (value == null || value.length < 4) {
+              return "More than 4 character needed";
+            }
+            return null;
+          },
           onSaved: (value) {},
         ),
         TextFormField(
           decoration: InputDecoration(labelText: 'Number of tires'),
-          validator: (value) {},
+          validator: (value) {
+            if (value == null || value.length < 4) {
+              return "More than 4 character needed";
+            }
+            return null;
+          },
           onSaved: (value) {},
         ),
         machineStatusSelector(context),
@@ -834,17 +1059,32 @@ class _AddMachineState extends State<AddMachine> {
       children: [
         TextFormField(
           decoration: InputDecoration(labelText: 'Manufacturer'),
-          validator: (value) {},
+          validator: (value) {
+            if (value == null || value.length < 4) {
+              return "More than 4 character needed";
+            }
+            return null;
+          },
           onSaved: (value) {},
         ),
         TextFormField(
           decoration: InputDecoration(labelText: 'Model'),
-          validator: (value) {},
+          validator: (value) {
+            if (value == null || value.length < 4) {
+              return "More than 4 character needed";
+            }
+            return null;
+          },
           onSaved: (value) {},
         ),
         TextFormField(
           decoration: InputDecoration(labelText: 'Additional Information'),
-          validator: (value) {},
+          validator: (value) {
+            if (value == null || value.length < 4) {
+              return "More than 4 character needed";
+            }
+            return null;
+          },
           onSaved: (value) {},
         ),
         machineStatusSelector(context),
