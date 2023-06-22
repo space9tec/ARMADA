@@ -1,5 +1,3 @@
-// import 'dart:convert';
-
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:armada/networkhandler.dart';
@@ -11,7 +9,6 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 class UploadFarm extends StatefulWidget {
   static const String routeName = '/upload_farm';
 
-// till line 19 route code
   static Route route() {
     return MaterialPageRoute(
       settings: const RouteSettings(name: routeName),
@@ -37,7 +34,7 @@ class _UploadFarmState extends State<UploadFarm> {
   final TextEditingController _soiltype = TextEditingController();
   final TextEditingController _polygonlocation = TextEditingController();
   NetworkHandler networkHandler = NetworkHandler();
-  final storage = new FlutterSecureStorage();
+  final storage = const FlutterSecureStorage();
 
   bool validate = false;
   String? errorText;
@@ -154,7 +151,7 @@ class _UploadFarmState extends State<UploadFarm> {
                             InputTextFarmLocation(
                                 context,
                                 "",
-                                "Type",
+                                "Typ",
                                 false,
                                 Icons.person_3_sharp,
                                 TextInputType.number,
@@ -163,18 +160,16 @@ class _UploadFarmState extends State<UploadFarm> {
                         ),
                       ],
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 35,
                     ),
                   ],
                 ),
                 InkWell(
                   onTap: () async {
-                    // Navigator.pushNamed(context, routh);
                     String? userid = await storage.read(key: "userid");
                     print(userid);
-                    // String? owner_ID = user!['_id'];
-                    // print(owner_ID);
+
                     if (formKey.currentState!.validate()) {
                       Map<String, String> data = {
                         "farm_size": _farmSize.text,
@@ -187,13 +182,12 @@ class _UploadFarmState extends State<UploadFarm> {
                       };
                       print(data);
 
-                      var response =
-                          await networkHandler.post("/api/farm/", data);
+                      var response = await networkHandler.post(
+                          "/api/farm/", data, "farmData",
+                          imageFile: imageFile!);
 
                       if (response.statusCode == 201) {
-                        // await storage.write(
-                        //     key: 'phone', value: _numberController.text);
-                        Navigator.pushNamed(context, '/');
+                        Navigator.pushNamed(context, '/farm_screen');
                       } else {
                         // String output = json.decode(response.toString());
                         print(response.body.toString());
@@ -202,7 +196,6 @@ class _UploadFarmState extends State<UploadFarm> {
                           // errorText = output;
                         });
                       }
-                      // Navigator.pushNamed(context, '/');
                     }
                   },
                   child: Container(
@@ -233,44 +226,42 @@ class _UploadFarmState extends State<UploadFarm> {
 
   addCoverPhoto() {
     return InkWell(
-      onTap: () {
-        // add image to mongo
-      },
-      // This is ana external package
+      onTap: () {},
       child: DottedBorder(
-          dashPattern: [15, 5],
-          color: Color.fromARGB(255, 48, 141, 51),
-          strokeWidth: 2,
-          borderType: BorderType.RRect,
-          radius: const Radius.circular(10),
-          child: SizedBox(
-            width: double.infinity,
-            height: 141,
-            child: Padding(
-              padding: const EdgeInsets.all(20),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: const [
-                  Icon(
-                    Icons.photo,
-                    size: 65,
-                    color: Colors.grey,
-                  ),
-                  Text(
-                    "Add Cove Photo",
-                    style: TextStyle(
-                        fontSize: 17,
-                        fontWeight: FontWeight.bold,
-                        color: Color.fromARGB(255, 48, 141, 51)),
-                  ),
-                  Text(
-                    "Up to 12mp ",
-                    style: TextStyle(color: Colors.grey),
-                  )
-                ],
-              ),
+        dashPattern: const [15, 5],
+        color: const Color.fromARGB(255, 48, 141, 51),
+        strokeWidth: 2,
+        borderType: BorderType.RRect,
+        radius: const Radius.circular(10),
+        child: SizedBox(
+          width: double.infinity,
+          height: MediaQuery.of(context).size.height * 0.17, //141
+          child: const Padding(
+            padding: EdgeInsets.all(20),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Icon(
+                  Icons.photo,
+                  size: 65,
+                  color: Colors.grey,
+                ),
+                Text(
+                  "Add Cove Photo",
+                  style: TextStyle(
+                      fontSize: 17,
+                      fontWeight: FontWeight.bold,
+                      color: Color.fromARGB(255, 48, 141, 51)),
+                ),
+                Text(
+                  "Up to 12mp ",
+                  style: TextStyle(color: Colors.grey),
+                )
+              ],
             ),
-          )),
+          ),
+        ),
+      ),
     );
   }
 }

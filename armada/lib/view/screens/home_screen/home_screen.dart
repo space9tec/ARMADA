@@ -1,7 +1,11 @@
 import 'package:armada/utils/helper_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../../../provider/drop_down_provider.dart';
 import '../../widgets/widgets.dart';
 import '../screens.dart';
+import 'guest_screen.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class HomeScreen extends StatefulWidget {
   static const String routeName = '/';
@@ -21,25 +25,36 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   late PageController _pageController;
-  String userRole = 'farmer';
+  String? userRole;
   List<String> images = [
     "assets/images/tracter1.png",
     "assets/images/tracter2.png",
     "assets/images/tracter3.png",
   ];
+  final storage = new FlutterSecureStorage();
+
+  // Provider.of<DropDownProvider>(context, listen: false).selectedAccount
   int activePage = 1;
+  bool circulat = false;
   @override
   void initState() {
     super.initState();
+    // role();
     _pageController = PageController(viewportFraction: 0.8);
   }
 
+  // void role() async {
+  //   userRole = await storage.read(key: "userrole");
+  //   circulat = true;
+  // }
+
   @override
   Widget build(BuildContext context) {
-    switch (userRole) {
-      case 'service_provider':
-        return const ServiceProviderHomeScreen();
-      case 'farmer':
+    switch (
+        Provider.of<DropDownProvider>(context, listen: false).selectedAccount) {
+      case 'Service Provider':
+        return ServiceProviderHomeScreen();
+      case 'Farmer':
         return DefaultTabController(
           length: 3,
           child: Scaffold(
@@ -55,12 +70,13 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ],
               bottom: PreferredSize(
-                preferredSize: const Size.fromHeight(90),
+                preferredSize:
+                    Size.fromHeight(MediaQuery.of(context).size.width * 0.26),
                 child: Column(
                   children: [
                     SizedBox(
-                      width: MediaQuery.of(context).size.width - 100,
-                      height: 65,
+                      width: MediaQuery.of(context).size.width * 0.75,
+                      height: MediaQuery.of(context).size.height * 0.08,
                       child: Padding(
                         padding: const EdgeInsets.all(10.0),
                         child: TextField(
@@ -162,7 +178,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                       ),
                                     ),
                                     width: MediaQuery.of(context).size.width,
-                                    height: 200,
+                                    height: MediaQuery.of(context).size.height *
+                                        0.24,
                                     child: PageView.builder(
                                         itemCount: images.length,
                                         controller: _pageController,
@@ -195,7 +212,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               addVerticalSpace(25),
                               Expanded(
                                 child: GridView.count(
-                                  physics: NeverScrollableScrollPhysics(),
+                                  physics: const NeverScrollableScrollPhysics(),
                                   crossAxisCount: 2,
                                   childAspectRatio: 1 / 1.5,
                                   children: List.generate(
@@ -215,12 +232,12 @@ class _HomeScreenState extends State<HomeScreen> {
                 ],
               ),
             ),
-            drawer: const navigationDrawer(),
+            drawer: navigationDrawer(),
             bottomNavigationBar: bottomAppbar(context),
           ),
         );
       default:
-        return const Login();
+        return const Guest();
     }
   }
 }

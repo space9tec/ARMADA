@@ -165,7 +165,8 @@ class _BCustomListTileState extends State<BCustomListTile> {
     if (token != null) {
       if (response.statusCode == 200) {
         await storage.delete(key: "token");
-
+        Navigator.of(context)
+            .pushNamedAndRemoveUntil('/guest', (Route<dynamic> route) => false);
         print("Logedout");
       } else {
         print("failed");

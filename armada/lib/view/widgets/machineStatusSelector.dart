@@ -1,3 +1,4 @@
+import 'package:armada/utils/helper_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -5,7 +6,7 @@ import '../../provider/machine_status_provider.dart';
 
 Widget machineStatusSelector(BuildContext context) {
   return Container(
-    width: MediaQuery.of(context).size.width - 120,
+    width: MediaQuery.of(context).size.width - 80,
     child: Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -17,9 +18,10 @@ Widget machineStatusSelector(BuildContext context) {
             style: Theme.of(context).textTheme.titleMedium,
           ),
         ),
+        addHorizontalSpace(15),
         Consumer<MachineStatusProvider>(
           builder: (context, value, child) => Container(
-            width: MediaQuery.of(context).size.width - 210,
+            width: MediaQuery.of(context).size.width - 190,
             decoration: BoxDecoration(
               border: Border.all(
                 color: Colors.green,

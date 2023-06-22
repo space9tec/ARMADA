@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:dotted_border/dotted_border.dart';
@@ -197,85 +196,134 @@ class _VerifyFarmsState extends State<VerifyFarms> {
                     ),
                   ],
                 ),
-                InkWell(
-                  onTap: () async {
-                    if (formKey.currentState!.validate()) {
-                      Map<String, String> data = {
-                        "farm_size": _farmSize.text,
-                        "farm_name": _farmName.text,
-                        "latitude": _location.text,
-                        "crops_grown:": _croptype.text,
-                        "soil_type": _soiltype.text,
-                        "longitude": _polygonlocation.text,
-                      };
+                // InkWell(
+                //   onTap: () {
+                // String? userid = await storage.read(key: "userid");
+                // print(userid);
+                // if (formKey.currentState!.validate()) {
+                //   Map<String, String> data = {
+                //     "farm_size": _farmSize.text,
+                //     "farm_name": _farmName.text,
+                //     "latitude": _location.text,
+                //     "crops_grown:": _croptype.text,
+                //     "soil_type": _soiltype.text,
+                //     "longitude": _polygonlocation.text,
+                //     "owner_id": userid!,
+                //   };
 
-                      print(data);
+                // print(data);
 
-                      var response =
-                          await networkHandler.post("/api/farm/", data);
+                // var response =
+                //     await networkHandler.post("/api/farm/", data);
 
-                      if (response.statusCode == 201) {
-                        Map<String, dynamic> output =
-                            json.decode(response.body);
-                        // String jsonString = json.encode(output);
-                        print("yes");
-                        // print("Token: $output['Token']");
-                        await storage.write(
-                            key: 'token', value: output['Token']);
+                // if (response.statusCode == 201) {
+                // Map<String, dynamic> output =
+                //     json.decode(response.body);
+                // // String jsonString = json.encode(output);
+                // print("yes");
+                // // print("Token: $output['Token']");
+                // await storage.write(
+                //     key: 'token', value: output['Token']);
 
-                        await storage.write(
-                            key: 'userid', value: output['user_id']);
-                        // await storage.write(
-                        //     key: 'phone', value: _numberController.text);
-                        Navigator.pushNamed(context, '/');
-                      } else {
-                        print("faild");
+                // await storage.write(
+                //     key: 'userid', value: output['user_id']);
+                // // await storage.write(
+                // //     key: 'phone', value: _numberController.text);
+                //   print("posted");
+                //   Navigator.pushNamed(context, '/');
+                // } else {
+                //   print("faild");
 
-                        // String output = json.decode(response.body);
-                        setState(() {
-                          validate = false;
-                          // errorText = output;
-                        });
-                      }
+                //   // String output = json.decode(response.body);
+                //   setState(() {
+                //     validate = false;
+                //     // errorText = output;
+                //   });
+                // }
+                // Navigator.pushNamed(context, '/');
+                // }
+                // },
+                // child:
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    // Button(context, "Verify", '/',
+                    //     Theme.of(context).primaryColor, 200, 50),
+                    ElevatedButton(
+                      onPressed: () async {
+                        String? userid = await storage.read(key: "userid");
+                        print(userid);
+                        if (formKey.currentState!.validate()) {
+                          Map<String, String> data = {
+                            "farm_size": _farmSize.text,
+                            "farm_name": _farmName.text,
+                            "latitude": _location.text,
+                            "crops_grown": _croptype.text,
+                            "soil_type": _soiltype.text,
+                            "longitude": _polygonlocation.text,
+                            "owner_id": userid!,
+                          };
 
-                      // Navigator.pushNamed(context, '/');
-                    }
-                  },
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      // Button(context, "Verify", '/',
-                      //     Theme.of(context).primaryColor, 200, 50),
-                      ElevatedButton(
-                        onPressed: () {
-                          _submitForm();
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Theme.of(context).primaryColor,
+                          print(data);
+
+                          var response = await networkHandler.post(
+                              "/api/farm/", data, "farmData");
+
+                          if (response.statusCode == 201) {
+                            // Map<String, dynamic> output =
+                            //     json.decode(response.body);
+                            // // String jsonString = json.encode(output);
+                            // print("yes");
+                            // // print("Token: $output['Token']");
+                            // await storage.write(
+                            //     key: 'token', value: output['Token']);
+
+                            // await storage.write(
+                            //     key: 'userid', value: output['user_id']);
+                            // // await storage.write(
+                            // //     key: 'phone', value: _numberController.text);
+                            print("posted");
+                            Navigator.pushNamed(context, '/');
+                          } else {
+                            print("faild");
+                            print(response.body.toString());
+
+                            // String output = json.decode(response.body);
+                            setState(() {
+                              validate = false;
+                              // errorText = output;
+                            });
+                          }
+                          // Navigator.pushNamed(context, '/');
+                        }
+                        // _submitForm();
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Theme.of(context).primaryColor,
+                      ),
+                      child: Container(
+                        width: MediaQuery.of(context).size.width - 200,
+                        height: 50,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(15),
+                          color: Theme.of(context).primaryColor,
                         ),
-                        child: Container(
-                          width: MediaQuery.of(context).size.width - 200,
-                          height: 50,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(15),
-                            color: Theme.of(context).primaryColor,
-                          ),
-                          child: const Center(
-                            child: Text(
-                              "Verify",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 20,
-                              ),
+                        child: const Center(
+                          child: Text(
+                            "Verify",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 20,
                             ),
                           ),
                         ),
                       ),
-                      addHorizontalSpace(25),
-                      Button(context, "cancel", '/', Colors.grey, 325, 40),
-                    ],
-                  ),
+                    ),
+                    addHorizontalSpace(25),
+                    Button(context, "cancel", '/', Colors.grey, 325, 40),
+                  ],
                 ),
+                // ),
               ],
             ),
           ),

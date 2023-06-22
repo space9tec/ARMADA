@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:armada/networkhandler.dart';
 import 'package:armada/utils/helper_widget.dart';
@@ -230,11 +231,27 @@ class _VerifyState extends State<Verify> {
   void validateOTP(Map<String, String> data) async {
     // Call an API endpoint to verify the OTP
     // You can use a third-party service like Twilio for this purpose
-    var response = await networkHandler.post("/api/auth/verify", data);
+    var response = await networkHandler.postt("/api/auth/verify", data);
     if (response.statusCode == 200) {
       print("otp verifyed");
+      Map<String, dynamic> output = json.decode(response.body);
+      // String jsonString = json.encode(output);
+      // print("yes");
+      // print("Token: $output['Token']");
+      // await storage.write(key: 'token', value: output['Token']);
+
+      // await storage.write(key: 'userid', value: output['user_id']);
       // If the OTPs match, mark the user as verified
       // setUserVerified(true);
+      await storage.write(key: 'token', value: output['Token']);
+
+      String? tok = await storage.read(key: "token");
+      print(tok);
+
+      await storage.write(key: 'userid', value: output['user_id']);
+
+      String? userid = await storage.read(key: "userid");
+      print(userid);
 
       // Save the user details to the database
       // saveUserDetails(phoneNumber, fullName);

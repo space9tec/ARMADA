@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:armada/networkhandler.dart';
 import 'package:armada/provider/drop_down_provider.dart';
 import 'package:armada/utils/helper_widget.dart';
@@ -56,12 +54,12 @@ class _SignUpState extends State<SignUp> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                addVerticalSpace(55.0),
+                addVerticalSpace(MediaQuery.of(context).size.width * 0.12),
                 Center(
                   child: Text("Create Account.",
                       style: Theme.of(context).textTheme.displayLarge),
                 ),
-                addVerticalSpace(50.0),
+                addVerticalSpace(MediaQuery.of(context).size.width * 0.10),
                 InputText(
                     context,
                     "First Name",
@@ -91,8 +89,8 @@ class _SignUpState extends State<SignUp> {
                     validate),
                 addVerticalSpace(15.0),
                 SizedBox(
-                  width: MediaQuery.of(context).size.width - 120,
-                  height: 67,
+                  width: MediaQuery.of(context).size.width * 0.71,
+                  height: MediaQuery.of(context).size.height * 0.08,
                   child: TextFormField(
                     controller: _passwordcontroller,
                     keyboardType: TextInputType.text,
@@ -148,8 +146,8 @@ class _SignUpState extends State<SignUp> {
                 ),
                 addVerticalSpace(15.0),
                 SizedBox(
-                  width: MediaQuery.of(context).size.width - 120,
-                  height: 67,
+                  width: MediaQuery.of(context).size.width * 0.71,
+                  height: MediaQuery.of(context).size.height * 0.08,
                   child: TextFormField(
                     controller: _confirmPasswordcontroller,
                     keyboardType: TextInputType.text,
@@ -242,7 +240,8 @@ class _SignUpState extends State<SignUp> {
                             "role": _selectedAccountType!,
                           };
                           var response = await networkHandler.post(
-                              "/api/auth/register", data);
+                              "/api/auth/register", data, "userData",
+                              imageFile: null);
 
                           if (response.statusCode == 200 ||
                               response.statusCode == 201) {
@@ -251,19 +250,17 @@ class _SignUpState extends State<SignUp> {
                             Navigator.pushNamed(context, '/verify');
                           } else {
                             print("faild");
+                            print(response.body.toString());
 
-                            String output = json.decode(response.body);
                             setState(() {
                               validate = false;
-                              errorText = output;
+                              // errorText = output;
                             });
                           }
-                          // networkHandler.get("");
-                          // print(data);
                         }
                       },
                       child: Container(
-                        width: MediaQuery.of(context).size.width - 150,
+                        width: MediaQuery.of(context).size.width * 0.65,
                         height: 55,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(15),
@@ -317,17 +314,6 @@ class _SignUpState extends State<SignUp> {
         errorText = "Phone must be 10 digit.";
       });
     } else {
-      // var response = await networkHandler.get("/$_numberController");
-      // if (response['Status']) {
-      //   setState(() {
-      //     validate = false;
-      //     errorText = " Phone number already taken";
-      //   });
-      // } else {
-      //   setState(() {
-      //     validate = true;
-      //   });
-      // }
       setState(() {
         validate = true;
       });

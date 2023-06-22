@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../provider/drop_down_provider.dart';
+import '../../../provider/drop_down_provider.dart';
 
 Widget accountSelector(BuildContext context) {
   return Container(
-    width: MediaQuery.of(context).size.width - 120,
+    // width: MediaQuery.of(context).size.width * 0.71,
     child: Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
         SizedBox(
-          width: MediaQuery.of(context).size.width - 322,
+          width: MediaQuery.of(context).size.width * 0.20,
           // padding: EdgeInsets.only(right: 28.0),
           child: Text(
             "Account",
@@ -19,7 +19,7 @@ Widget accountSelector(BuildContext context) {
         ),
         Consumer<DropDownProvider>(
           builder: (context, value, child) => Container(
-            width: MediaQuery.of(context).size.width - 210,
+            width: MediaQuery.of(context).size.width * 0.50,
             decoration: BoxDecoration(
               border: Border.all(
                 color: Colors.green,

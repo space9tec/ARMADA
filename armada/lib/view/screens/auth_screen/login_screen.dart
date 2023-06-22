@@ -1,11 +1,11 @@
 import 'dart:convert';
-// import 'dart:html';
+import 'package:armada/provider/drop_down_provider.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:armada/utils/helper_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:armada/view/widgets/widgets.dart';
 import 'package:armada/networkhandler.dart';
-// import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 
 class Login extends StatefulWidget {
   static const String routeName = '/login';
@@ -35,9 +35,6 @@ class _LoginState extends State<Login> {
 
   NetworkHandler networkHandler = NetworkHandler();
   final storage = new FlutterSecureStorage();
-  // Map<String, String> storageone =
-  //     new FlutterSecureStorage() as Map<String, String>;
-
   bool validate = true;
   String? errorText;
   @override
@@ -51,12 +48,12 @@ class _LoginState extends State<Login> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                addVerticalSpace(95.0),
+                addVerticalSpace(MediaQuery.of(context).size.width * 0.21),
                 Center(
                   child: Text("Welcome.",
                       style: Theme.of(context).textTheme.displayLarge),
                 ),
-                addVerticalSpace(80.0),
+                addVerticalSpace(MediaQuery.of(context).size.width * 0.21),
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -69,7 +66,7 @@ class _LoginState extends State<Login> {
                     ),
                   ],
                 ),
-                addVerticalSpace(64.0),
+                addVerticalSpace(MediaQuery.of(context).size.width * 0.17),
                 InputTextNumber(
                     context,
                     "Phone",
@@ -81,7 +78,7 @@ class _LoginState extends State<Login> {
                     validate),
                 addVerticalSpace(31.0),
                 SizedBox(
-                  width: MediaQuery.of(context).size.width - 120,
+                  width: MediaQuery.of(context).size.width * 0.72,
                   height: 67,
                   child: TextFormField(
                     controller: _passwordcontroller,
@@ -173,7 +170,7 @@ class _LoginState extends State<Login> {
                     ],
                   ),
                 ),
-                addVerticalSpace(60.0),
+                addVerticalSpace(MediaQuery.of(context).size.width * 0.12),
                 Container(
                   child: InkWell(
                     onTap: () async {
@@ -184,61 +181,39 @@ class _LoginState extends State<Login> {
                           "phone": _numbercontroller.text,
                           "password": _passwordcontroller.text,
                         };
-// +251977389783
                         print(data);
 
                         try {
-                          var response = await networkHandler.post(
+                          var response = await networkHandler.postt(
                               "/api/auth/login", data);
                           if (response.statusCode == 200) {
                             Map<String, dynamic> output =
                                 json.decode(response.body);
-                            // String jsonString = json.encode(output);
+
                             print("yes");
-                            // print("Token: $output['Token']");
+
                             await storage.write(
                                 key: 'token', value: output['Token']);
-
+                            print(output);
                             String? tok = await storage.read(key: "token");
                             print(tok);
 
                             await storage.write(
                                 key: 'userid', value: output['user_id']);
 
+                            // String? userrole=await storage.write(
+                            //     key: 'userrole', value: );
+                            Provider.of<DropDownProvider>(context,
+                                    listen: false)
+                                .setAccountType(output['role']);
                             String? userid = await storage.read(key: "userid");
                             print(userid);
 
-                            // await storage.write(key: 'user', value: jsonString);
-//                             String storedJsonString = await storage.read(key: 'userData');
-// Map<String, dynamic> storedData = json.decode(storedJsonString);
-                            // String? storedJsonString =
-                            //     await storage.read(key: 'user');
-                            // Map<String, dynamic> storedData =
-                            //     json.decode(storedJsonString!);
-
-                            // print("Hello: $storedData['_id']");
-                            // String? user = await storage.read(key: "user");
-                            // print(user);
-
-                            // await storage.write(
-                            //     key: 'user', value: output['user']);
-
-                            // Map<String, String>? user = (await storage.read(
-                            //     key: "user")) as Map<String, String>?;
-                            // print("hello: $user");
-                            // setState(() {
-                            //   validate = true;
-                            // });
-                            // Navigator.pushAndRemoveUntil(
-                            //     context, '/', (route) => false);
                             Navigator.of(context).pushNamedAndRemoveUntil(
                                 '/', (Route<dynamic> route) => false);
-                            // Navigator.pushAndRemoveUntil(context,
-                            //     '/' as Route<Object?>, (route) => false);
                           } else if (response.statusCode == 408) {
                             print("408");
-                          } else if (response.statusCode == 500) {
-                            // handle server error
+
                             print("500");
                           } else {
                             throw Exception(
@@ -247,19 +222,11 @@ class _LoginState extends State<Login> {
                         } catch (e) {
                           print("dont work:${e}");
                         }
-                        //else {
-                        //   print("dontwork");
-                        //   String output = json.decode(response.body);
-                        //   setState(() {
-                        //     validate = false;
-                        //     errorText = output;
-                        //   });
-                        // }
                         print("data");
                       }
                     },
                     child: Container(
-                      width: MediaQuery.of(context).size.width - 150,
+                      width: MediaQuery.of(context).size.width * 0.63,
                       height: 55,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(15),

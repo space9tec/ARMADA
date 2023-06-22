@@ -5,8 +5,8 @@ ThemeData customtheme() {
   return ThemeData(
     scaffoldBackgroundColor: Colors.white,
     // fontFamily: 'Avenir',
-    primaryColor: const Color.fromARGB(255, 10, 190, 106),
-
+    primaryColor: Color(0xFF0ABE6A),
+// #006837
     textTheme: textTheme(),
     bottomAppBarTheme: bottomAppBarThem(),
 
