@@ -2,8 +2,8 @@ import 'package:armada/view/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import '../../models/viewModel/drawerModel.dart';
 
-class navigationDrawer extends StatelessWidget {
-  navigationDrawer({super.key});
+class gustnavigationDrawer extends StatelessWidget {
+  gustnavigationDrawer({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -47,11 +47,11 @@ class navigationDrawer extends StatelessWidget {
               itemBuilder: (context, index) {
                 return CustomListTile(
                     ind: index,
-                    title: DrawerItem[index].title,
+                    title: gustDrawerItem[index].title,
                     isSelected: index,
-                    icon: DrawerItem[index].icon);
+                    icon: gustDrawerItem[index].icon);
               },
-              itemCount: DrawerItem.length,
+              itemCount: gustDrawerItem.length,
             ),
           ),
           const Divider(
@@ -62,8 +62,8 @@ class navigationDrawer extends StatelessWidget {
             child: ListView.builder(
               itemBuilder: (context, index) {
                 return BCustomListTile(
-                  title: BDrawerItem[index].title,
-                  icon: BDrawerItem[index].icon,
+                  title: gustBDrawerItem[index].title,
+                  icon: gustBDrawerItem[index].icon,
                   ind: index,
                 );
               },

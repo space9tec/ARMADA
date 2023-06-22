@@ -16,7 +16,7 @@ class ServiceProviderProfile extends StatelessWidget {
     Key? key,
     this.showFollowBottomInProfile = false,
   }) : super(key: key);
-  bool showFollowBottomInProfile;
+  final bool showFollowBottomInProfile;
 
   @override
   Widget build(BuildContext context) {

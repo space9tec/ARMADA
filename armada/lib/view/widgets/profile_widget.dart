@@ -22,7 +22,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
   final ImagePicker picker = ImagePicker();
   @override
   Widget build(BuildContext context) {
-    final color = Theme.of(context).colorScheme.primary;
+    // final color = Theme.of(context).colorScheme.primary;
 
     return Center(
       child: Container(

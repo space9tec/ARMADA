@@ -1,34 +1,31 @@
 import 'package:armada/utils/user_preferences.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
-
 import '../../widgets/widgets.dart';
 import 'package:armada/models/user.dart';
 
-class EditFarmerProfile extends StatefulWidget {
-  static const String routeName = '/edit_farmer_profile';
+class Editfarm extends StatefulWidget {
+  static const String routeName = '/edit_farm';
 
   static Route route() {
     return MaterialPageRoute(
-      settings: RouteSettings(name: routeName),
-      builder: (context) => EditFarmerProfile(),
+      settings: const RouteSettings(name: routeName),
+      builder: (context) => Editfarm(),
     );
   }
 
   @override
-  _EditFarmerProfileState createState() => _EditFarmerProfileState();
+  _EditfarmState createState() => _EditfarmState();
 }
 
-class _EditFarmerProfileState extends State<EditFarmerProfile> {
+class _EditfarmState extends State<Editfarm> {
   final TextEditingController _firstName = TextEditingController();
   final TextEditingController _lastName = TextEditingController();
-  final TextEditingController _phone = TextEditingController();
+  // final TextEditingController _phone = TextEditingController();
   final TextEditingController _location = TextEditingController();
-  // final TextEditingController _about = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    final user = UserPreferences.myUser;
+    const user = UserPreferences.myUser;
 
     return Scaffold(
       appBar: AppBar(
@@ -37,12 +34,12 @@ class _EditFarmerProfileState extends State<EditFarmerProfile> {
         actions: [
           IconButton(
             onPressed: () {},
-            icon: Icon(Icons.done),
+            icon: const Icon(Icons.done),
           ),
         ],
       ),
       body: ListView(
-        physics: BouncingScrollPhysics(),
+        physics: const BouncingScrollPhysics(),
         children: [
           const SizedBox(
             height: 20,
@@ -60,9 +57,9 @@ class _EditFarmerProfileState extends State<EditFarmerProfile> {
               controller: _firstName,
               decoration: const InputDecoration(
                   contentPadding: EdgeInsets.only(bottom: 3),
-                  labelText: "First Name",
+                  labelText: "Farm Name",
                   floatingLabelBehavior: FloatingLabelBehavior.always,
-                  hintText: "Farmer name",
+                  hintText: "Farm name",
                   hintStyle: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
@@ -76,9 +73,9 @@ class _EditFarmerProfileState extends State<EditFarmerProfile> {
               controller: _lastName,
               decoration: const InputDecoration(
                 contentPadding: EdgeInsets.only(bottom: 3),
-                labelText: "Last Name",
+                labelText: "Farm size",
                 floatingLabelBehavior: FloatingLabelBehavior.always,
-                hintText: "Last name",
+                hintText: "Farm size",
                 hintStyle: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
@@ -93,12 +90,12 @@ class _EditFarmerProfileState extends State<EditFarmerProfile> {
           Padding(
             padding: const EdgeInsets.only(left: 28.0, right: 28.0),
             child: TextField(
-              controller: _phone,
+              controller: _location,
               decoration: const InputDecoration(
                   contentPadding: EdgeInsets.only(bottom: 3),
-                  labelText: "Phone no.",
+                  labelText: "Crop Type",
                   floatingLabelBehavior: FloatingLabelBehavior.always,
-                  hintText: "0909906745",
+                  hintText: "Crop Type",
                   hintStyle: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
@@ -128,35 +125,6 @@ class _EditFarmerProfileState extends State<EditFarmerProfile> {
           const SizedBox(
             height: 25,
           ),
-          // Padding(
-          //   padding: const EdgeInsets.only(left: 28.0, right: 28.0),
-          //   child: TextFormField(
-          //     controller: _about,
-          //     maxLength: 200,
-          //     maxLines: 4,
-          //     keyboardType: TextInputType.multiline,
-          //     decoration: InputDecoration(
-          //       border: OutlineInputBorder(
-          //           borderRadius: BorderRadius.circular(15),
-          //           borderSide: const BorderSide(
-          //             width: 1,
-          //             color: Colors.green,
-          //           )),
-          //       focusedBorder: OutlineInputBorder(
-          //           borderRadius: BorderRadius.circular(15),
-          //           borderSide: const BorderSide(
-          //             width: 1,
-          //             color: Colors.green,
-          //           )),
-          //       prefixIcon: Icon(
-          //         Icons.person,
-          //         color: Theme.of(context).primaryColor,
-          //       ),
-          //       labelText: "About",
-          //       helperText: "Write about you.",
-          //     ),
-          //   ),
-          // )
         ],
       ),
     );
@@ -166,29 +134,29 @@ class _EditFarmerProfileState extends State<EditFarmerProfile> {
         children: [
           Text(
             user.name,
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
+            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
           ),
           const SizedBox(height: 4),
           Text(
             user.email,
-            style: TextStyle(color: Colors.grey),
+            style: const TextStyle(color: Colors.grey),
           )
         ],
       );
 
   Widget buildAbout(User user) => Container(
-        padding: EdgeInsets.symmetric(horizontal: 48),
+        padding: const EdgeInsets.symmetric(horizontal: 48),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
+            const Text(
               'About who',
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16),
             Text(
               user.about,
-              style: TextStyle(fontSize: 16, height: 1.4),
+              style: const TextStyle(fontSize: 16, height: 1.4),
             ),
           ],
         ),

@@ -1,23 +1,19 @@
 import 'package:armada/provider/location_drop_down.dart';
-import 'package:armada/view/screens/screens.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
 import 'configuration/routing.dart';
 import 'configuration/theme_manager.dart';
 import 'provider/drop_down_provider.dart';
 import 'provider/drower_provider.dart';
 import 'provider/item_provider.dart';
 import 'provider/machine_status_provider.dart';
-
+import 'view/screens/home_screen/guest_screen.dart';
 void main() {
   runApp(const MyApp());
 }
-
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
-
-  // This widget is the root of your application.
+  // This widget is the root of our application.
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
@@ -33,7 +29,7 @@ class MyApp extends StatelessWidget {
         title: 'Armada',
         theme: customtheme(),
         onGenerateRoute: ROUTE.onGenerateRouth,
-        initialRoute: HomeScreen.routeName,
+        initialRoute: Guest.routeName,
       ),
     );
   }

@@ -13,11 +13,21 @@ List<DrawerModel> DrawerItem = [
   DrawerModel(icon: Icons.landscape, title: "Farm"),
   DrawerModel(icon: Icons.person, title: "Profile"),
 ];
+List<DrawerModel> gustDrawerItem = [
+  DrawerModel(icon: Icons.person, title: "Sign up"),
+  DrawerModel(icon: Icons.person, title: "Sign up"),
+  DrawerModel(icon: Icons.person, title: "Sign up"),
+];
 
 List<DrawerModel> BDrawerItem = [
   DrawerModel(icon: Icons.settings, title: "Setting"),
   DrawerModel(icon: Icons.help, title: "Help"),
   DrawerModel(icon: Icons.logout, title: "Logout"),
+];
+List<DrawerModel> gustBDrawerItem = [
+  DrawerModel(icon: Icons.settings, title: "Setting"),
+  DrawerModel(icon: Icons.help, title: "Help"),
+  DrawerModel(icon: Icons.help, title: "Help"),
 ];
 List<DrawerModel> ServiceProviderDrawerItem = [
   DrawerModel(icon: Icons.settings, title: "Profile"),

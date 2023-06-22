@@ -8,8 +8,8 @@ class CustomBinaryOption extends StatefulWidget {
     this.textLeft = "Left",
     this.textRight = "Right",
   }) : super(key: key);
-  String textLeft;
-  String textRight;
+  final String textLeft;
+  final String textRight;
 
   @override
   State<CustomBinaryOption> createState() => _CustomBinaryOptionState();

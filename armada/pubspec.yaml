@@ -41,9 +41,15 @@ dependencies:
   flutter_launcher_icons: ^0.9.0
   dotted_border:
   image_picker:
-  http:
+  http: ^1.0.0
+  flutter_secure_storage:
+  dio: ^5.2.1
+  json_annotation:
+  intl: ^0.18.1
 
 dev_dependencies:
+  build_runner:
+  json_serializable:
   flutter_test:
     sdk: flutter
 

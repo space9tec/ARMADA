@@ -7,7 +7,7 @@ class DisplayNotification extends StatefulWidget {
 
   static Route route() {
     return MaterialPageRoute(
-      settings: RouteSettings(name: routeName),
+      settings: const RouteSettings(name: routeName),
       builder: (context) => DisplayNotification(),
     );
   }
@@ -27,13 +27,13 @@ class _DisplayNotificationState extends State<DisplayNotification> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Notification"),
+        title: const Text("Notification"),
         elevation: 0,
         backgroundColor: Theme.of(context).primaryColor,
       ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: EdgeInsets.all(20),
+          padding: const EdgeInsets.all(20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -45,30 +45,30 @@ class _DisplayNotificationState extends State<DisplayNotification> {
                 height: 10,
               ),
               ListView.builder(
-                physics: NeverScrollableScrollPhysics(),
+                physics: const NeverScrollableScrollPhysics(),
                 shrinkWrap: true,
                 itemCount: newItem.length,
                 itemBuilder: (context, index) {
                   return newItem[index] == "follow"
-                      ? CustomFollowNotifcation()
-                      : CustomLikedNotifcation();
+                      ? const CustomFollowNotifcation()
+                      : const CustomLikedNotifcation();
                 },
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 10),
                 child: Text(
                   "Today",
-                  style: Theme.of(context).textTheme.headline1,
+                  style: Theme.of(context).textTheme.displayMedium,
                 ),
               ),
               ListView.builder(
-                physics: NeverScrollableScrollPhysics(),
+                physics: const NeverScrollableScrollPhysics(),
                 shrinkWrap: true,
                 itemCount: todayItem.length,
                 itemBuilder: (context, index) {
                   return todayItem[index] == "follow"
-                      ? CustomFollowNotifcation()
-                      : CustomLikedNotifcation();
+                      ? const CustomFollowNotifcation()
+                      : const CustomLikedNotifcation();
                 },
               ),
               Padding(
@@ -79,20 +79,19 @@ class _DisplayNotificationState extends State<DisplayNotification> {
                 ),
               ),
               ListView.builder(
-                physics: NeverScrollableScrollPhysics(),
+                physics: const NeverScrollableScrollPhysics(),
                 shrinkWrap: true,
                 itemCount: oldesItem.length,
                 itemBuilder: (context, index) {
                   return oldesItem[index] == "follow"
-                      ? CustomFollowNotifcation()
-                      : CustomLikedNotifcation();
+                      ? const CustomFollowNotifcation()
+                      : const CustomLikedNotifcation();
                 },
               ),
             ],
           ),
         ),
       ),
-      // bottom navbar
       bottomNavigationBar: bottomAppbar(context),
     );
   }

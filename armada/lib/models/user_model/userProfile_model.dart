@@ -1,21 +1,22 @@
-import 'package:flutter/material.dart';
+import 'package:json_annotation/json_annotation.dart';
 
-class userProfileModel {
+part 'userProfile_model.g.dart';
+
+@JsonSerializable()
+class UserProfileModel {
   final String firstName;
   final String lastName;
-  final int phone;
-  final String Location;
-  final int following;
-  final int followers;
-  final String about;
+  final int? phone;
+  final String role;
 
-  userProfileModel({
+  UserProfileModel({
     required this.firstName,
     required this.lastName,
     required this.phone,
-    required this.Location,
-    required this.following,
-    required this.followers,
-    required this.about,
+    required this.role,
   });
+
+  factory UserProfileModel.fromJson(Map<String, dynamic> json) =>
+      _$UserProfileModelFromJson(json);
+  Map<String, dynamic> toJson() => _$UserProfileModelToJson(this);
 }

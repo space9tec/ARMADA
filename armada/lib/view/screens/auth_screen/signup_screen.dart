@@ -4,6 +4,7 @@ import 'package:armada/utils/helper_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:armada/view/widgets/widgets.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class SignUp extends StatefulWidget {
   static const String routeName = '/signup';
@@ -37,6 +38,8 @@ class _SignUpState extends State<SignUp> {
   bool isHidden = true;
   bool isHiddenConfirm = true;
 
+  final storage = new FlutterSecureStorage();
+
   NetworkHandler networkHandler = NetworkHandler();
   bool validate = false;
   String? errorText;
@@ -51,12 +54,12 @@ class _SignUpState extends State<SignUp> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                addVerticalSpace(55.0),
+                addVerticalSpace(MediaQuery.of(context).size.width * 0.12),
                 Center(
                   child: Text("Create Account.",
                       style: Theme.of(context).textTheme.displayLarge),
                 ),
-                addVerticalSpace(50.0),
+                addVerticalSpace(MediaQuery.of(context).size.width * 0.10),
                 InputText(
                     context,
                     "First Name",
@@ -86,8 +89,8 @@ class _SignUpState extends State<SignUp> {
                     validate),
                 addVerticalSpace(15.0),
                 SizedBox(
-                  width: MediaQuery.of(context).size.width - 120,
-                  height: 67,
+                  width: MediaQuery.of(context).size.width * 0.71,
+                  height: MediaQuery.of(context).size.height * 0.08,
                   child: TextFormField(
                     controller: _passwordcontroller,
                     keyboardType: TextInputType.text,
@@ -143,8 +146,8 @@ class _SignUpState extends State<SignUp> {
                 ),
                 addVerticalSpace(15.0),
                 SizedBox(
-                  width: MediaQuery.of(context).size.width - 120,
-                  height: 67,
+                  width: MediaQuery.of(context).size.width * 0.71,
+                  height: MediaQuery.of(context).size.height * 0.08,
                   child: TextFormField(
                     controller: _confirmPasswordcontroller,
                     keyboardType: TextInputType.text,
@@ -236,14 +239,28 @@ class _SignUpState extends State<SignUp> {
                             "password": _passwordcontroller.text,
                             "role": _selectedAccountType!,
                           };
-                          await networkHandler.post("", data);
-                          // networkHandler.get("");
-                          // print(data);
-                          // Navigator.pushNamed(context, '/verify');
+                          var response = await networkHandler.post(
+                              "/api/auth/register", data, "userData",
+                              imageFile: null);
+
+                          if (response.statusCode == 200 ||
+                              response.statusCode == 201) {
+                            await storage.write(
+                                key: 'phone', value: _numberController.text);
+                            Navigator.pushNamed(context, '/verify');
+                          } else {
+                            print("faild");
+                            print(response.body.toString());
+
+                            setState(() {
+                              validate = false;
+                              // errorText = output;
+                            });
+                          }
                         }
                       },
                       child: Container(
-                        width: MediaQuery.of(context).size.width - 150,
+                        width: MediaQuery.of(context).size.width * 0.65,
                         height: 55,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(15),
@@ -291,23 +308,15 @@ class _SignUpState extends State<SignUp> {
         validate = false;
         errorText = "Phone can't be empty";
       });
-    } else if (_numberController.text.length != 10) {
+    } else if (_numberController.text.length != 13) {
       setState(() {
         validate = false;
         errorText = "Phone must be 10 digit.";
       });
     } else {
-      var response = await networkHandler.get("/$_numberController");
-      if (response['Status']) {
-        setState(() {
-          validate = false;
-          errorText = " Phone number already taken";
-        });
-      } else {
-        setState(() {
-          validate = true;
-        });
-      }
+      setState(() {
+        validate = true;
+      });
     }
   }
 

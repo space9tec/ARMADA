@@ -3,9 +3,10 @@ import 'dart:io';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-
+import 'package:armada/networkhandler.dart';
 import '../../../utils/helper_widget.dart';
 import '../../widgets/widgets.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class VerifyFarms extends StatefulWidget {
   static const String routeName = '/Verfay_farm';
@@ -34,6 +35,12 @@ class _VerifyFarmsState extends State<VerifyFarms> {
   final TextEditingController _croptype = TextEditingController();
   final TextEditingController _soiltype = TextEditingController();
   final TextEditingController _polygonlocation = TextEditingController();
+  NetworkHandler networkHandler = NetworkHandler();
+
+  final storage = new FlutterSecureStorage();
+
+  bool validate = false;
+  String? errorText;
 
   XFile? imageFile;
   final ImagePicker picker = ImagePicker();
@@ -122,14 +129,8 @@ class _VerifyFarmsState extends State<VerifyFarms> {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            InputTextFarmSize(
-                                context,
-                                "",
-                                "Farm Size",
-                                false,
-                                Icons.person_3_sharp,
-                                TextInputType.number,
-                                _farmSize),
+                            InputTextFarmSize(context, "", "Farm Size",
+                                TextInputType.number, _farmSize),
                           ],
                         ),
                         const SizedBox(
@@ -143,8 +144,8 @@ class _VerifyFarmsState extends State<VerifyFarms> {
                                 "Location.",
                                 "Location",
                                 false,
-                                Icons.person_3_sharp,
-                                TextInputType.text,
+                                Icons.location_on,
+                                TextInputType.number,
                                 _location),
                           ],
                         ),
@@ -159,7 +160,7 @@ class _VerifyFarmsState extends State<VerifyFarms> {
                       height: 30,
                     ),
                     InputText(context, "", "Crop type", false,
-                        Icons.person_3_sharp, TextInputType.name, _croptype),
+                        Icons.crop_landscape, TextInputType.name, _croptype),
                     const SizedBox(
                       height: 20,
                     ),
@@ -168,14 +169,8 @@ class _VerifyFarmsState extends State<VerifyFarms> {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            InputTextFarmSize(
-                                context,
-                                "",
-                                "Soil type",
-                                false,
-                                Icons.person_3_sharp,
-                                TextInputType.number,
-                                _soiltype),
+                            InputTextSoilType(context, "", "Soil type",
+                                TextInputType.text, _soiltype),
                           ],
                         ),
                         const SizedBox(
@@ -189,8 +184,8 @@ class _VerifyFarmsState extends State<VerifyFarms> {
                                 "",
                                 "Polygon location",
                                 false,
-                                Icons.person_3_sharp,
-                                TextInputType.text,
+                                Icons.landscape_rounded,
+                                TextInputType.number,
                                 _polygonlocation),
                           ],
                         ),
@@ -201,56 +196,134 @@ class _VerifyFarmsState extends State<VerifyFarms> {
                     ),
                   ],
                 ),
-                InkWell(
-                  onTap: () {
-                    if (formKey.currentState!.validate()) {
-                      Map<String, String> data = {
-                        "FarmSize": _farmSize.text,
-                        "FarmName": _farmName.text,
-                        "Location": _location.text,
-                        "Croptype": _croptype.text,
-                        "Soiltype": _soiltype.text,
-                        "polygonlocation": _polygonlocation.text,
-                      };
+                // InkWell(
+                //   onTap: () {
+                // String? userid = await storage.read(key: "userid");
+                // print(userid);
+                // if (formKey.currentState!.validate()) {
+                //   Map<String, String> data = {
+                //     "farm_size": _farmSize.text,
+                //     "farm_name": _farmName.text,
+                //     "latitude": _location.text,
+                //     "crops_grown:": _croptype.text,
+                //     "soil_type": _soiltype.text,
+                //     "longitude": _polygonlocation.text,
+                //     "owner_id": userid!,
+                //   };
 
-                      Navigator.pushNamed(context, '/');
-                    }
-                  },
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      // Button(context, "Verify", '/',
-                      //     Theme.of(context).primaryColor, 200, 50),
-                      ElevatedButton(
-                        onPressed: () {
-                          _submitForm();
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Theme.of(context).primaryColor,
+                // print(data);
+
+                // var response =
+                //     await networkHandler.post("/api/farm/", data);
+
+                // if (response.statusCode == 201) {
+                // Map<String, dynamic> output =
+                //     json.decode(response.body);
+                // // String jsonString = json.encode(output);
+                // print("yes");
+                // // print("Token: $output['Token']");
+                // await storage.write(
+                //     key: 'token', value: output['Token']);
+
+                // await storage.write(
+                //     key: 'userid', value: output['user_id']);
+                // // await storage.write(
+                // //     key: 'phone', value: _numberController.text);
+                //   print("posted");
+                //   Navigator.pushNamed(context, '/');
+                // } else {
+                //   print("faild");
+
+                //   // String output = json.decode(response.body);
+                //   setState(() {
+                //     validate = false;
+                //     // errorText = output;
+                //   });
+                // }
+                // Navigator.pushNamed(context, '/');
+                // }
+                // },
+                // child:
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    // Button(context, "Verify", '/',
+                    //     Theme.of(context).primaryColor, 200, 50),
+                    ElevatedButton(
+                      onPressed: () async {
+                        String? userid = await storage.read(key: "userid");
+                        print(userid);
+                        if (formKey.currentState!.validate()) {
+                          Map<String, String> data = {
+                            "farm_size": _farmSize.text,
+                            "farm_name": _farmName.text,
+                            "latitude": _location.text,
+                            "crops_grown": _croptype.text,
+                            "soil_type": _soiltype.text,
+                            "longitude": _polygonlocation.text,
+                            "owner_id": userid!,
+                          };
+
+                          print(data);
+
+                          var response = await networkHandler.post(
+                              "/api/farm/", data, "farmData");
+
+                          if (response.statusCode == 201) {
+                            // Map<String, dynamic> output =
+                            //     json.decode(response.body);
+                            // // String jsonString = json.encode(output);
+                            // print("yes");
+                            // // print("Token: $output['Token']");
+                            // await storage.write(
+                            //     key: 'token', value: output['Token']);
+
+                            // await storage.write(
+                            //     key: 'userid', value: output['user_id']);
+                            // // await storage.write(
+                            // //     key: 'phone', value: _numberController.text);
+                            print("posted");
+                            Navigator.pushNamed(context, '/');
+                          } else {
+                            print("faild");
+                            print(response.body.toString());
+
+                            // String output = json.decode(response.body);
+                            setState(() {
+                              validate = false;
+                              // errorText = output;
+                            });
+                          }
+                          // Navigator.pushNamed(context, '/');
+                        }
+                        // _submitForm();
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Theme.of(context).primaryColor,
+                      ),
+                      child: Container(
+                        width: MediaQuery.of(context).size.width - 200,
+                        height: 50,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(15),
+                          color: Theme.of(context).primaryColor,
                         ),
-                        child: Container(
-                          width: MediaQuery.of(context).size.width - 200,
-                          height: 50,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(15),
-                            color: Theme.of(context).primaryColor,
-                          ),
-                          child: Center(
-                            child: Text(
-                              "Verify",
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 20,
-                              ),
+                        child: const Center(
+                          child: Text(
+                            "Verify",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 20,
                             ),
                           ),
                         ),
                       ),
-                      addHorizontalSpace(25),
-                      Button(context, "cancel", '/', Colors.grey, 325, 40),
-                    ],
-                  ),
+                    ),
+                    addHorizontalSpace(25),
+                    Button(context, "cancel", '/', Colors.grey, 325, 40),
+                  ],
                 ),
+                // ),
               ],
             ),
           ),
@@ -289,9 +362,9 @@ class _VerifyFarmsState extends State<VerifyFarms> {
                           builder: ((builder) => bottomSheat()),
                         );
                       },
-                      child: Column(
+                      child: const Column(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: const [
+                        children: [
                           Icon(
                             Icons.photo,
                             size: 65,
@@ -339,7 +412,7 @@ class _VerifyFarmsState extends State<VerifyFarms> {
       ),
       child: Column(children: [
         const Text(
-          "Choose Profile Photo",
+          "Choose  Farm  Photo",
           style: TextStyle(fontSize: 20),
         ),
         const SizedBox(
@@ -355,6 +428,7 @@ class _VerifyFarmsState extends State<VerifyFarms> {
               icon: const Icon(Icons.camera),
               label: const Text("Camera"),
               style: ElevatedButton.styleFrom(
+                elevation: 0,
                 backgroundColor:
                     Theme.of(context).primaryColor, // Change button color here
               ),
@@ -366,6 +440,7 @@ class _VerifyFarmsState extends State<VerifyFarms> {
               icon: const Icon(Icons.image),
               label: const Text("Gallery"),
               style: ElevatedButton.styleFrom(
+                elevation: 0,
                 backgroundColor:
                     Theme.of(context).primaryColor, // Change button color here
               ),

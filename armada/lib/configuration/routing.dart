@@ -1,6 +1,8 @@
+import 'package:armada/view/screens/service_provider_screen/add.dart';
 import 'package:flutter/material.dart';
+import '../view/screens/farm_screen/edit_farm_screen.dart';
+import '../view/screens/home_screen/guest_screen.dart';
 import '../view/screens/screens.dart';
-import '../view/widgets/widgets.dart';
 
 class ROUTE {
   static Route onGenerateRouth(RouteSettings settings) {
@@ -13,6 +15,8 @@ class ROUTE {
         return HomeScreen.route();
       case HomeScreen.routeName:
         return HomeScreen.route();
+      case Guest.routeName:
+        return Guest.route();
       case Login.routeName:
         return Login.route();
       case SignUp.routeName:
@@ -31,10 +35,10 @@ class ROUTE {
         return VerifyFarm.route();
       case FarmScreen.routeName:
         return FarmScreen.route();
+      case Editfarm.routeName:
+        return Editfarm.route();
       case VerifyServiceProvider.routeName:
         return VerifyServiceProvider.route();
-      case AddFarm.routeName:
-        return AddFarm.route();
       case DisplayNotification.routeName:
         return DisplayNotification.route();
       case FarmerProfile.routeName:

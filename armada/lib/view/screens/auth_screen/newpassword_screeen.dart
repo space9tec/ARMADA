@@ -1,8 +1,6 @@
 import 'package:armada/utils/helper_widget.dart';
 import 'package:flutter/material.dart';
 
-import '../../widgets/widgets.dart';
-
 class NewPassword extends StatefulWidget {
   static const String routeName = '/newpassword';
 

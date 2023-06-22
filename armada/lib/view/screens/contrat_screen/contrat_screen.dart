@@ -7,7 +7,7 @@ class ContractCard extends StatelessWidget {
   final String userProfile;
   final String status;
 
-  const ContractCard({
+  const ContractCard({super.key, 
     required this.serviceName,
     required this.serviceImage,
     required this.day,
@@ -23,22 +23,22 @@ class ContractCard extends StatelessWidget {
         children: <Widget>[
           Image.asset(serviceImage),
           Padding(
-            padding: EdgeInsets.all(8.0),
+            padding: const EdgeInsets.all(8.0),
             child: Text(
               serviceName,
-              style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+              style: const TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
             ),
           ),
           Padding(
-            padding: EdgeInsets.all(8.0),
+            padding: const EdgeInsets.all(8.0),
             child: Text(day),
           ),
           Padding(
-            padding: EdgeInsets.all(8.0),
+            padding: const EdgeInsets.all(8.0),
             child: Text(userProfile),
           ),
           Padding(
-            padding: EdgeInsets.all(8.0),
+            padding: const EdgeInsets.all(8.0),
             child: Text(status),
           ),
         ],
@@ -48,6 +48,8 @@ class ContractCard extends StatelessWidget {
 }
 
 class ContractList extends StatelessWidget {
+  const ContractList({super.key});
+
   @override
   Widget build(BuildContext context) {
     return ListView(
@@ -55,21 +57,21 @@ class ContractList extends StatelessWidget {
         _buildContractCard(
             'John Doe',
             'assets/images/tracter1.png',
-            DateTime.now().add(Duration(days: 2)),
+            DateTime.now().add(const Duration(days: 2)),
             'Service 1',
             'Pending',
             context),
         _buildContractCard(
             'Jane Smith',
             'assets/images/tracter1.png',
-            DateTime.now().subtract(Duration(days: 1)),
+            DateTime.now().subtract(const Duration(days: 1)),
             'Service 2',
             'Completed',
             context),
         _buildContractCard(
             'Bob Johnson',
             'assets/images/tracter1.png',
-            DateTime.now().add(Duration(days: 5)),
+            DateTime.now().add(const Duration(days: 5)),
             'Service 3',
             'Rejected',
             context),
@@ -88,13 +90,13 @@ class ContractList extends StatelessWidget {
         child: Card(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
-            side: BorderSide(color: Colors.greenAccent, width: 1),
+            side: const BorderSide(color: Colors.greenAccent, width: 1),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               ListTile(
-                leading: CircleAvatar(
+                leading: const CircleAvatar(
                   backgroundImage: AssetImage('assets/images/tracter1.png'),
                 ),
                 title: Text(userName),
@@ -114,9 +116,9 @@ class ContractList extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(serviceName,
-                            style: TextStyle(
+                            style: const TextStyle(
                                 fontSize: 20.0, fontWeight: FontWeight.bold)),
-                        SizedBox(height: 8.0),
+                        const SizedBox(height: 8.0),
                         Text(status),
                       ],
                     ),
@@ -134,12 +136,12 @@ class ContractList extends StatelessWidget {
 class ContractPage extends StatefulWidget {
   static const String routeName = '/contrat_page';
 
-// till line 19 route code
+  const ContractPage({super.key});
   static Route route() {
     return MaterialPageRoute(
       settings: const RouteSettings(name: routeName),
       builder: (context) {
-        return ContractPage();
+        return const ContractPage();
       },
     );
   }
@@ -150,7 +152,6 @@ class ContractPage extends StatefulWidget {
 
 class _ContractPageState extends State<ContractPage>
     with SingleTickerProviderStateMixin {
-  int _currentIndex = 0;
   late TabController _tabController;
   @override
   void initState() {
@@ -164,30 +165,6 @@ class _ContractPageState extends State<ContractPage>
     super.dispose();
   }
 
-  final List<ContractCard> _contracts = const [
-    ContractCard(
-      serviceName: 'Service Name 1',
-      serviceImage: 'assets/images/tracter1.png',
-      day: 'Monday',
-      userProfile: 'User Profile 1',
-      status: 'Pending',
-    ),
-    ContractCard(
-      serviceName: 'Service Name 2',
-      serviceImage: 'assets/images/tracter1.png',
-      day: 'Tuesday',
-      userProfile: 'User Profile 2',
-      status: 'Completed',
-    ),
-    ContractCard(
-      serviceName: 'Service Name 3',
-      serviceImage: 'assets/images/tracter1.png',
-      day: 'Wednesday',
-      userProfile: 'User Profile 3',
-      status: 'Rejected',
-    ),
-  ];
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -199,12 +176,12 @@ class _ContractPageState extends State<ContractPage>
             onPressed: () {
               Navigator.pushNamed(context, '/display_notification');
             },
-            icon: Icon(Icons.notifications_sharp),
+            icon: const Icon(Icons.notifications_sharp),
           ),
         ],
         bottom: TabBar(
           controller: _tabController,
-          tabs: [
+          tabs: const [
             Tab(text: 'Pending'),
             Tab(text: 'Completed'),
             Tab(text: 'Rejected'),
@@ -215,7 +192,7 @@ class _ContractPageState extends State<ContractPage>
 
       body: TabBarView(
         controller: _tabController,
-        children: [ContractList(), ContractList(), ContractList()],
+        children: const [ContractList(), ContractList(), ContractList()],
       ),
     );
   }

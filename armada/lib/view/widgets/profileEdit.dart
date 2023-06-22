@@ -22,7 +22,7 @@ class _ProfileEditState extends State<ProfileEdit> {
   final ImagePicker picker = ImagePicker();
   @override
   Widget build(BuildContext context) {
-    final color = Theme.of(context).colorScheme.primary;
+    final color = Theme.of(context).primaryColor;
 
     return Center(
       child: Stack(
@@ -87,6 +87,8 @@ class _ProfileEditState extends State<ProfileEdit> {
               },
               icon: Icon(Icons.camera),
               label: Text("Camera"),
+              style: ElevatedButton.styleFrom(
+                  backgroundColor: Theme.of(context).primaryColor),
             ),
             ElevatedButton.icon(
               onPressed: () {
@@ -94,6 +96,8 @@ class _ProfileEditState extends State<ProfileEdit> {
               },
               icon: Icon(Icons.image),
               label: Text("Gallery"),
+              style: ElevatedButton.styleFrom(
+                  backgroundColor: Theme.of(context).primaryColor),
             )
           ],
         )

@@ -24,7 +24,6 @@ class _ServiceProviderHomeScreenState extends State<ServiceProviderHomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appbar
       appBar: AppBar(
         elevation: 0,
         backgroundColor: Theme.of(context).primaryColor,
@@ -40,7 +39,6 @@ class _ServiceProviderHomeScreenState extends State<ServiceProviderHomeScreen> {
           preferredSize: const Size.fromHeight(40),
           child: Column(
             children: [
-              // locationSelector(context),
               SizedBox(
                 width: MediaQuery.of(context).size.width - 100,
                 height: 65,
@@ -126,11 +124,8 @@ class _ServiceProviderHomeScreenState extends State<ServiceProviderHomeScreen> {
           ],
         ),
       ),
-
       drawer: const ServiceProvidernavigationDrawer(),
-      // bottom navbar
       bottomNavigationBar: ServiceProviderbottomAppbar(context),
-      // ),
     );
   }
 }

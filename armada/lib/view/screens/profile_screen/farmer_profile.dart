@@ -1,16 +1,19 @@
+import 'package:armada/networkhandler.dart';
 import 'package:armada/utils/user_preferences.dart';
 import 'package:flutter/material.dart';
 
+import '../../../models/user_model/userProfile_model.dart';
 import '../../widgets/widgets.dart';
-import 'package:armada/models/user.dart';
 
 class FarmerProfile extends StatefulWidget {
   static const String routeName = '/farmer_profile';
 
+  const FarmerProfile({super.key});
+
   static Route route() {
     return MaterialPageRoute(
-      settings: RouteSettings(name: routeName),
-      builder: (context) => FarmerProfile(),
+      settings: const RouteSettings(name: routeName),
+      builder: (context) => const FarmerProfile(),
     );
   }
 
@@ -19,9 +22,27 @@ class FarmerProfile extends StatefulWidget {
 }
 
 class _FarmerProfileState extends State<FarmerProfile> {
+  NetworkHandler networkHandler = NetworkHandler();
+  UserProfileModel userProfileModel =
+      UserProfileModel(firstName: '', lastName: '', phone: null, role: '');
+
+  @override
+  void initState() {
+    super.initState();
+    fetchData();
+  }
+
+  void fetchData() async {
+    // var response = await networkHandler.get("/api/farm/");
+    // print(response.body.toString());
+    setState(() {
+      // userProfileModel = UserProfileModel.fromJson(response);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    final user = UserPreferences.myUser;
+    const user = UserPreferences.myUser;
 
     return Scaffold(
       appBar: AppBar(
@@ -32,14 +53,14 @@ class _FarmerProfileState extends State<FarmerProfile> {
             onPressed: () {
               Navigator.pushNamed(context, '/edit_farmer_profile');
             },
-            icon: Icon(Icons.edit_sharp),
+            icon: const Icon(Icons.edit_sharp),
           ),
         ],
       ),
       body: ListView(
-        physics: BouncingScrollPhysics(),
+        physics: const BouncingScrollPhysics(),
         children: [
-          SizedBox(
+          const SizedBox(
             height: 20,
           ),
           ProfileWidget(
@@ -47,44 +68,44 @@ class _FarmerProfileState extends State<FarmerProfile> {
             onClicked: () async {},
           ),
           const SizedBox(height: 24),
-          buildName(user),
+          buildName(userProfileModel),
           const SizedBox(height: 24),
           const SizedBox(height: 24),
           NumbersWidget(),
           const SizedBox(height: 48),
-          buildAbout(user),
+          buildAbout(userProfileModel),
         ],
       ),
     );
   }
 
-  Widget buildName(User user) => Column(
+  Widget buildName(UserProfileModel user) => Column(
         children: [
           Text(
-            user.name,
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
+            user.firstName,
+            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
           ),
           const SizedBox(height: 4),
           Text(
-            user.email,
-            style: TextStyle(color: Colors.grey),
+            user.phone.toString(),
+            style: const TextStyle(color: Colors.grey),
           )
         ],
       );
 
-  Widget buildAbout(User user) => Container(
-        padding: EdgeInsets.symmetric(horizontal: 48),
+  Widget buildAbout(UserProfileModel user) => Container(
+        padding: const EdgeInsets.symmetric(horizontal: 48),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
+            const Text(
               'About',
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16),
             Text(
-              user.about,
-              style: TextStyle(fontSize: 16, height: 1.4),
+              user.role,
+              style: const TextStyle(fontSize: 16, height: 1.4),
             ),
           ],
         ),

@@ -1,6 +1,8 @@
 import 'package:armada/provider/drower_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:armada/networkhandler.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class CustomListTile extends StatefulWidget {
   final String title;
@@ -21,6 +23,8 @@ class CustomListTile extends StatefulWidget {
 }
 
 class _CustomListTileState extends State<CustomListTile> {
+  NetworkHandler networkHandler = NetworkHandler();
+
   @override
   Widget build(BuildContext context) {
     return Consumer<DrawerNotifire>(
@@ -99,6 +103,8 @@ class BCustomListTile extends StatefulWidget {
 }
 
 class _BCustomListTileState extends State<BCustomListTile> {
+  NetworkHandler networkHandler = NetworkHandler();
+
   @override
   Widget build(BuildContext context) {
     return Consumer<DrawerNotifire>(
@@ -115,7 +121,7 @@ class _BCustomListTileState extends State<BCustomListTile> {
               break;
             case 2:
               value.setCurrentDrawer(5);
-              Navigator.pushNamed(context, '/logine');
+              logout();
               break;
           }
         },
@@ -149,5 +155,24 @@ class _BCustomListTileState extends State<BCustomListTile> {
         ),
       ),
     );
+  }
+
+  logout() async {
+    final storage = new FlutterSecureStorage();
+
+    var response = await networkHandler.get("/api/auth/logout");
+    String? token = await storage.read(key: "token");
+    if (token != null) {
+      if (response.statusCode == 200) {
+        await storage.delete(key: "token");
+        Navigator.of(context)
+            .pushNamedAndRemoveUntil('/guest', (Route<dynamic> route) => false);
+        print("Logedout");
+      } else {
+        print("failed");
+      }
+    } else {
+      print("Already logged out");
+    }
   }
 }

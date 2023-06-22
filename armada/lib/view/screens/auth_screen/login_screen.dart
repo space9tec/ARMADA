@@ -1,6 +1,11 @@
+import 'dart:convert';
+import 'package:armada/provider/drop_down_provider.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:armada/utils/helper_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:armada/view/widgets/widgets.dart';
+import 'package:armada/networkhandler.dart';
+import 'package:provider/provider.dart';
 
 class Login extends StatefulWidget {
   static const String routeName = '/login';
@@ -28,7 +33,9 @@ class _LoginState extends State<Login> {
   bool value = false;
   bool isHidden = true;
 
-  bool validate = false;
+  NetworkHandler networkHandler = NetworkHandler();
+  final storage = new FlutterSecureStorage();
+  bool validate = true;
   String? errorText;
   @override
   Widget build(BuildContext context) {
@@ -41,12 +48,12 @@ class _LoginState extends State<Login> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                addVerticalSpace(95.0),
+                addVerticalSpace(MediaQuery.of(context).size.width * 0.21),
                 Center(
                   child: Text("Welcome.",
                       style: Theme.of(context).textTheme.displayLarge),
                 ),
-                addVerticalSpace(80.0),
+                addVerticalSpace(MediaQuery.of(context).size.width * 0.21),
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -59,7 +66,7 @@ class _LoginState extends State<Login> {
                     ),
                   ],
                 ),
-                addVerticalSpace(64.0),
+                addVerticalSpace(MediaQuery.of(context).size.width * 0.17),
                 InputTextNumber(
                     context,
                     "Phone",
@@ -71,7 +78,7 @@ class _LoginState extends State<Login> {
                     validate),
                 addVerticalSpace(31.0),
                 SizedBox(
-                  width: MediaQuery.of(context).size.width - 120,
+                  width: MediaQuery.of(context).size.width * 0.72,
                   height: 67,
                   child: TextFormField(
                     controller: _passwordcontroller,
@@ -163,21 +170,63 @@ class _LoginState extends State<Login> {
                     ],
                   ),
                 ),
-                addVerticalSpace(60.0),
+                addVerticalSpace(MediaQuery.of(context).size.width * 0.12),
                 Container(
                   child: InkWell(
-                    onTap: () {
+                    onTap: () async {
                       checkUser();
+                      print("object");
                       if (formKey.currentState!.validate() && validate) {
                         Map<String, String> data = {
                           "phone": _numbercontroller.text,
                           "password": _passwordcontroller.text,
                         };
                         print(data);
+
+                        try {
+                          var response = await networkHandler.postt(
+                              "/api/auth/login", data);
+                          if (response.statusCode == 200) {
+                            Map<String, dynamic> output =
+                                json.decode(response.body);
+
+                            print("yes");
+
+                            await storage.write(
+                                key: 'token', value: output['Token']);
+                            print(output);
+                            String? tok = await storage.read(key: "token");
+                            print(tok);
+
+                            await storage.write(
+                                key: 'userid', value: output['user_id']);
+
+                            // String? userrole=await storage.write(
+                            //     key: 'userrole', value: );
+                            Provider.of<DropDownProvider>(context,
+                                    listen: false)
+                                .setAccountType(output['role']);
+                            String? userid = await storage.read(key: "userid");
+                            print(userid);
+
+                            Navigator.of(context).pushNamedAndRemoveUntil(
+                                '/', (Route<dynamic> route) => false);
+                          } else if (response.statusCode == 408) {
+                            print("408");
+
+                            print("500");
+                          } else {
+                            throw Exception(
+                                'Failed to login: ${response.statusCode}');
+                          }
+                        } catch (e) {
+                          print("dont work:${e}");
+                        }
+                        print("data");
                       }
                     },
                     child: Container(
-                      width: MediaQuery.of(context).size.width - 150,
+                      width: MediaQuery.of(context).size.width * 0.63,
                       height: 55,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(15),
@@ -224,10 +273,10 @@ class _LoginState extends State<Login> {
         validate = false;
         errorText = "Phone can't be empty";
       });
-    } else if (_numbercontroller.text.length != 10) {
+    } else if (_numbercontroller.text.length != 13) {
       setState(() {
         validate = false;
-        errorText = "Phone must be 10 digit.";
+        errorText = "Phone must be 13 digit.";
       });
     }
   }

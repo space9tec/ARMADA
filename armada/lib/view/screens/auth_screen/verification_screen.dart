@@ -1,12 +1,11 @@
 import 'dart:async';
+import 'dart:convert';
 
+import 'package:armada/networkhandler.dart';
 import 'package:armada/utils/helper_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:provider/provider.dart';
-
-import '../../../provider/drop_down_provider.dart';
-import '../screens.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class Verify extends StatefulWidget {
   static const String routeName = '/verify';
@@ -36,6 +35,8 @@ class _VerifyState extends State<Verify> {
   bool _isCountdownActive = false;
 
   late Timer _countdownTimer;
+  NetworkHandler networkHandler = NetworkHandler();
+  final storage = new FlutterSecureStorage();
 
   @override
   void initState() {
@@ -81,9 +82,7 @@ class _VerifyState extends State<Verify> {
   void dispose() {
     super.dispose();
 
-    if (_countdownTimer != null) {
-      _countdownTimer.cancel();
-    }
+    _countdownTimer.cancel();
   }
 
   @override
@@ -113,10 +112,10 @@ class _VerifyState extends State<Verify> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      verifyInputBox(context, "pin1", _otpController1),
-                      verifyInputBox(context, "pin2", _otpController2),
-                      verifyInputBox(context, "pin3", _otpController3),
-                      verifyInputBox(context, "pin4", _otpController4),
+                      verifyInputBox(context, _otpController1),
+                      verifyInputBox(context, _otpController2),
+                      verifyInputBox(context, _otpController3),
+                      verifyInputBox(context, _otpController4),
                     ],
                   ),
                 ),
@@ -150,13 +149,18 @@ class _VerifyState extends State<Verify> {
               // Button(context, "Verify", '/VerifyFarm',
               //     Theme.of(context).primaryColor, 150, 55),
               InkWell(
-                onTap: () {
+                onTap: () async {
                   _userEnteredOTP = _otpController1.text +
                       _otpController2.text +
                       _otpController3.text +
                       _otpController4.text;
                   // print(_userEnteredOTP);
-                  validateOTP(_userEnteredOTP);
+                  String? phoneNumber = await storage.read(key: "phone");
+                  Map<String, String> data = {
+                    "phone": phoneNumber!,
+                    "otp": _userEnteredOTP,
+                  };
+                  validateOTP(data);
                   // dispose();
                 },
                 child: Container(
@@ -185,7 +189,7 @@ class _VerifyState extends State<Verify> {
   }
 
   Widget verifyInputBox(
-      BuildContext context, String p, TextEditingController controller) {
+      BuildContext context, TextEditingController controller) {
     return SizedBox(
       height: 68.0,
       width: 64.0,
@@ -196,7 +200,7 @@ class _VerifyState extends State<Verify> {
             FocusScope.of(context).nextFocus();
           }
         },
-        onSaved: (p) {},
+        // onSaved: (p) {},
         style: Theme.of(context).textTheme.displayLarge,
         keyboardType: TextInputType.number,
         textAlign: TextAlign.center,
@@ -224,18 +228,33 @@ class _VerifyState extends State<Verify> {
     );
   }
 
-  void validateOTP(String enteredOTP) {
+  void validateOTP(Map<String, String> data) async {
     // Call an API endpoint to verify the OTP
     // You can use a third-party service like Twilio for this purpose
-    String sentOTP = "";
-    if (sentOTP == sentOTP) {
+    var response = await networkHandler.postt("/api/auth/verify", data);
+    if (response.statusCode == 200) {
+      print("otp verifyed");
+      Map<String, dynamic> output = json.decode(response.body);
+      // String jsonString = json.encode(output);
+      // print("yes");
+      // print("Token: $output['Token']");
+      // await storage.write(key: 'token', value: output['Token']);
+
+      // await storage.write(key: 'userid', value: output['user_id']);
       // If the OTPs match, mark the user as verified
       // setUserVerified(true);
+      await storage.write(key: 'token', value: output['Token']);
+
+      String? tok = await storage.read(key: "token");
+      print(tok);
+
+      await storage.write(key: 'userid', value: output['user_id']);
+
+      String? userid = await storage.read(key: "userid");
+      print(userid);
 
       // Save the user details to the database
       // saveUserDetails(phoneNumber, fullName);
-      print("valuselectedAccount");
-
       // Navigate to the home page
       // Consumer<DropDownProvider>(builder: (context, value, child) {
       //   if (value.selectedAccount == "Farmer") {
@@ -248,19 +267,22 @@ class _VerifyState extends State<Verify> {
       //     return Container();
       //   }
       // });
+      // VerifyFarm();
+      Navigator.of(context).pushNamedAndRemoveUntil(
+          '/VerifyFarm', (Route<dynamic> route) => false);
 
       // Navigator.push(
       //   context,
       //   MaterialPageRoute(builder: (context) => HomePage()),
       // );
-      Navigator.pushNamed(context, '/VerifyFarm');
+      // Navigator.pushNamed(context, '/VerifyFarm');
     } else {
       // If the OTPs do not match, show an error message
       showDialog(
           context: context,
           builder: (_) => AlertDialog(
                 backgroundColor: Theme.of(context).primaryColor,
-                content: Text(
+                content: const Text(
                   "Incorrect OTP",
                   style: TextStyle(color: Colors.white),
                 ),
@@ -273,7 +295,7 @@ class _VerifyState extends State<Verify> {
                         _otpController4.clear();
                         Navigator.pop(context);
                       },
-                      child: Text("OK"))
+                      child: const Text("OK"))
                 ],
               ));
     }

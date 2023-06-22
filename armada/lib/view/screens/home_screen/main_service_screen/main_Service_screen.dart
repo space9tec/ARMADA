@@ -31,228 +31,226 @@ class _MainScreenState extends State<MainScreen> {
         child: Column(
           children: [
             SizedBox(
-              height: 230.0,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: 25.0, vertical: 25.0),
-                child: Container(
-                  padding: const EdgeInsets.all(20),
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).primaryColor,
-                    borderRadius: BorderRadius.circular(15),
-                  ),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: Column(
-                          children: [],
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 28.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
+              height: MediaQuery.of(context).size.height,
+              child: Column(
                 children: [
-                  Text(
-                    "Category",
-                    textAlign: TextAlign.left,
-                    style: Theme.of(context).textTheme.displayMedium,
-                  ),
-                ],
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(25.0),
-              child: SingleChildScrollView(
-                // physics: const BouncingScrollPhysics(
-                //     decelerationRate: ScrollDecelerationRate.fast),
-                physics: const BouncingScrollPhysics(
-                    decelerationRate: ScrollDecelerationRate.fast),
-                scrollDirection: Axis.horizontal,
-                child: SizedBox(
-                  height: 120,
-                  child: Row(
-                    children: [
-                      SizedBox(
-                        width: 250.0,
-                        child: ListView(children: [
-                          listTileUpperLine(30),
-                          const ListTile(
-                            dense: true,
-                            visualDensity: VisualDensity(vertical: -3),
-                            contentPadding: EdgeInsets.zero,
-                            title: Text("MACHINERY"),
-                            trailing: Icon(
-                              Icons.arrow_forward_ios,
-                              size: 20,
-                            ),
-                            leading: Icon(
-                              Icons.account_circle_rounded,
-                              size: 25,
-                            ),
-                          ),
-                          listTileUpperLine(30),
-                          const ListTile(
-                            dense: true,
-                            visualDensity: VisualDensity(vertical: -3),
-                            contentPadding: EdgeInsets.zero,
-                            title: Text("MACHINERY."),
-                            trailing: Icon(
-                              Icons.arrow_forward_ios,
-                              size: 20,
-                            ),
-                            leading: Icon(
-                              Icons.account_circle_rounded,
-                              size: 25,
-                            ),
-                          ),
-                          listTileUpperLine(30),
-                          const ListTile(
-                            dense: true,
-                            visualDensity: VisualDensity(vertical: -3),
-                            contentPadding: EdgeInsets.zero,
-                            title: Text("MACHINERY."),
-                            trailing: Icon(
-                              Icons.arrow_forward_ios,
-                              size: 20,
-                            ),
-                            leading: Icon(
-                              Icons.account_circle_rounded,
-                              size: 25,
-                            ),
-                          ),
-                          listTileUpperLine(30),
-                        ]),
-                      ),
-                      const SizedBox(
-                        width: 25.0,
-                      ),
-                      SizedBox(
-                        width: 250.0,
-                        child: ListView(children: const [
-                          SizedBox(
-                            height: 1,
-                            child: ColoredBox(color: Colors.black),
-                          ),
-                          ListTile(
-                            dense: true,
-                            visualDensity: VisualDensity(vertical: -3),
-                            contentPadding: EdgeInsets.zero,
-                            title: Text("MACHINERY"),
-                            trailing: Icon(
-                              Icons.arrow_forward_ios,
-                              size: 20,
-                            ),
-                            leading: Icon(
-                              Icons.account_circle_rounded,
-                              size: 25,
-                            ),
-                          ),
-                          SizedBox(
-                            height: 1,
-                            width: 70,
-                            child: ColoredBox(color: Colors.black),
-                          ),
-                          ListTile(
-                            dense: true,
-                            visualDensity: VisualDensity(vertical: -3),
-                            contentPadding: EdgeInsets.zero,
-                            title: Text("MACHINERY."),
-                            trailing: Icon(
-                              Icons.arrow_forward_ios,
-                              size: 20,
-                            ),
-                            leading: Icon(
-                              Icons.account_circle_rounded,
-                              size: 25,
-                            ),
-                          ),
-                          SizedBox(
-                            height: 1,
-                            width: 70,
-                            child: ColoredBox(color: Colors.black),
-                          ),
-                          ListTile(
-                            dense: true,
-                            visualDensity: VisualDensity(vertical: -3),
-                            contentPadding: EdgeInsets.zero,
-                            title: Text("MACHINERY"),
-                            trailing: Icon(
-                              Icons.arrow_forward_ios,
-                              size: 20,
-                            ),
-                            leading: Icon(
-                              Icons.account_circle_rounded,
-                              size: 25,
-                            ),
-                          ),
-                          SizedBox(
-                            height: 1,
-                            width: 70,
-                            child: ColoredBox(color: Colors.black),
-                          ),
-                        ]),
-                      ),
-                      const SizedBox(
-                        width: 25.0,
-                      ),
-                      SizedBox(
-                        width: 250.0,
-                        child: ListView(
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.25,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 25.0, vertical: 25.0),
+                      child: Container(
+                        padding: const EdgeInsets.all(20),
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).primaryColor,
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                        child: const Row(
                           children: [
-                            listTileUpperLine(30),
-                            const ListTile(
-                              dense: true,
-                              visualDensity: VisualDensity(vertical: -3),
-                              contentPadding: EdgeInsets.zero,
-                              title: Text("MACHINERY"),
-                              trailing: Icon(
-                                Icons.arrow_forward_ios,
-                                size: 20,
+                            Expanded(
+                              child: Column(
+                                children: [],
                               ),
-                              leading: Icon(
-                                Icons.account_circle_rounded,
-                                size: 25,
-                              ),
-                            ),
-                            listTileUpperLine(30),
-                            const ListTile(
-                              dense: true,
-                              visualDensity: VisualDensity(vertical: -3),
-                              contentPadding: EdgeInsets.zero,
-                              title: Text("MACHINERY."),
-                              trailing: Icon(
-                                Icons.arrow_forward_ios,
-                                size: 20,
-                              ),
-                              leading: Icon(
-                                Icons.account_circle_rounded,
-                                size: 25,
-                              ),
-                            ),
-                            listTileUpperLine(30),
+                            )
                           ],
                         ),
                       ),
-                    ],
+                    ),
                   ),
-                ),
-              ),
-            ),
-            SingleChildScrollView(
-              scrollDirection: Axis.vertical,
-              child: SizedBox(
-                height: 500,
-                width: MediaQuery.of(context).size.width,
-                child: const Padding(
-                  padding: EdgeInsets.all(24.0),
-                  child: ItemCards(),
-                ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 28.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Category",
+                          textAlign: TextAlign.left,
+                          style: Theme.of(context).textTheme.displayMedium,
+                        ),
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(25.0),
+                    child: SingleChildScrollView(
+                      physics: const BouncingScrollPhysics(
+                          decelerationRate: ScrollDecelerationRate.fast),
+                      scrollDirection: Axis.horizontal,
+                      child: SizedBox(
+                        height: 120,
+                        child: Row(
+                          children: [
+                            SizedBox(
+                              width: 250.0,
+                              child: ListView(children: [
+                                listTileUpperLine(30),
+                                const ListTile(
+                                  dense: true,
+                                  visualDensity: VisualDensity(vertical: -3),
+                                  contentPadding: EdgeInsets.zero,
+                                  title: Text("MACHINERY"),
+                                  trailing: Icon(
+                                    Icons.arrow_forward_ios,
+                                    size: 20,
+                                  ),
+                                  leading: Icon(
+                                    Icons.account_circle_rounded,
+                                    size: 25,
+                                  ),
+                                ),
+                                listTileUpperLine(30),
+                                const ListTile(
+                                  dense: true,
+                                  visualDensity: VisualDensity(vertical: -3),
+                                  contentPadding: EdgeInsets.zero,
+                                  title: Text("MACHINERY."),
+                                  trailing: Icon(
+                                    Icons.arrow_forward_ios,
+                                    size: 20,
+                                  ),
+                                  leading: Icon(
+                                    Icons.account_circle_rounded,
+                                    size: 25,
+                                  ),
+                                ),
+                                listTileUpperLine(30),
+                                const ListTile(
+                                  dense: true,
+                                  visualDensity: VisualDensity(vertical: -3),
+                                  contentPadding: EdgeInsets.zero,
+                                  title: Text("MACHINERY."),
+                                  trailing: Icon(
+                                    Icons.arrow_forward_ios,
+                                    size: 20,
+                                  ),
+                                  leading: Icon(
+                                    Icons.account_circle_rounded,
+                                    size: 25,
+                                  ),
+                                ),
+                                listTileUpperLine(30),
+                              ]),
+                            ),
+                            const SizedBox(
+                              width: 25.0,
+                            ),
+                            SizedBox(
+                              width: 250.0,
+                              child: ListView(children: const [
+                                SizedBox(
+                                  height: 1,
+                                  child: ColoredBox(color: Colors.black),
+                                ),
+                                ListTile(
+                                  dense: true,
+                                  visualDensity: VisualDensity(vertical: -3),
+                                  contentPadding: EdgeInsets.zero,
+                                  title: Text("MACHINERY"),
+                                  trailing: Icon(
+                                    Icons.arrow_forward_ios,
+                                    size: 20,
+                                  ),
+                                  leading: Icon(
+                                    Icons.account_circle_rounded,
+                                    size: 25,
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: 1,
+                                  width: 70,
+                                  child: ColoredBox(color: Colors.black),
+                                ),
+                                ListTile(
+                                  dense: true,
+                                  visualDensity: VisualDensity(vertical: -3),
+                                  contentPadding: EdgeInsets.zero,
+                                  title: Text("MACHINERY."),
+                                  trailing: Icon(
+                                    Icons.arrow_forward_ios,
+                                    size: 20,
+                                  ),
+                                  leading: Icon(
+                                    Icons.account_circle_rounded,
+                                    size: 25,
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: 1,
+                                  width: 70,
+                                  child: ColoredBox(color: Colors.black),
+                                ),
+                                ListTile(
+                                  dense: true,
+                                  visualDensity: VisualDensity(vertical: -3),
+                                  contentPadding: EdgeInsets.zero,
+                                  title: Text("MACHINERY"),
+                                  trailing: Icon(
+                                    Icons.arrow_forward_ios,
+                                    size: 20,
+                                  ),
+                                  leading: Icon(
+                                    Icons.account_circle_rounded,
+                                    size: 25,
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: 1,
+                                  width: 70,
+                                  child: ColoredBox(color: Colors.black),
+                                ),
+                              ]),
+                            ),
+                            const SizedBox(
+                              width: 25.0,
+                            ),
+                            SizedBox(
+                              width: 250.0,
+                              child: ListView(
+                                children: [
+                                  listTileUpperLine(30),
+                                  const ListTile(
+                                    dense: true,
+                                    visualDensity: VisualDensity(vertical: -3),
+                                    contentPadding: EdgeInsets.zero,
+                                    title: Text("MACHINERY"),
+                                    trailing: Icon(
+                                      Icons.arrow_forward_ios,
+                                      size: 20,
+                                    ),
+                                    leading: Icon(
+                                      Icons.account_circle_rounded,
+                                      size: 25,
+                                    ),
+                                  ),
+                                  listTileUpperLine(30),
+                                  const ListTile(
+                                    dense: true,
+                                    visualDensity: VisualDensity(vertical: -3),
+                                    contentPadding: EdgeInsets.zero,
+                                    title: Text("MACHINERY."),
+                                    trailing: Icon(
+                                      Icons.arrow_forward_ios,
+                                      size: 20,
+                                    ),
+                                    leading: Icon(
+                                      Icons.account_circle_rounded,
+                                      size: 25,
+                                    ),
+                                  ),
+                                  listTileUpperLine(30),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  const Padding(
+                    padding: EdgeInsets.all(24.0),
+                    child: ItemCards(),
+                  ),
+                ],
               ),
             ),
           ],
@@ -276,6 +274,7 @@ class ItemCards extends StatelessWidget {
         mainAxisSpacing: 15,
         crossAxisCount: 2,
       ),
+      physics: const NeverScrollableScrollPhysics(),
       itemCount: 6,
       itemBuilder: (context, index) {
         return GestureDetector(

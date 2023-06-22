@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 
 class CustomProductItemWidget extends StatefulWidget {
   CustomProductItemWidget({Key? key, this.showUser = true}) : super(key: key);
-  bool showUser;
+  final bool showUser;
 
   @override
   State<CustomProductItemWidget> createState() =>
