@@ -4,7 +4,7 @@ import 'package:armada/models/machine.dart';
 import 'package:flutter/material.dart';
 import '../../widgets/widgets.dart';
 import 'package:armada/networkhandler.dart';
-
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'machineDetail_screen.dart';
 
 class MachineScreen extends StatefulWidget {
@@ -25,6 +25,8 @@ class MachineScreen extends StatefulWidget {
 
 class _MachineScreenState extends State<MachineScreen> {
   NetworkHandler networkHandler = NetworkHandler();
+  final storage = new FlutterSecureStorage();
+
   List<MachineM> machine = [];
   void initState() {
     super.initState();
@@ -33,12 +35,21 @@ class _MachineScreenState extends State<MachineScreen> {
 
   void fetchData() async {
     var response = await networkHandler.get("/api/machinery/");
+    String? ownerid = await storage.read(key: "userid");
+
+    List<dynamic> responseData = json.decode(response.body);
+
+    List<dynamic> filteredData =
+        responseData.where((data) => data['owner_id'] == ownerid).toList();
 
     setState(() {
-      machine = (json.decode(response.body) as List)
-          .map((data) => MachineM.fromJson(data))
-          .toList();
+      machine = filteredData.map((data) => MachineM.fromJson(data)).toList();
     });
+    // setState(() {
+    //   machine = (json.decode(response.body) as List)
+    //       .map((data) => MachineM.fromJson(data))
+    //       .toList();
+    // });
   }
 
   @override

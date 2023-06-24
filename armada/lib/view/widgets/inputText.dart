@@ -29,77 +29,24 @@ Widget InputTextNumber(
         ),
         prefixIcon: Icon(
           icon,
-          color: const Color.fromARGB(255, 10, 190, 106),
+          color: const Color(0xFF006837),
         ),
         border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(15),
             borderSide: const BorderSide(
               width: 1,
-              color: Colors.green,
+              color: Color(0xFF006837),
             )),
         focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(15),
             borderSide: const BorderSide(
               width: 1,
-              color: Colors.green,
+              color: Color(0xFF006837),
             )),
       ),
     ),
   );
 }
-
-// Widget InputTextEmail(
-//     BuildContext context,
-//     String hint,
-//     String labelhint,
-//     bool obscureText,
-//     IconData icon,
-//     TextInputType ktype,
-//     TextEditingController controller) {
-//   bool isPasswordVisible = false;
-//   return SizedBox(
-//     width: MediaQuery.of(context).size.width - 120,
-//     height: 67,
-//     child: TextFormField(
-//       controller: controller,
-//       keyboardType: ktype,
-//       obscureText: isPasswordVisible,
-//       autofillHints: [AutofillHints.email],
-//       validator: (value) => value != null && !EmailValidator.validate(value)
-//           ? 'Enter valid Email'
-//           : null,
-//       style: const TextStyle(
-//         fontSize: 17,
-//         color: Colors.grey,
-//       ),
-//       decoration: InputDecoration(
-//         labelText: labelhint,
-//         hintText: hint,
-//         labelStyle: const TextStyle(
-//           fontSize: 17,
-//           color: Colors.grey,
-//         ),
-//         prefixIcon: Icon(
-//           icon,
-//           color: const Color.fromARGB(255, 10, 190, 106),
-//         ),
-//         border: InputBorder.none,
-//         focusedBorder: OutlineInputBorder(
-//             borderRadius: BorderRadius.circular(15),
-//             borderSide: const BorderSide(
-//               width: 1,
-//               color: Colors.green,
-//             )),
-//         enabledBorder: OutlineInputBorder(
-//             borderRadius: BorderRadius.circular(15),
-//             borderSide: const BorderSide(
-//               width: 1,
-//               color: Colors.green,
-//             )),
-//       ),
-//     ),
-//   );
-// }
 
 Widget InputText(
     BuildContext context,
@@ -136,19 +83,19 @@ Widget InputText(
         ),
         prefixIcon: Icon(
           icon,
-          color: const Color.fromARGB(255, 10, 190, 106),
+          color: const Color(0xFF006837),
         ),
         border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(15),
             borderSide: const BorderSide(
               width: 1,
-              color: Colors.green,
+              color: Color(0xFF006837),
             )),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(15),
           borderSide: const BorderSide(
             width: 1,
-            color: Colors.green,
+            color: Color(0xFF006837),
           ),
         ),
       ),
@@ -187,13 +134,13 @@ Widget InputTextFarmSize(BuildContext context, String hint, String labelhint,
             borderRadius: BorderRadius.circular(15),
             borderSide: const BorderSide(
               width: 1,
-              color: Colors.green,
+              color: Color(0xFF006837),
             )),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(15),
           borderSide: const BorderSide(
             width: 1,
-            color: Colors.green,
+            color: Color(0xFF006837),
           ),
         ),
       ),
@@ -232,13 +179,13 @@ Widget InputTextSoilType(BuildContext context, String hint, String labelhint,
             borderRadius: BorderRadius.circular(15),
             borderSide: const BorderSide(
               width: 1,
-              color: Colors.green,
+              color: Color(0xFF006837),
             )),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(15),
           borderSide: const BorderSide(
             width: 1,
-            color: Colors.green,
+            color: Color(0xFF006837),
           ),
         ),
       ),
@@ -287,13 +234,13 @@ Widget InputTextFarmLocation(
             borderRadius: BorderRadius.circular(15),
             borderSide: const BorderSide(
               width: 1,
-              color: Colors.green,
+              color: Color(0xFF006837),
             )),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(15),
           borderSide: const BorderSide(
             width: 1,
-            color: Colors.green,
+            color: Color(0xFF006837),
           ),
         ),
       ),

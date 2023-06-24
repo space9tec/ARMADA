@@ -1,125 +1,141 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
 
-class ContractCard extends StatelessWidget {
-  final String serviceName;
-  final String serviceImage;
-  final String day;
-  final String userProfile;
-  final String status;
+import '../../../models/contracts.dart';
+import '../../../models/machine.dart';
+import '../../../networkhandler.dart';
+import '../screens.dart';
 
-  const ContractCard({super.key, 
-    required this.serviceName,
-    required this.serviceImage,
-    required this.day,
-    required this.userProfile,
-    required this.status,
-  });
+class ContractList extends StatefulWidget {
+  String contractstatus;
+  ContractList(this.contractstatus, {super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return Card(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: <Widget>[
-          Image.asset(serviceImage),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              serviceName,
-              style: const TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(day),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(userProfile),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(status),
-          ),
-        ],
-      ),
-    );
-  }
+  State<ContractList> createState() => _ContractListState();
 }
 
-class ContractList extends StatelessWidget {
-  const ContractList({super.key});
+class _ContractListState extends State<ContractList> {
+  NetworkHandler networkHandler = NetworkHandler();
+
+  List<ContractsModel> contract = [];
+  // List<Machine> contract = [];
+  MachineM? machine;
+
+  @override
+  void initState() {
+    super.initState();
+    fetchData();
+    // fetchMachine();
+  }
+
+  void fetchData() async {
+    var response = await networkHandler.get("/api/contracts/");
+    List<dynamic> responseData = json.decode(response.body);
+
+    List<dynamic> filteredData = responseData
+        .where((data) => data['status'] == widget.contractstatus)
+        .toList();
+
+    // var responsem = await networkHandler.get("/api/machinery/");
+    //   print(response);
+    // Map<String, dynamic> machineData = json.decode(responsem.body);
+    setState(() {
+      contract =
+          filteredData.map((data) => ContractsModel.fromJson(data)).toList();
+      // machine = MachineM.fromJson(machineData);
+    });
+  }
+  //  void fachemachine() async {
+  //   // try {
+  //   var response = await networkHandler.get("/api/machinery/");
+  //   print(response);
+  //   Map<String, dynamic> machineData = json.decode(response.body);
+  //   print(machineData);
+
+  //   setState(() {
+  //     machine = MachineM.fromJson(machineData);
+  //     fetched = true;
+  //   });
+
+  // }
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      children: [
-        _buildContractCard(
-            'John Doe',
-            'assets/images/tracter1.png',
-            DateTime.now().add(const Duration(days: 2)),
-            'Service 1',
-            'Pending',
-            context),
-        _buildContractCard(
-            'Jane Smith',
-            'assets/images/tracter1.png',
-            DateTime.now().subtract(const Duration(days: 1)),
-            'Service 2',
-            'Completed',
-            context),
-        _buildContractCard(
-            'Bob Johnson',
-            'assets/images/tracter1.png',
-            DateTime.now().add(const Duration(days: 5)),
-            'Service 3',
-            'Rejected',
-            context),
-      ],
+    return ListView.builder(
+      itemCount: contract.length,
+      itemBuilder: (context, index) {
+        final contracts = contract[index];
+        return FutureBuilder(
+          future: _getMachineData(contracts.machineId),
+          builder: (BuildContext context, AsyncSnapshot<Response> snapshot) {
+            if (snapshot.connectionState == ConnectionState.done &&
+                snapshot.hasData) {
+              Map<String, dynamic> machineData =
+                  json.decode(snapshot.data!.body);
+              MachineM machine = MachineM.fromJson(machineData);
+              return _buildContractCard(contracts, machine, context);
+            }
+            return Container(); // or any other loading indicator
+          },
+        );
+      },
     );
   }
 
-  Widget _buildContractCard(String userName, String serviceImage, DateTime date,
-      String serviceName, String status, context) {
+  Future<Response> _getMachineData(String machineId) async {
+    var response = await networkHandler.get("/api/machinery/$machineId");
+    return response;
+  }
+
+  Widget _buildContractCard(
+      ContractsModel contracts, MachineM machine, BuildContext context) {
     return InkWell(
       onTap: () {
-        Navigator.pushNamed(context, '/contrat_detail');
+        // Navigator.pushNamed(context, '/contrat_detail');
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: ((context) => ContractDetailPage(
+                  contractlist: contracts,
+                )),
+          ),
+        );
       },
       child: SizedBox(
-        height: 180,
+        height: MediaQuery.of(context).size.height * 0.23,
         child: Card(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
-            side: const BorderSide(color: Colors.greenAccent, width: 1),
+            side: const BorderSide(color: Color(0xFF006837), width: 1),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               ListTile(
-                leading: const CircleAvatar(
-                  backgroundImage: AssetImage('assets/images/tracter1.png'),
-                ),
-                title: Text(userName),
-                subtitle: Text(date.toString()),
+                leading: CircleAvatar(
+                    backgroundImage: NetworkImage(
+                        "https://armada-server.glitch.me/api/machinery/image/${machine.imageFile}")),
+                title: Text(machine.manufacturer),
+                subtitle: Text("${machine.year}"),
               ),
               Row(
                 children: [
-                  Image.asset(
-                    serviceImage,
-                    fit: BoxFit.cover,
-                    width: 100,
-                    height: 70.0,
-                  ),
                   Padding(
                     padding: const EdgeInsets.all(16.0),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(serviceName,
+                        Text("Start date: ${contracts.rent_start_time}",
                             style: const TextStyle(
                                 fontSize: 20.0, fontWeight: FontWeight.bold)),
                         const SizedBox(height: 8.0),
-                        Text(status),
+                        Text("End date: ${contracts.rent_end_time}",
+                            style: const TextStyle(
+                                fontSize: 20.0, fontWeight: FontWeight.bold)),
+                        const SizedBox(height: 8.0),
+                        Text(contracts.status),
                       ],
                     ),
                   ),
@@ -160,12 +176,6 @@ class _ContractPageState extends State<ContractPage>
   }
 
   @override
-  void dispose() {
-    _tabController.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -183,16 +193,25 @@ class _ContractPageState extends State<ContractPage>
           controller: _tabController,
           tabs: const [
             Tab(text: 'Pending'),
-            Tab(text: 'Completed'),
+            Tab(text: 'Accepted'),
             Tab(text: 'Rejected'),
           ],
+          indicatorColor: Colors.white,
+          indicatorSize: TabBarIndicatorSize.tab,
+          indicatorWeight: 3,
+          labelColor: Colors.white,
+          labelStyle: TextStyle(fontSize: 15.0, fontWeight: FontWeight.bold),
         ),
       ),
       // body: Column(
 
       body: TabBarView(
         controller: _tabController,
-        children: const [ContractList(), ContractList(), ContractList()],
+        children: [
+          ContractList("In Progress"),
+          ContractList("Accepted"),
+          ContractList("Rejected")
+        ],
       ),
     );
   }

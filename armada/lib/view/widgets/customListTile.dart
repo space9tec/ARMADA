@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:armada/networkhandler.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:bot_toast/bot_toast.dart';
 
 class CustomListTile extends StatefulWidget {
   final String title;
@@ -41,7 +42,7 @@ class _CustomListTileState extends State<CustomListTile> {
               break;
             case 2:
               value.setCurrentDrawer(2);
-              Navigator.pushNamed(context, '/login');
+              Navigator.pushNamed(context, '/');
               break;
           }
         },
@@ -113,11 +114,11 @@ class _BCustomListTileState extends State<BCustomListTile> {
           switch (widget.ind) {
             case 0:
               value.setCurrentDrawer(3);
-              Navigator.pushNamed(context, '/Profilee');
+              Navigator.pushNamed(context, '/service_provider_setting');
               break;
             case 1:
               value.setCurrentDrawer(4);
-              Navigator.pushNamed(context, '/Farme');
+              Navigator.pushNamed(context, '/help');
               break;
             case 2:
               value.setCurrentDrawer(5);
@@ -165,6 +166,12 @@ class _BCustomListTileState extends State<BCustomListTile> {
     if (token != null) {
       if (response.statusCode == 200) {
         await storage.delete(key: "token");
+        BotToast.showText(
+          text: "Logged out",
+          duration: Duration(seconds: 2),
+          contentColor: Colors.white,
+          textStyle: TextStyle(fontSize: 16.0, color: Color(0xFF006837)),
+        );
         Navigator.of(context)
             .pushNamedAndRemoveUntil('/guest', (Route<dynamic> route) => false);
         print("Logedout");

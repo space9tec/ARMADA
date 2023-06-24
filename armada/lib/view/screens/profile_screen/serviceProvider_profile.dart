@@ -1,8 +1,12 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 
+import '../../../models/machine.dart';
+import '../../../networkhandler.dart';
 import '../../widgets/widgets.dart';
 
-class ServiceProviderProfile extends StatelessWidget {
+class ServiceProviderProfile extends StatefulWidget {
   static const String routeName = '/serviceProvider_profile';
 
   static Route route() {
@@ -19,6 +23,30 @@ class ServiceProviderProfile extends StatelessWidget {
   final bool showFollowBottomInProfile;
 
   @override
+  State<ServiceProviderProfile> createState() => _ServiceProviderProfileState();
+}
+
+class _ServiceProviderProfileState extends State<ServiceProviderProfile> {
+  NetworkHandler networkHandler = NetworkHandler();
+  List<MachineM> machine = [];
+  @override
+  void initState() {
+    super.initState();
+
+    fetchData();
+  }
+
+  void fetchData() async {
+    var response = await networkHandler.get("/api/machinery/");
+
+    setState(() {
+      machine = (json.decode(response.body) as List)
+          .map((data) => MachineM.fromJson(data))
+          .toList();
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -27,7 +55,7 @@ class ServiceProviderProfile extends StatelessWidget {
         actions: [
           Padding(
             padding: const EdgeInsets.all(10.0),
-            child: showFollowBottomInProfile == false
+            child: widget.showFollowBottomInProfile == false
                 ? InkWell(
                     onTap: () {},
                     child: IconButton(
@@ -50,7 +78,7 @@ class ServiceProviderProfile extends StatelessWidget {
           //   ),
           // ),
         ],
-        leading: showFollowBottomInProfile == true
+        leading: widget.showFollowBottomInProfile == true
             ? Padding(
                 padding: const EdgeInsets.only(left: 20),
                 child: IconButton(
@@ -133,7 +161,7 @@ class ServiceProviderProfile extends StatelessWidget {
                         ),
                       ],
                     ),
-                    showFollowBottomInProfile == true
+                    widget.showFollowBottomInProfile == true
                         ? CustomButton(onTap: () {}, text: "Follow")
                         : const SizedBox(
                             height: 20,
@@ -159,12 +187,18 @@ class ServiceProviderProfile extends StatelessWidget {
                     crossAxisCount: 2,
                     shrinkWrap: true,
                     childAspectRatio: 1 / 1.3,
-                    children: List.generate(
-                      5,
-                      (index) => CustomProductItemWidget(
-                        showUser: false,
-                      ),
-                    ),
+                    children: List.generate(machine.length,
+                        // (index) => CustomProductItemWidget(),
+                        (index) {
+                      final machines = machine[index];
+
+                      return CustomProductItemWidget(machines);
+                    }
+                        // 5,
+                        // (index) => CustomProductItemWidget(
+                        //   showUser: false,
+                        // ),
+                        ),
                   ),
                 ],
               ),

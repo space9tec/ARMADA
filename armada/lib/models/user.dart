@@ -1,14 +1,17 @@
 class User {
-  final String imagePath;
   final String name;
-  final String email;
+  final String lastname;
   final String phone;
-  final String about;
   const User({
-    required this.imagePath,
     required this.name,
-    required this.email,
+    required this.lastname,
     required this.phone,
-    required this.about,
   });
+  factory User.fromJson(Map<String, dynamic> json) {
+    return User(
+      name: json['first_name'],
+      lastname: json['last_name'],
+      phone: json['phone'],
+    );
+  }
 }

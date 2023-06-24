@@ -1,6 +1,7 @@
 import 'package:armada/view/screens/service_provider_screen/add.dart';
 import 'package:flutter/material.dart';
 import '../view/screens/farm_screen/edit_farm_screen.dart';
+import '../view/screens/help_screen/help_screen.dart';
 import '../view/screens/home_screen/guest_screen.dart';
 import '../view/screens/screens.dart';
 
@@ -29,8 +30,7 @@ class ROUTE {
         return NewPassword.route();
       case MainScreen.routeName:
         return MainScreen.route();
-      case ItemPage.routeName:
-        return ItemPage.route();
+
       case VerifyFarm.routeName:
         return VerifyFarm.route();
       case FarmScreen.routeName:
@@ -57,8 +57,11 @@ class ROUTE {
         return MachineScreen.route();
       case ContractPage.routeName:
         return ContractPage.route();
-      case ContractDetailPage.routeName:
-        return ContractDetailPage.route();
+
+      case SettingsPage.routeName:
+        return SettingsPage.route();
+      case Help.routeName:
+        return Help.route();
       default:
         return _errorRoute();
     }

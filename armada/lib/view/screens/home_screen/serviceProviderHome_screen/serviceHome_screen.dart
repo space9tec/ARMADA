@@ -1,5 +1,9 @@
+import 'dart:convert';
+
 import 'package:armada/utils/helper_widget.dart';
 import 'package:flutter/material.dart';
+import '../../../../models/machine.dart';
+import '../../../../networkhandler.dart';
 import '../../../widgets/widgets.dart';
 
 class ServiceProviderHomeScreen extends StatefulWidget {
@@ -21,6 +25,23 @@ class ServiceProviderHomeScreen extends StatefulWidget {
 }
 
 class _ServiceProviderHomeScreenState extends State<ServiceProviderHomeScreen> {
+  NetworkHandler networkHandler = NetworkHandler();
+  List<MachineM> machine = [];
+  void initState() {
+    super.initState();
+    fetchData();
+  }
+
+  void fetchData() async {
+    var response = await networkHandler.get("/api/machinery/");
+
+    setState(() {
+      machine = (json.decode(response.body) as List)
+          .map((data) => MachineM.fromJson(data))
+          .toList();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -40,8 +61,8 @@ class _ServiceProviderHomeScreenState extends State<ServiceProviderHomeScreen> {
           child: Column(
             children: [
               SizedBox(
-                width: MediaQuery.of(context).size.width - 100,
-                height: 65,
+                width: MediaQuery.of(context).size.width * 0.75,
+                height: MediaQuery.of(context).size.height * 0.08,
                 child: Padding(
                   padding: const EdgeInsets.all(10.0),
                   child: TextField(
@@ -104,7 +125,7 @@ class _ServiceProviderHomeScreenState extends State<ServiceProviderHomeScreen> {
         child: Column(
           children: [
             SizedBox(
-              height: 600.0,
+              height: MediaQuery.of(context).size.height * 0.79,
               child: Column(
                 children: [
                   addVerticalSpace(25),
@@ -112,10 +133,13 @@ class _ServiceProviderHomeScreenState extends State<ServiceProviderHomeScreen> {
                     child: GridView.count(
                       crossAxisCount: 2,
                       childAspectRatio: 1 / 1.5,
-                      children: List.generate(
-                        17,
-                        (index) => CustomProductItemWidget(),
-                      ),
+                      children: List.generate(machine.length,
+                          // (index) => CustomProductItemWidget(),
+                          (index) {
+                        final machines = machine[index];
+
+                        return CustomProductItemWidget(machines);
+                      }),
                     ),
                   ),
                 ],

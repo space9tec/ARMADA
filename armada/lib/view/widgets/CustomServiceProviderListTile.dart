@@ -39,7 +39,7 @@ class _CustomServiceProviderListTileState
               break;
             case 2:
               value.setCurrentDrawer(2);
-              Navigator.pushNamed(context, '/login');
+              Navigator.pushNamed(context, '/');
               break;
           }
         },
@@ -88,7 +88,7 @@ class BCustomServiceProviderListTile extends StatefulWidget {
   final IconData icon;
 
   final int ind;
-
+// baniiboy
   BCustomServiceProviderListTile({
     super.key,
     required this.title,
@@ -111,15 +111,15 @@ class _BCustomServiceProviderListTileState
           switch (widget.ind) {
             case 0:
               value.setCurrentDrawer(3);
-              Navigator.pushNamed(context, '/Profilee');
+              Navigator.pushNamed(context, '/service_provider_setting');
               break;
             case 1:
               value.setCurrentDrawer(4);
-              Navigator.pushNamed(context, '/Farme');
+              Navigator.pushNamed(context, '/');
               break;
             case 2:
               value.setCurrentDrawer(5);
-              Navigator.pushNamed(context, '/logine');
+              Navigator.pushNamed(context, '/');
               break;
           }
         },

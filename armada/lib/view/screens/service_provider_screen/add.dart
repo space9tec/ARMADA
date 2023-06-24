@@ -7,6 +7,7 @@ import '../../../provider/machine_status_provider.dart';
 import '../../widgets/widgets.dart';
 import 'package:armada/networkhandler.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:bot_toast/bot_toast.dart';
 
 class AddMachine extends StatefulWidget {
   static const String routeName = '/AddMachine';
@@ -163,17 +164,6 @@ class _AddMachineState extends State<AddMachine> {
                 if (_currentTractorAttachmentsType == 'Other')
                   _buildSedanInputs(_currentTractorAttachmentsType),
               addVerticalSpace(50),
-              // if (_currentCarType == 'TractorAttachments' &&
-              //     _currentTractorAttachmentsType != '')
-              //   Row(
-              //     mainAxisAlignment: MainAxisAlignment.center,
-              //     children: [
-              //       Button(context, "Verify", '/',
-              //           Theme.of(context).primaryColor, 200, 50),
-              //       addHorizontalSpace(25),
-              //       Button(context, "cancel", '/', Colors.grey, 325, 40),
-              //     ],
-              //   ),
             ],
           ),
         ),
@@ -187,41 +177,54 @@ class _AddMachineState extends State<AddMachine> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          TextFormField(
-            controller: _manufacturer,
-            decoration: const InputDecoration(labelText: 'Manufacturer'),
-            validator: (value) {
-              if (value == null) {
-                return "Can not be Empity";
-              }
-              return null;
-            },
+          SizedBox(
+            width: MediaQuery.of(context).size.width * 0.71,
+            height: MediaQuery.of(context).size.height * 0.08,
+            child: TextFormField(
+              controller: _manufacturer,
+              decoration: const InputDecoration(labelText: 'Manufacturer'),
+              validator: (value) {
+                if (value == null) {
+                  return "Can not be Empity";
+                }
+                return null;
+              },
+            ),
           ),
-          TextFormField(
-            controller: _model,
-            decoration: const InputDecoration(labelText: 'Model'),
-            validator: (value) {
-              if (value == null) {
-                return "Can not be Empity";
-              }
-              return null;
-            },
+          SizedBox(
+            width: MediaQuery.of(context).size.width * 0.71,
+            height: MediaQuery.of(context).size.height * 0.08,
+            child: TextFormField(
+              controller: _model,
+              decoration: const InputDecoration(labelText: 'Model'),
+              validator: (value) {
+                if (value == null) {
+                  return "Can not be Empity";
+                }
+                return null;
+              },
+            ),
           ),
           if (machintype == "Tractor") tractor(),
           if (machintype == "Combine Harvester") Combineharvester(),
           if (machintype == "Thresher") Thresher(),
           if (machintype == "Other") Other(),
-          TextFormField(
-            controller: _region,
-            decoration: const InputDecoration(labelText: 'Region'),
-            validator: (value) {
-              if (value == null) {
-                return "Can not be Empity";
-              }
-              return null;
-            },
-            onSaved: (value) {},
+          SizedBox(
+            width: MediaQuery.of(context).size.width * 0.71,
+            height: MediaQuery.of(context).size.height * 0.08,
+            child: TextFormField(
+              controller: _region,
+              decoration: const InputDecoration(labelText: 'Region'),
+              validator: (value) {
+                if (value == null) {
+                  return "Can not be Empity";
+                }
+                return null;
+              },
+              onSaved: (value) {},
+            ),
           ),
+          addVerticalSpace(5),
           machineStatusSelector(context),
           Row(
             children: [
@@ -275,7 +278,13 @@ class _AddMachineState extends State<AddMachine> {
 
                         if (response.statusCode == 201) {
                           print("Posted");
-
+                          BotToast.showText(
+                            text: "successfully Posted.",
+                            duration: Duration(seconds: 2),
+                            contentColor: Colors.white,
+                            textStyle: TextStyle(
+                                fontSize: 16.0, color: Color(0xFF006837)),
+                          );
                           Navigator.pushNamed(context, '/');
                         } else {
                           print("faild");
@@ -305,7 +314,13 @@ class _AddMachineState extends State<AddMachine> {
 
                         if (response.statusCode == 201) {
                           print("Posted");
-
+                          BotToast.showText(
+                            text: "successfully Posted.",
+                            duration: Duration(seconds: 2),
+                            contentColor: Colors.white,
+                            textStyle: TextStyle(
+                                fontSize: 16.0, color: Color(0xFF006837)),
+                          );
                           Navigator.pushNamed(context, '/');
                         } else {
                           print("faild");
@@ -335,7 +350,13 @@ class _AddMachineState extends State<AddMachine> {
 
                         if (response.statusCode == 201) {
                           print("Posted");
-
+                          BotToast.showText(
+                            text: "successfully Posted.",
+                            duration: Duration(seconds: 2),
+                            contentColor: Colors.white,
+                            textStyle: TextStyle(
+                                fontSize: 16.0, color: Color(0xFF006837)),
+                          );
                           Navigator.pushNamed(context, '/');
                         } else {
                           print("faild");
@@ -363,7 +384,13 @@ class _AddMachineState extends State<AddMachine> {
 
                         if (response.statusCode == 201) {
                           print("Posted");
-
+                          BotToast.showText(
+                            text: "successfully Posted.",
+                            duration: Duration(seconds: 2),
+                            contentColor: Colors.white,
+                            textStyle: TextStyle(
+                                fontSize: 16.0, color: Color(0xFF006837)),
+                          );
                           Navigator.pushNamed(context, '/');
                         } else {
                           print("faild");
@@ -393,7 +420,13 @@ class _AddMachineState extends State<AddMachine> {
 
                         if (response.statusCode == 201) {
                           print("Posted");
-
+                          BotToast.showText(
+                            text: "successfully Posted.",
+                            duration: Duration(seconds: 2),
+                            contentColor: Colors.white,
+                            textStyle: TextStyle(
+                                fontSize: 16.0, color: Color(0xFF006837)),
+                          );
                           Navigator.pushNamed(context, '/');
                         } else {
                           print("faild");
@@ -411,15 +444,15 @@ class _AddMachineState extends State<AddMachine> {
                     backgroundColor: Theme.of(context).primaryColor,
                   ),
                   child: Container(
-                    width: MediaQuery.of(context).size.width - 200,
-                    height: 50,
+                    width: MediaQuery.of(context).size.width * 0.5,
+                    height: MediaQuery.of(context).size.height * 0.06,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(15),
                       color: Theme.of(context).primaryColor,
                     ),
                     child: const Center(
                       child: Text(
-                        "Verify",
+                        "Post",
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 20,
@@ -429,8 +462,8 @@ class _AddMachineState extends State<AddMachine> {
                   ),
                 ),
               ),
-              addHorizontalSpace(25),
-              Button(context, "cancel", '/', Colors.grey, 325, 40),
+              // addHorizontalSpace(25),
+              // Button(context, "cancel", '/', Colors.grey, 325, 40),
             ],
           ),
         ],
@@ -558,36 +591,48 @@ class _AddMachineState extends State<AddMachine> {
     return Container(
       child: Column(
         children: [
-          TextFormField(
-            controller: _year,
-            decoration: const InputDecoration(labelText: 'Year'),
-            validator: (value) {
-              if (value == null) {
-                return "Can not be Empity";
-              }
-              return null;
-            },
+          SizedBox(
+            width: MediaQuery.of(context).size.width * 0.71,
+            height: MediaQuery.of(context).size.height * 0.08,
+            child: TextFormField(
+              controller: _year,
+              decoration: const InputDecoration(labelText: 'Year'),
+              validator: (value) {
+                if (value == null) {
+                  return "Can not be Empity";
+                }
+                return null;
+              },
+            ),
           ),
-          TextFormField(
-            controller: _horsepower,
-            decoration: const InputDecoration(labelText: 'Horsepower '),
-            keyboardType: TextInputType.number,
-            validator: (value) {
-              if (value == null) {
-                return "Can not be Empity";
-              }
-              return null;
-            },
+          SizedBox(
+            width: MediaQuery.of(context).size.width * 0.71,
+            height: MediaQuery.of(context).size.height * 0.08,
+            child: TextFormField(
+              controller: _horsepower,
+              decoration: const InputDecoration(labelText: 'Horsepower '),
+              keyboardType: TextInputType.number,
+              validator: (value) {
+                if (value == null) {
+                  return "Can not be Empity";
+                }
+                return null;
+              },
+            ),
           ),
-          TextFormField(
-            controller: _hourmeter,
-            decoration: const InputDecoration(labelText: 'Hour meter'),
-            validator: (value) {
-              if (value == null) {
-                return "Can not be Empity";
-              }
-              return null;
-            },
+          SizedBox(
+            width: MediaQuery.of(context).size.width * 0.71,
+            height: MediaQuery.of(context).size.height * 0.08,
+            child: TextFormField(
+              controller: _hourmeter,
+              decoration: const InputDecoration(labelText: 'Hour meter'),
+              validator: (value) {
+                if (value == null) {
+                  return "Can not be Empity";
+                }
+                return null;
+              },
+            ),
           ),
         ],
       ),

@@ -21,7 +21,7 @@ class ServiceProvidernavigationDrawer extends StatelessWidget {
               },
               child: const Padding(
                 padding: EdgeInsets.only(left: 12.0),
-                child: Text('Login'),
+                child: Text('Loginn'),
               ),
             ),
             accountEmail: GestureDetector(
@@ -43,7 +43,9 @@ class ServiceProvidernavigationDrawer extends StatelessWidget {
             ),
           ),
           Container(
-            height: 370,
+            // height: 370,
+            height: MediaQuery.of(context).size.height * 0.43,
+
             child: ListView.builder(
               itemBuilder: (context, index) {
                 return CustomServiceProviderListTile(
@@ -60,7 +62,9 @@ class ServiceProvidernavigationDrawer extends StatelessWidget {
             color: Colors.black,
           ),
           Container(
-            height: 300,
+            // height: 300,
+            height: MediaQuery.of(context).size.height * 0.3,
+
             child: ListView.builder(
               itemBuilder: (context, index) {
                 return BCustomListTile(

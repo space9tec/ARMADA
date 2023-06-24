@@ -1,6 +1,10 @@
+import 'dart:convert';
+
 import 'package:armada/utils/helper_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../../../models/machine.dart';
+import '../../../networkhandler.dart';
 import '../../../provider/drop_down_provider.dart';
 import '../../widgets/widgets.dart';
 import '../screens.dart';
@@ -24,6 +28,25 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  NetworkHandler networkHandler = NetworkHandler();
+  List<MachineM> machine = [];
+  void initState() {
+    _pageController = PageController(viewportFraction: 0.8);
+
+    super.initState();
+    fetchData();
+  }
+
+  void fetchData() async {
+    var response = await networkHandler.get("/api/machinery/");
+
+    setState(() {
+      machine = (json.decode(response.body) as List)
+          .map((data) => MachineM.fromJson(data))
+          .toList();
+    });
+  }
+
   late PageController _pageController;
   String? userRole;
   List<String> images = [
@@ -33,20 +56,8 @@ class _HomeScreenState extends State<HomeScreen> {
   ];
   final storage = new FlutterSecureStorage();
 
-  // Provider.of<DropDownProvider>(context, listen: false).selectedAccount
   int activePage = 1;
   bool circulat = false;
-  @override
-  void initState() {
-    super.initState();
-    // role();
-    _pageController = PageController(viewportFraction: 0.8);
-  }
-
-  // void role() async {
-  //   userRole = await storage.read(key: "userrole");
-  //   circulat = true;
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -87,7 +98,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             hintText: 'Search',
                             prefixIcon: const Icon(
                               Icons.search,
-                              color: Color.fromARGB(255, 10, 190, 106),
+                              color: Color.fromARGB(255, 6, 163, 90),
                             ),
                             border: InputBorder.none,
                             contentPadding: EdgeInsets.zero,
@@ -148,88 +159,73 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
             body: SingleChildScrollView(
-              scrollDirection: Axis.vertical,
-              physics: const BouncingScrollPhysics(
-                  decelerationRate: ScrollDecelerationRate.fast),
-              child: Column(
-                children: [
-                  SizedBox(
-                    height: MediaQuery.of(context).size.height,
-                    child: TabBarView(
-                      children: [
-                        Center(
-                          child: Column(
-                            children: [
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Container(
-                                    decoration: BoxDecoration(
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: const Color.fromARGB(
-                                                  255, 192, 233, 192)
-                                              .withOpacity(0.5),
-                                          blurRadius: 3,
-                                        ),
-                                      ],
-                                      borderRadius: const BorderRadius.all(
-                                        Radius.circular(15),
-                                      ),
-                                    ),
-                                    width: MediaQuery.of(context).size.width,
-                                    height: MediaQuery.of(context).size.height *
-                                        0.24,
-                                    child: PageView.builder(
-                                        itemCount: images.length,
-                                        controller: _pageController,
-                                        onPageChanged: (page) {
-                                          setState(() {
-                                            activePage = page;
-                                          });
-                                        },
-                                        pageSnapping: true,
-                                        itemBuilder: (context, pagePosition) {
-                                          return GestureDetector(
-                                            onTap: () {
-                                              Navigator.pushNamed(
-                                                  context, '/main_service');
-                                            },
-                                            child: Container(
-                                                margin: const EdgeInsets.all(5),
-                                                child: Image.asset(
-                                                    images[pagePosition])),
-                                          );
-                                        }),
-                                  ),
-                                  Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children:
-                                          indicators(images.length, activePage))
-                                ],
-                              ),
-                              addVerticalSpace(25),
-                              Expanded(
-                                child: GridView.count(
-                                  physics: const NeverScrollableScrollPhysics(),
-                                  crossAxisCount: 2,
-                                  childAspectRatio: 1 / 1.5,
-                                  children: List.generate(
-                                    5,
-                                    (index) => CustomProductItemWidget(),
-                                  ),
+              physics: const NeverScrollableScrollPhysics(),
+              child: SizedBox(
+                height: MediaQuery.of(context).size.height * 0.79,
+                child: TabBarView(
+                  children: [
+                    SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          Container(
+                            decoration: BoxDecoration(
+                              boxShadow: [
+                                BoxShadow(
+                                  color:
+                                      const Color.fromARGB(255, 192, 233, 192)
+                                          .withOpacity(0.5),
+                                  blurRadius: 3,
                                 ),
+                              ],
+                              borderRadius: const BorderRadius.all(
+                                Radius.circular(15),
                               ),
-                            ],
+                            ),
+                            width: MediaQuery.of(context).size.width,
+                            height: MediaQuery.of(context).size.height * 0.24,
+                            child: PageView.builder(
+                                itemCount: images.length,
+                                controller: _pageController,
+                                onPageChanged: (page) {
+                                  setState(() {
+                                    activePage = page;
+                                  });
+                                },
+                                pageSnapping: true,
+                                itemBuilder: (context, pagePosition) {
+                                  return GestureDetector(
+                                    onTap: () {
+                                      // Navigator.pushNamed(
+                                      //     context, '/main_service');
+                                    },
+                                    child: Container(
+                                        margin: const EdgeInsets.all(5),
+                                        child:
+                                            Image.asset(images[pagePosition])),
+                                  );
+                                }),
                           ),
-                        ),
-                        const Center(child: Text("Insert Your farm location")),
-                        const Center(child: Text("Insert Your farm location")),
-                      ],
+                          Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: indicators(images.length, activePage)),
+                          addVerticalSpace(25),
+                          GridView.count(
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            crossAxisCount: 2,
+                            childAspectRatio: 1 / 1.5,
+                            children: List.generate(machine.length, (index) {
+                              final machines = machine[index];
+                              return CustomProductItemWidget(machines);
+                            }),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                ],
+                    const Center(child: Text("Insert Your farm location")),
+                    const Center(child: Text("Insert Your farm location")),
+                  ],
+                ),
               ),
             ),
             drawer: navigationDrawer(),

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:armada/networkhandler.dart';
@@ -138,7 +140,7 @@ class _UploadFarmState extends State<UploadFarm> {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            InputTextFarmSize(context, "", "Soil type",
+                            InputTextSoilType(context, "", "Soil type",
                                 TextInputType.text, _soiltype),
                           ],
                         ),
@@ -151,9 +153,9 @@ class _UploadFarmState extends State<UploadFarm> {
                             InputTextFarmLocation(
                                 context,
                                 "",
-                                "Typ",
+                                "Polygon location",
                                 false,
-                                Icons.person_3_sharp,
+                                Icons.landscape_rounded,
                                 TextInputType.number,
                                 _polygonlocation),
                           ],
@@ -226,7 +228,12 @@ class _UploadFarmState extends State<UploadFarm> {
 
   addCoverPhoto() {
     return InkWell(
-      onTap: () {},
+      onTap: () {
+        showModalBottomSheet(
+          context: context,
+          builder: ((builder) => bottomSheat()),
+        );
+      },
       child: DottedBorder(
         dashPattern: const [15, 5],
         color: const Color.fromARGB(255, 48, 141, 51),
@@ -236,32 +243,111 @@ class _UploadFarmState extends State<UploadFarm> {
         child: SizedBox(
           width: double.infinity,
           height: MediaQuery.of(context).size.height * 0.17, //141
-          child: const Padding(
-            padding: EdgeInsets.all(20),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Icon(
-                  Icons.photo,
-                  size: 65,
-                  color: Colors.grey,
-                ),
-                Text(
-                  "Add Cove Photo",
-                  style: TextStyle(
-                      fontSize: 17,
-                      fontWeight: FontWeight.bold,
-                      color: Color.fromARGB(255, 48, 141, 51)),
-                ),
-                Text(
-                  "Up to 12mp ",
-                  style: TextStyle(color: Colors.grey),
-                )
-              ],
-            ),
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: imageFile == null
+                ? InkWell(
+                    onTap: () {
+                      showModalBottomSheet(
+                        context: context,
+                        builder: ((builder) => bottomSheat()),
+                      );
+                    },
+                    child: const Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Icon(
+                          Icons.photo,
+                          size: 65,
+                          color: Colors.grey,
+                        ),
+                        Text(
+                          "Add Farm Photo",
+                          style: TextStyle(
+                              fontSize: 17,
+                              fontWeight: FontWeight.bold,
+                              color: Color.fromARGB(255, 48, 141, 51)),
+                        ),
+                        Text(
+                          "Up to 12mp ",
+                          style: TextStyle(color: Colors.grey),
+                        )
+                      ],
+                    ),
+                  )
+                : Ink.image(
+                    image: imageFile == null
+                        ? image.image
+                        : FileImage(File(imageFile!.path)),
+                    width: 60,
+                    height: 60,
+                    child: InkWell(onTap: () {
+                      showModalBottomSheet(
+                        context: context,
+                        builder: ((builder) => bottomSheat()),
+                      );
+                    }),
+                  ),
           ),
         ),
       ),
     );
+  }
+
+  Widget bottomSheat() {
+    return Container(
+      height: MediaQuery.of(context).size.height * 0.13,
+      width: MediaQuery.of(context).size.width,
+      margin: const EdgeInsets.symmetric(
+        horizontal: 20,
+        vertical: 20,
+      ),
+      child: Column(children: [
+        const Text(
+          "Choose  Farm  Photo",
+          style: TextStyle(fontSize: 20),
+        ),
+        const SizedBox(
+          height: 20,
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            ElevatedButton.icon(
+              onPressed: () {
+                takePhote(ImageSource.camera);
+              },
+              icon: const Icon(Icons.camera),
+              label: const Text("Camera"),
+              style: ElevatedButton.styleFrom(
+                elevation: 0,
+                backgroundColor:
+                    Theme.of(context).primaryColor, // Change button color here
+              ),
+            ),
+            ElevatedButton.icon(
+              onPressed: () {
+                takePhote(ImageSource.gallery);
+              },
+              icon: const Icon(Icons.image),
+              label: const Text("Gallery"),
+              style: ElevatedButton.styleFrom(
+                elevation: 0,
+                backgroundColor:
+                    Theme.of(context).primaryColor, // Change button color here
+              ),
+            )
+          ],
+        )
+      ]),
+    );
+  }
+
+  void takePhote(ImageSource source) async {
+    XFile? pickedFile = await picker.pickImage(source: source);
+
+    setState(() {
+      imageFile = pickedFile;
+    });
   }
 }

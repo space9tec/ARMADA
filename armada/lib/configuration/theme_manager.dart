@@ -5,12 +5,12 @@ ThemeData customtheme() {
   return ThemeData(
     scaffoldBackgroundColor: Colors.white,
     // fontFamily: 'Avenir',
-    primaryColor: Color(0xFF0ABE6A),
+    primaryColor: Color(0xFF006837),
 // #006837
     textTheme: textTheme(),
     bottomAppBarTheme: bottomAppBarThem(),
 
-    dialogBackgroundColor: const Color.fromARGB(255, 10, 190, 106),
+    dialogBackgroundColor: const Color(0xFF006837),
   );
 }
 
@@ -27,7 +27,7 @@ TextTheme textTheme() {
         fontWeight: FontWeight.w400,
       ),
       displaySmall: GoogleFonts.poppins(
-        color: const Color.fromARGB(255, 10, 190, 106),
+        color: const Color(0xFF006837),
         fontSize: 14,
         fontWeight: FontWeight.bold,
       ),
@@ -42,7 +42,7 @@ TextTheme textTheme() {
         fontWeight: FontWeight.bold,
       ),
       bodySmall: GoogleFonts.poppins(
-        color: const Color.fromARGB(255, 10, 190, 106),
+        color: const Color(0xFF006837),
         fontSize: 8,
         fontWeight: FontWeight.bold,
       ),
@@ -51,7 +51,7 @@ TextTheme textTheme() {
         fontSize: 21,
       ),
       titleMedium: GoogleFonts.poppins(
-        color: const Color.fromARGB(255, 10, 190, 106),
+        color: const Color(0xFF006837),
         fontSize: 18,
       ),
       titleSmall: GoogleFonts.poppins(
@@ -62,6 +62,6 @@ TextTheme textTheme() {
 
 BottomAppBarTheme bottomAppBarThem() {
   return const BottomAppBarTheme(
-    color: Color.fromARGB(255, 8, 204, 113),
+    color: Color(0xFF006837),
   );
 }

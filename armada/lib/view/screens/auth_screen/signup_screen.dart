@@ -43,6 +43,18 @@ class _SignUpState extends State<SignUp> {
   NetworkHandler networkHandler = NetworkHandler();
   bool validate = false;
   String? errorText;
+
+  // bool _passwordsMatch = true;
+
+  String? _validateConfirmPassword(String value) {
+    if (value.isEmpty) {
+      return 'Please confirm your password.';
+    } else if (value != _passwordcontroller.text) {
+      return 'Passwords do not match.';
+    }
+    return null;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -95,6 +107,9 @@ class _SignUpState extends State<SignUp> {
                     controller: _passwordcontroller,
                     keyboardType: TextInputType.text,
                     obscureText: isHidden,
+                    // onChanged: (_) {
+                    //   _checkPasswordsMatch();
+                    // },
                     validator: (value) {
                       if (value == null || value.length < 4) {
                         return "More than 4 character needed";
@@ -113,7 +128,7 @@ class _SignUpState extends State<SignUp> {
                       ),
                       prefixIcon: const Icon(
                         Icons.lock_sharp,
-                        color: Color.fromARGB(255, 10, 190, 106),
+                        color: Color(0xFF006837),
                       ),
                       suffixIcon: IconButton(
                         onPressed: _togglePasswordView,
@@ -124,21 +139,21 @@ class _SignUpState extends State<SignUp> {
                               )
                             : const Icon(
                                 Icons.visibility,
-                                color: Color.fromARGB(255, 10, 190, 106),
+                                color: Color(0xFF006837),
                               ),
                       ),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(15),
                         borderSide: const BorderSide(
                           width: 1,
-                          color: Colors.green,
+                          color: Color(0xFF006837),
                         ),
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(15),
                         borderSide: const BorderSide(
                           width: 1,
-                          color: Colors.green,
+                          color: Color(0xFF006837),
                         ),
                       ),
                     ),
@@ -152,9 +167,14 @@ class _SignUpState extends State<SignUp> {
                     controller: _confirmPasswordcontroller,
                     keyboardType: TextInputType.text,
                     obscureText: isHiddenConfirm,
+                    // onChanged: (_) {
+                    //   _checkPasswordsMatch();
+                    // },
                     validator: (value) {
                       if (value == null || value.length < 4) {
                         return "More than 4 character needed";
+                      } else if (value != _passwordcontroller.text) {
+                        return "Password dont match.";
                       }
                       return null;
                     },
@@ -170,7 +190,7 @@ class _SignUpState extends State<SignUp> {
                       ),
                       prefixIcon: const Icon(
                         Icons.lock_sharp,
-                        color: Color.fromARGB(255, 10, 190, 106),
+                        color: Color(0xFF006837),
                       ),
                       suffixIcon: IconButton(
                         onPressed: _toggleConfirmPasswordView,
@@ -181,21 +201,21 @@ class _SignUpState extends State<SignUp> {
                               )
                             : const Icon(
                                 Icons.visibility,
-                                color: Color.fromARGB(255, 10, 190, 106),
+                                color: Color(0xFF006837),
                               ),
                       ),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(15),
                         borderSide: const BorderSide(
                           width: 1,
-                          color: Colors.green,
+                          color: Color(0xFF006837),
                         ),
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(15),
                         borderSide: const BorderSide(
                           width: 1,
-                          color: Colors.green,
+                          color: Color(0xFF006837),
                         ),
                       ),
                     ),
@@ -231,6 +251,7 @@ class _SignUpState extends State<SignUp> {
                       onTap: () async {
                         await checkUser();
                         _selectedAccountType = value.selectedAccount;
+                        // if (_passwordsMatch) {
                         if (formKey.currentState!.validate() && validate) {
                           Map<String, String> data = {
                             "first_name": _firstNamecontroller.text,
@@ -258,6 +279,7 @@ class _SignUpState extends State<SignUp> {
                             });
                           }
                         }
+                        // }
                       },
                       child: Container(
                         width: MediaQuery.of(context).size.width * 0.65,

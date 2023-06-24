@@ -25,7 +25,7 @@ class _EditfarmState extends State<Editfarm> {
 
   @override
   Widget build(BuildContext context) {
-    const user = UserPreferences.myUser;
+    // const user = UserPreferences.myUser;
 
     return Scaffold(
       appBar: AppBar(
@@ -44,10 +44,10 @@ class _EditfarmState extends State<Editfarm> {
           const SizedBox(
             height: 20,
           ),
-          ProfileEdit(
-            imagePath: user.imagePath,
-            onClicked: () async {},
-          ),
+          // ProfileEdit(
+          //   imagePath: user.imagePath,
+          //   onClicked: () async {},
+          // ),
           const SizedBox(
             height: 35,
           ),
@@ -138,7 +138,7 @@ class _EditfarmState extends State<Editfarm> {
           ),
           const SizedBox(height: 4),
           Text(
-            user.email,
+            user.phone,
             style: const TextStyle(color: Colors.grey),
           )
         ],
@@ -154,10 +154,10 @@ class _EditfarmState extends State<Editfarm> {
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16),
-            Text(
-              user.about,
-              style: const TextStyle(fontSize: 16, height: 1.4),
-            ),
+            // Text(
+            //   user.about,
+            //   style: const TextStyle(fontSize: 16, height: 1.4),
+            // ),
           ],
         ),
       );

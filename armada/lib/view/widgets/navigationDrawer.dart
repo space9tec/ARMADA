@@ -1,12 +1,15 @@
 import 'package:armada/view/widgets/widgets.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../../models/viewModel/drawerModel.dart';
+import '../../provider/user_provider.dart';
 
 class navigationDrawer extends StatelessWidget {
   navigationDrawer({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final userProvider = Provider.of<UserProvider>(context);
     return Drawer(
       child: ListView(
         padding: EdgeInsets.zero,
@@ -14,24 +17,33 @@ class navigationDrawer extends StatelessWidget {
           UserAccountsDrawerHeader(
             onDetailsPressed: () {},
             otherAccountsPictures: [],
-            accountName: GestureDetector(
-              onTap: () {
-                Navigator.pushNamed(context, '/login');
-              },
-              child: const Padding(
-                padding: EdgeInsets.only(left: 12.0),
-                child: Text('Login'),
-              ),
-            ),
-            accountEmail: GestureDetector(
-              onTap: () {
-                Navigator.pushNamed(context, '/signup');
-              },
-              child: const Padding(
-                padding: EdgeInsets.only(left: 12.0),
-                child: Text('SignUp'),
-              ),
-            ),
+            accountName: userProvider.name != null
+                ? GestureDetector(
+                    onTap: () {},
+                    child: Padding(
+                      padding: EdgeInsets.only(left: 12.0),
+                      child: Text("Id: ${userProvider.name}"),
+                    ),
+                  )
+                : GestureDetector(
+                    onTap: () {
+                      Navigator.pushNamed(context, '/login');
+                    },
+                    child: const Padding(
+                      padding: EdgeInsets.only(left: 12.0),
+                      child: Text('Login'),
+                    )),
+            accountEmail: userProvider.name == null
+                ? GestureDetector(
+                    onTap: () {
+                      Navigator.pushNamed(context, '/signup');
+                    },
+                    child: const Padding(
+                      padding: EdgeInsets.only(left: 12.0),
+                      child: Text('SignUp'),
+                    ),
+                  )
+                : null,
             currentAccountPicture: CircleAvatar(
               child: ClipOval(
                 child: Image.asset("assets/images/avatar_profile.png"),
