@@ -4,6 +4,7 @@ import '../../../models/farm.dart';
 import '../../widgets/widgets.dart';
 import 'package:armada/networkhandler.dart';
 import 'farmDetail_screen.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class FarmScreen extends StatefulWidget {
   static const String routeName = '/farm_screen';
@@ -23,6 +24,8 @@ class FarmScreen extends StatefulWidget {
 
 class _FarmScreenState extends State<FarmScreen> {
   NetworkHandler networkHandler = NetworkHandler();
+  final storage = new FlutterSecureStorage();
+
   List<FarmM> farm = [];
   @override
   void initState() {
@@ -33,10 +36,20 @@ class _FarmScreenState extends State<FarmScreen> {
   void fetchData() async {
     var response = await networkHandler.get("/api/farm/");
 
+    // setState(() {
+    //   farm = (json.decode(response.body) as List)
+    //       .map((data) => FarmM.fromJson(data))
+    //       .toList();
+    // });
+    String? ownerid = await storage.read(key: "userid");
+
+    List<dynamic> responseData = json.decode(response.body);
+
+    List<dynamic> filteredData =
+        responseData.where((data) => data['owner_id'] == ownerid).toList();
+
     setState(() {
-      farm = (json.decode(response.body) as List)
-          .map((data) => FarmM.fromJson(data))
-          .toList();
+      farm = filteredData.map((data) => FarmM.fromJson(data)).toList();
     });
   }
 

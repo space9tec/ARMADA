@@ -7,6 +7,7 @@ import 'package:armada/networkhandler.dart';
 import '../../../utils/helper_widget.dart';
 import '../../widgets/widgets.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:bot_toast/bot_toast.dart';
 
 class VerifyFarms extends StatefulWidget {
   static const String routeName = '/Verfay_farm';
@@ -50,39 +51,6 @@ class _VerifyFarmsState extends State<VerifyFarms> {
     height: 50,
     "assets/images/tracter1.png",
   );
-  Future<void> _submitForm() async {
-    if (formKey.currentState!.validate()) {
-      // String url = 'https://<your-heroku-app-url>/register';
-
-      // var request = http.MultipartRequest('POST', Uri.parse(url));
-      // request.fields['name'] = nameController.text;
-      // request.fields['email'] = emailController.text;
-      // request.fields['password'] = passwordController.text;
-
-      // if (imageFile != null) {
-      //   String imageName = imageFile!.path.split('/').last;
-      //   request.files.add(http.MultipartFile(
-      //     'image',
-      //     imageFile!.readAsBytes().asStream(),
-      //     imageFile!.lengthSync(),
-      //     filename: imageName,
-      //   ));
-      // }
-
-      // try {
-      //   final streamedResponse = await request.send();
-      //   final response = await http.Response.fromStream(streamedResponse);
-
-      //   if (response.statusCode == 200) {
-      //     // display confirmation to user that registration was successful
-      //   } else {
-      //     // handle error
-      //   }
-      // } catch (e) {
-      //   // handle error
-      // }
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -196,59 +164,10 @@ class _VerifyFarmsState extends State<VerifyFarms> {
                     ),
                   ],
                 ),
-                // InkWell(
-                //   onTap: () {
-                // String? userid = await storage.read(key: "userid");
-                // print(userid);
-                // if (formKey.currentState!.validate()) {
-                //   Map<String, String> data = {
-                //     "farm_size": _farmSize.text,
-                //     "farm_name": _farmName.text,
-                //     "latitude": _location.text,
-                //     "crops_grown:": _croptype.text,
-                //     "soil_type": _soiltype.text,
-                //     "longitude": _polygonlocation.text,
-                //     "owner_id": userid!,
-                //   };
 
-                // print(data);
-
-                // var response =
-                //     await networkHandler.post("/api/farm/", data);
-
-                // if (response.statusCode == 201) {
-                // Map<String, dynamic> output =
-                //     json.decode(response.body);
-                // // String jsonString = json.encode(output);
-                // print("yes");
-                // // print("Token: $output['Token']");
-                // await storage.write(
-                //     key: 'token', value: output['Token']);
-
-                // await storage.write(
-                //     key: 'userid', value: output['user_id']);
-                // // await storage.write(
-                // //     key: 'phone', value: _numberController.text);
-                //   print("posted");
-                //   Navigator.pushNamed(context, '/');
-                // } else {
-                //   print("faild");
-
-                //   // String output = json.decode(response.body);
-                //   setState(() {
-                //     validate = false;
-                //     // errorText = output;
-                //   });
-                // }
-                // Navigator.pushNamed(context, '/');
-                // }
-                // },
-                // child:
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    // Button(context, "Verify", '/',
-                    //     Theme.of(context).primaryColor, 200, 50),
                     ElevatedButton(
                       onPressed: () async {
                         String? userid = await storage.read(key: "userid");
@@ -267,36 +186,36 @@ class _VerifyFarmsState extends State<VerifyFarms> {
                           print(data);
 
                           var response = await networkHandler.post(
-                              "/api/farm/", data, "farmData");
+                              "/api/farm/", data, "farmData",
+                              imageFile: imageFile!);
 
                           if (response.statusCode == 201) {
-                            // Map<String, dynamic> output =
-                            //     json.decode(response.body);
-                            // // String jsonString = json.encode(output);
-                            // print("yes");
-                            // // print("Token: $output['Token']");
-                            // await storage.write(
-                            //     key: 'token', value: output['Token']);
-
-                            // await storage.write(
-                            //     key: 'userid', value: output['user_id']);
-                            // // await storage.write(
-                            // //     key: 'phone', value: _numberController.text);
                             print("posted");
+                            BotToast.showText(
+                              text: "Farm successfully posted.",
+                              duration: Duration(seconds: 2),
+                              contentColor: Colors.white,
+                              textStyle: TextStyle(
+                                  fontSize: 16.0, color: Color(0xFF006837)),
+                            );
                             Navigator.pushNamed(context, '/');
                           } else {
+                            BotToast.showText(
+                              text: "Failed to Post: ${response.statusCode}",
+                              duration: Duration(seconds: 2),
+                              contentColor: Colors.white,
+                              textStyle: TextStyle(
+                                  fontSize: 16.0, color: Color(0xFF006837)),
+                            );
                             print("faild");
                             print(response.body.toString());
 
-                            // String output = json.decode(response.body);
                             setState(() {
                               validate = false;
                               // errorText = output;
                             });
                           }
-                          // Navigator.pushNamed(context, '/');
                         }
-                        // _submitForm();
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Theme.of(context).primaryColor,
@@ -351,7 +270,8 @@ class _VerifyFarmsState extends State<VerifyFarms> {
           radius: const Radius.circular(10),
           child: SizedBox(
             width: double.infinity,
-            height: 141,
+            height: MediaQuery.of(context).size.height * 0.17, //141
+
             child: Padding(
               padding: const EdgeInsets.all(20),
               child: imageFile == null

@@ -102,28 +102,6 @@ class _SearchScreenState extends State<SearchScreen> {
                           ),
                         ),
                       ),
-                      // CostomTextFormFild(
-                      //   hint: "Serch",
-                      //   prefixIcon: IconlyLight.search,
-                      //   controller: searchController,
-                      //   filled: true,
-                      //   suffixIcon: searchController.text.isEmpty
-                      //       ? null
-                      //       : Icons.cancel_sharp,
-                      //   onTapSuffixIcon: () {
-                      //     searchController.clear();
-                      //   },
-                      //   onChanged: (pure) {
-                      //     setState(() {});
-                      //   },
-                      //   onEditingComplete: () {
-                      //     previousSearchs.add(searchController.text);
-                      //     Navigator.push(
-                      //         context,
-                      //         MaterialPageRoute(
-                      //             builder: (context) => const HomeScreen()));
-                      //   },
-                      // ),
                     ),
                     IconButton(
                         onPressed: () {
@@ -153,7 +131,6 @@ class _SearchScreenState extends State<SearchScreen> {
               height: 8,
             ),
 
-            // Previous Searches
             Container(
               color: Colors.white,
               child: ListView.builder(
@@ -183,8 +160,8 @@ class _SearchScreenState extends State<SearchScreen> {
                   ),
                   Row(
                     children: [
-                      searchSuggestionsTiem("suchi"),
-                      searchSuggestionsTiem("sandwich"),
+                      searchSuggestionsTiem("harvestor"),
+                      searchSuggestionsTiem("tractor"),
                     ],
                   ),
                   const SizedBox(
@@ -192,8 +169,8 @@ class _SearchScreenState extends State<SearchScreen> {
                   ),
                   Row(
                     children: [
-                      searchSuggestionsTiem("seafood"),
-                      searchSuggestionsTiem("fried rice"),
+                      searchSuggestionsTiem("combiner"),
+                      searchSuggestionsTiem("attachments"),
                     ],
                   ),
                 ],
@@ -264,8 +241,6 @@ class _SearchScreenState extends State<SearchScreen> {
             "Add a Filter",
             style: Theme.of(context).textTheme.headline2,
           ),
-          // CustomCategoriesList(),
-          // CustomSlider(),
           Row(
             children: [
               Expanded(

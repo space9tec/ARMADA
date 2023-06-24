@@ -1,10 +1,17 @@
 import 'dart:ui';
 
+import 'package:armada/models/machine.dart';
 import 'package:armada/utils/helper_widget.dart';
 import 'package:flutter/material.dart';
 
+import '../screens/screens.dart';
+
 class CustomProductItemWidget extends StatefulWidget {
-  CustomProductItemWidget({Key? key, this.showUser = true}) : super(key: key);
+  MachineM machine;
+
+  CustomProductItemWidget(MachineM this.machine,
+      {Key? key, this.showUser = true})
+      : super(key: key);
   final bool showUser;
 
   @override
@@ -26,7 +33,14 @@ class _CustomProductItemWidgetState extends State<CustomProductItemWidget> {
           widget.showUser == true
               ? InkWell(
                   onTap: () {
-                    Navigator.pushNamed(context, '/itemPage');
+                    // Navigator.pushNamed(context, '/itemPage',
+                    //     arguments: widget.machine);
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: ((context) =>
+                              ItemPage(machine: widget.machine)),
+                        ));
                   },
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -45,7 +59,7 @@ class _CustomProductItemWidgetState extends State<CustomProductItemWidget> {
                         const SizedBox(
                           width: 10,
                         ),
-                        Text("Ethio tracter plc.",
+                        Text(widget.machine.manufacturer,
                             style: Theme.of(context).textTheme.bodyMedium),
                       ],
                     ),
@@ -68,12 +82,21 @@ class _CustomProductItemWidgetState extends State<CustomProductItemWidget> {
                   ),
                   child: InkWell(
                     onTap: () {
-                      Navigator.pushNamed(context, '/itemPage');
+                      // Navigator.pushNamed(context, '/itemPage',
+                      //     arguments: widget.machine);
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: ((context) =>
+                                ItemPage(machine: widget.machine)),
+                          ));
                     },
-                    child: Image.asset(
-                      "assets/images/tracter1.png",
-                      fit: BoxFit.cover,
-                    ),
+                    child: Image.network(
+                        "https://armada-server.glitch.me/api/machinery/image/${widget.machine.imageFile}"),
+                    // child: Image.asset(
+                    //   "assets/images/tracter1.png",
+                    //   fit: BoxFit.cover,
+                    // ),
                   ),
                 ),
               ),
@@ -132,7 +155,7 @@ class _CustomProductItemWidgetState extends State<CustomProductItemWidget> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10),
             child: Text(
-              "Trackter vi",
+              widget.machine.type,
               style: Theme.of(context).textTheme.bodyLarge,
             ),
           ),
@@ -144,7 +167,7 @@ class _CustomProductItemWidgetState extends State<CustomProductItemWidget> {
             children: [
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 10),
-                child: Text("\$ 34,000",
+                child: Text(" ${widget.machine.year}",
                     style: Theme.of(context).textTheme.bodyMedium),
               ),
               addHorizontalSpace(25),
@@ -153,7 +176,7 @@ class _CustomProductItemWidgetState extends State<CustomProductItemWidget> {
                 height: 18,
                 width: 64,
                 decoration: BoxDecoration(color: Colors.green),
-                child: Text("Available"),
+                child: Text(widget.machine.status),
               ),
             ],
           )

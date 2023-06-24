@@ -4,31 +4,31 @@ import 'package:armada/utils/helper_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import '../../../models/machine.dart';
+import '../../../networkhandler.dart';
+import '../../../provider/drop_down_provider.dart';
+import 'package:bot_toast/bot_toast.dart';
 
 class ItemPage extends StatefulWidget {
-  static const String routeName = '/itemPage';
-
-  static Route route() {
-    return MaterialPageRoute(
-      settings: const RouteSettings(name: routeName),
-      builder: (context) {
-        return const ItemPage();
-      },
-    );
-  }
-
-  const ItemPage({super.key});
+  ItemPage({super.key, required this.machine});
+  // final MachineM machine;
+  final MachineM machine;
 
   @override
   State<ItemPage> createState() => _ItemPageState();
 }
 
 class _ItemPageState extends State<ItemPage> {
-  // final PageController pageController = PageController();
+  _ItemPageState();
+  NetworkHandler networkHandler = NetworkHandler();
+  final storage = new FlutterSecureStorage();
+  String? tok;
   DateTime? _startDate;
   DateTime? _endDate;
   bool get _isBookingButtonEnabled => _startDate != null && _endDate != null;
   final DateFormat _dateFormat = DateFormat("dd MMM yyyy");
+
   void _selectDate(BuildContext context, bool isStartDate) async {
     final DateTime? date = await showDatePicker(
       context: context,
@@ -47,24 +47,6 @@ class _ItemPageState extends State<ItemPage> {
       });
     }
   }
-  // void _showDatePicker(BuildContext context) async {
-  //   final picked = await showDatePicker(
-  //     context: context,
-  //     initialDate: DateTime.now(),
-  //     firstDate: DateTime.now(),
-  //     lastDate: DateTime(2100),
-  //   );
-
-  //   if (picked != null) {
-  //     setState(() {
-  //       if (_startDate == null || picked.isBefore(_startDate!)) {
-  //         _startDate = picked;
-  //       } else {
-  //         _endDate = picked;
-  //       }
-  //     });
-  //   }
-  // }
 
   Widget _buildDateSelector(String label, DateTime? date, bool isStartDate) {
     return SizedBox(
@@ -79,8 +61,6 @@ class _ItemPageState extends State<ItemPage> {
               border:
                   OutlineInputBorder(borderRadius: BorderRadius.circular(5.0))),
           child: Row(
-            // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            // mainAxisSize: MainAxisSize.max,
             children: <Widget>[
               Text(date == null ? '' : _dateFormat.format(date)),
               Icon(Icons.calendar_today),
@@ -91,20 +71,6 @@ class _ItemPageState extends State<ItemPage> {
     );
   }
 
-  late PageController pageController;
-
-  int activePage = 1;
-  @override
-  void initState() {
-    super.initState();
-    pageController = PageController(viewportFraction: 0.8);
-  }
-
-  List<String> images = [
-    "assets/images/tracter1.png",
-    "assets/images/tracter2.png",
-    "assets/images/tracter3.png",
-  ];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -157,19 +123,10 @@ class _ItemPageState extends State<ItemPage> {
                                         0.2,
                                     width: MediaQuery.of(context).size.width,
                                     color: Colors.grey.shade300,
-                                    child: Image.asset(
+                                    child: Image.network(
+                                      "https://armada-server.glitch.me/api/machinery/image/${widget.machine.imageFile}",
                                       fit: BoxFit.contain,
                                       height: 100,
-                                      "assets/images/tracter1.png",
-                                    ),
-                                  ),
-                                  Positioned(
-                                    top: MediaQuery.of(context).size.height *
-                                        0.04,
-                                    right: 20,
-                                    child: const Icon(
-                                      Icons.favorite_border,
-                                      color: Colors.white,
                                     ),
                                   ),
                                 ],
@@ -191,33 +148,18 @@ class _ItemPageState extends State<ItemPage> {
                                     padding: const EdgeInsets.all(12),
                                     child: Stack(
                                       children: [
-                                        Positioned(
-                                          height: 60,
-                                          width: 100,
-                                          top: MediaQuery.of(context)
-                                                  .size
-                                                  .height *
-                                              0.01,
-                                          right: 10,
-                                          child: CircleAvatar(
-                                            radius: 130,
-                                            backgroundColor: Colors.green,
-                                            child: Icon(Icons.send,
-                                                color: Color.fromARGB(
-                                                    255, 255, 255, 255)),
-                                          ),
-                                        ),
                                         Column(
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,
                                           children: [
                                             Text(
-                                              "Tracter",
+                                              // "Tracter: ${widget.machine.manufacturer}",
+                                              "Type: ${widget.machine.type}",
                                               style: textTheme().displayMedium,
                                             ),
                                             addVerticalSpace(10),
                                             Text(
-                                              "Owner :",
+                                              "Owner : ${widget.machine.manufacturer}",
                                               style: textTheme().displayMedium,
                                             ),
                                             addVerticalSpace(10),
@@ -232,67 +174,46 @@ class _ItemPageState extends State<ItemPage> {
                                             ),
                                             addVerticalSpace(10),
                                             Text(
-                                              "Location - ",
+                                              "Location -  ${widget.machine.region}",
                                               style: textTheme().displayMedium,
                                             ),
                                             addVerticalSpace(30),
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.spaceAround,
-                                              children: [
-                                                _buildDateSelector('Start Date',
-                                                    _startDate, true),
-                                                _buildDateSelector('End Date',
-                                                    _endDate, false),
-                                              ],
-                                            ),
-                                            // Text(
-                                            //   'Select start and end dates:',
-                                            //   style: TextStyle(fontSize: 16),
-                                            // ),
-                                            // SizedBox(height: 8),
-                                            // Row(
-                                            //   mainAxisAlignment:
-                                            //       MainAxisAlignment.spaceEvenly,
-                                            //   children: [
-                                            //     Text(
-                                            //       _startDate == null
-                                            //           ? 'Select start date'
-                                            //           : DateFormat('yyyy-MM-dd')
-                                            //               .format(_startDate!),
-                                            //       style: TextStyle(fontSize: 16),
-                                            //     ),
-                                            //     Text(
-                                            //       _endDate == null
-                                            //           ? 'Select end date'
-                                            //           : DateFormat('yyyy-MM-dd')
-                                            //               .format(_endDate!),
-                                            //       style: TextStyle(fontSize: 16),
-                                            //     ),
-                                            //   ],
-                                            // ),
-                                            // SizedBox(height: 16),
-                                            // ElevatedButton(
-                                            //   onPressed: () =>
-                                            //       _showDatePicker(context),
-                                            //   child: Text('Select Dates'),
-                                            // ),
-                                            // SizedBox(height: 16),
-                                            // AbsorbPointer(
-                                            //   absorbing: !_isBookingButtonEnabled,
-                                            //   child: ElevatedButton(
-                                            //     onPressed: () {},
-                                            //     child: Text('Book Machinery'),
-                                            //   ),
-                                            // ),
-                                            SizedBox(height: 32.0),
+
+                                            // String? tok = await storage.read(key: "userid");
+                                            Provider.of<DropDownProvider>(
+                                                            context,
+                                                            listen: false)
+                                                        .selectedAccount ==
+                                                    "Farmer"
+                                                ? Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceAround,
+                                                    children: [
+                                                      _buildDateSelector(
+                                                          'Start Date',
+                                                          _startDate,
+                                                          true),
+                                                      _buildDateSelector(
+                                                          'End Date',
+                                                          _endDate,
+                                                          false),
+                                                    ],
+                                                  )
+                                                : SizedBox(height: 32.0),
+
                                             const Padding(
                                               padding: EdgeInsets.all(10),
                                               child: Text("Other Attachments"),
                                             ),
                                             SizedBox(
-                                              width: 400,
-                                              height: 200,
+                                              width: MediaQuery.of(context)
+                                                  .size
+                                                  .width,
+                                              height: MediaQuery.of(context)
+                                                      .size
+                                                      .height *
+                                                  0.24,
                                               child: ListView.builder(
                                                 scrollDirection:
                                                     Axis.horizontal,
@@ -319,8 +240,16 @@ class _ItemPageState extends State<ItemPage> {
                                                         padding:
                                                             const EdgeInsets
                                                                 .all(10),
-                                                        width: 200,
-                                                        height: 200,
+                                                        width: MediaQuery.of(
+                                                                    context)
+                                                                .size
+                                                                .width *
+                                                            0.47,
+                                                        height: MediaQuery.of(
+                                                                    context)
+                                                                .size
+                                                                .height *
+                                                            0.2,
                                                         margin: const EdgeInsets
                                                             .all(10),
                                                         child: Column(
@@ -413,48 +342,61 @@ class _ItemPageState extends State<ItemPage> {
           ),
         ),
       ),
-      floatingActionButton: Row(
-        children: [
-          SizedBox(
-            width: MediaQuery.of(context).size.width * 0.70,
-            // decoration: BoxDecoration(
-            //   borderRadius: BorderRadius.circular(20.0),
-            // ),
-            // child: Positioned(
-            //   bottom: 100,
-            child: FloatingActionButton.extended(
-              backgroundColor: _isBookingButtonEnabled
-                  ? Theme.of(context).primaryColor
-                  : Colors.grey,
-              onPressed: _isBookingButtonEnabled ? () {} : null,
-              elevation: 0,
-              label: const Text(
-                "BOOK NOW",
-                style: TextStyle(fontSize: 18.0),
+      floatingActionButton: Provider.of<DropDownProvider>(context,
+                      listen: false)
+                  .selectedAccount ==
+              "Farmer"
+          ? SizedBox(
+              width: MediaQuery.of(context).size.width * 0.70,
+              child: FloatingActionButton.extended(
+                backgroundColor: _isBookingButtonEnabled
+                    ? Theme.of(context).primaryColor
+                    : Colors.grey,
+                onPressed: _isBookingButtonEnabled
+                    ? () async {
+                        String? userId = await storage.read(key: "userid");
+                        print(_startDate!.toIso8601String());
+                        Map<String, String> data = {
+                          "user_id": userId!,
+                          "owner_id": widget.machine.ownerId,
+                          "machine_id": widget.machine.machineId,
+                          "rent_start_time": _startDate!.toIso8601String(),
+                          "rent_end_time": _startDate!.toIso8601String(),
+                        };
+                        var response =
+                            await networkHandler.postt("/api/contracts/", data);
+                        if (response.statusCode == 200 ||
+                            response.statusCode == 201) {
+                          BotToast.showText(
+                            text: "Booking Sent",
+                            duration: Duration(seconds: 2),
+                            contentColor: Colors.white,
+                            textStyle: TextStyle(
+                                fontSize: 16.0, color: Color(0xFF006837)),
+                          );
+                          print("contract booked");
+                          Navigator.pushNamed(context, '/contrat_page');
+                        } else {
+                          BotToast.showText(
+                            text: "Booking Failed: ${response.statusCode}",
+                            duration: Duration(seconds: 2),
+                            contentColor: Colors.white,
+                            textStyle: TextStyle(
+                                fontSize: 16.0, color: Color(0xFF006837)),
+                          );
+                          print("faild");
+                          print(response.body.toString());
+                        }
+                      }
+                    : null,
+                elevation: 0,
+                label: const Text(
+                  "BOOK NOW",
+                  style: TextStyle(fontSize: 18.0),
+                ),
               ),
-            ),
-            // ),
-          ),
-          // SizedBox(
-          //   // width: MediaQuery.of(context).size.width * 0.70,
-          //   // decoration: BoxDecoration(
-          //   //   borderRadius: BorderRadius.circular(20.0),
-          //   // ),
-          //   // child: Positioned(
-          //   //   bottom: 100,
-          //   child: FloatingActionButton(
-          //     backgroundColor: _isBookingButtonEnabled
-          //         ? Theme.of(context).primaryColor
-          //         : Colors.grey,
-          //     onPressed: _isBookingButtonEnabled ? () {} : null,
-          //     elevation: 0,
-          //     child: Icon(Icons.message),
-          //   ),
-          // ),
-          // ),
-        ],
-      ),
-      // ),
+            )
+          : null,
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }

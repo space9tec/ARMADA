@@ -1,8 +1,9 @@
-import 'package:armada/networkhandler.dart';
-import 'package:armada/utils/user_preferences.dart';
-import 'package:flutter/material.dart';
+import 'dart:convert';
 
-import '../../../models/user_model/userProfile_model.dart';
+import 'package:armada/networkhandler.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import '../../../models/user.dart';
 import '../../widgets/widgets.dart';
 
 class FarmerProfile extends StatefulWidget {
@@ -23,8 +24,12 @@ class FarmerProfile extends StatefulWidget {
 
 class _FarmerProfileState extends State<FarmerProfile> {
   NetworkHandler networkHandler = NetworkHandler();
-  UserProfileModel userProfileModel =
-      UserProfileModel(firstName: '', lastName: '', phone: null, role: '');
+  final storage = new FlutterSecureStorage();
+
+  // UserProfileModel userProfileModel =
+  //     UserProfileModel(firstName: '', lastName: '', phone: null, role: '');
+  User? user;
+  bool fetched = false;
 
   @override
   void initState() {
@@ -33,16 +38,21 @@ class _FarmerProfileState extends State<FarmerProfile> {
   }
 
   void fetchData() async {
-    // var response = await networkHandler.get("/api/farm/");
-    // print(response.body.toString());
+    String? userid = await storage.read(key: "userid");
+
+    var response = await networkHandler.get("/api/user/${userid}");
+    print(response.body.toString());
+    Map<String, dynamic> userData = json.decode(response.body);
+
     setState(() {
-      // userProfileModel = UserProfileModel.fromJson(response);
+      user = User.fromJson(userData);
+      fetched = true;
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    const user = UserPreferences.myUser;
+    // const user = UserPreferences.myUser;
 
     return Scaffold(
       appBar: AppBar(
@@ -57,32 +67,34 @@ class _FarmerProfileState extends State<FarmerProfile> {
           ),
         ],
       ),
-      body: ListView(
-        physics: const BouncingScrollPhysics(),
-        children: [
-          const SizedBox(
-            height: 20,
-          ),
-          ProfileWidget(
-            imagePath: user.imagePath,
-            onClicked: () async {},
-          ),
-          const SizedBox(height: 24),
-          buildName(userProfileModel),
-          const SizedBox(height: 24),
-          const SizedBox(height: 24),
-          NumbersWidget(),
-          const SizedBox(height: 48),
-          buildAbout(userProfileModel),
-        ],
-      ),
+      body: fetched
+          ? ListView(
+              physics: const BouncingScrollPhysics(),
+              children: [
+                const SizedBox(
+                  height: 20,
+                ),
+                // ProfileWidget(
+                //   imagePath: user.imagePath,
+                //   onClicked: () async {},
+                // ),
+                const SizedBox(height: 24),
+                buildName(user!),
+                const SizedBox(height: 24),
+                const SizedBox(height: 24),
+                NumbersWidget(),
+                const SizedBox(height: 48),
+                buildAbout(user!),
+              ],
+            )
+          : CircularProgressIndicator.adaptive(),
     );
   }
 
-  Widget buildName(UserProfileModel user) => Column(
+  Widget buildName(User user) => Column(
         children: [
           Text(
-            user.firstName,
+            user.name,
             style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
           ),
           const SizedBox(height: 4),
@@ -93,7 +105,7 @@ class _FarmerProfileState extends State<FarmerProfile> {
         ],
       );
 
-  Widget buildAbout(UserProfileModel user) => Container(
+  Widget buildAbout(User user) => Container(
         padding: const EdgeInsets.symmetric(horizontal: 48),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -104,7 +116,7 @@ class _FarmerProfileState extends State<FarmerProfile> {
             ),
             const SizedBox(height: 16),
             Text(
-              user.role,
+              user.phone,
               style: const TextStyle(fontSize: 16, height: 1.4),
             ),
           ],

@@ -1,6 +1,6 @@
-import 'package:image_picker/image_picker.dart';
-
 class MachineM {
+  final String machineId;
+  final String ownerId;
   final String manufacturer;
   final String model;
   final String type;
@@ -12,6 +12,8 @@ class MachineM {
   final String? imageFile;
 
   MachineM({
+    required this.machineId,
+    required this.ownerId,
     required this.manufacturer,
     required this.model,
     required this.type,
@@ -25,6 +27,8 @@ class MachineM {
   factory MachineM.fromJson(Map<String, dynamic> json) {
     return MachineM(
       manufacturer: json['manufacturer'],
+      ownerId: json['owner_id'],
+      machineId: json['_id'],
       model: json['model'],
       type: json['type'],
       status: json['status'],
@@ -32,6 +36,20 @@ class MachineM {
       attachmenttype: json['attachment_type'],
       year: json['year'],
       imageFile: json['image'],
+    );
+  }
+  factory MachineM.empty() {
+    return MachineM(
+      machineId: "",
+      ownerId: "",
+      manufacturer: "",
+      model: "",
+      type: "",
+      status: "",
+      region: "",
+      attachmenttype: "",
+      year: 0,
+      imageFile: "",
     );
   }
 }

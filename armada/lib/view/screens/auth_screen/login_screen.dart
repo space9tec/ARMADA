@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:armada/view/widgets/widgets.dart';
 import 'package:armada/networkhandler.dart';
 import 'package:provider/provider.dart';
+import 'package:bot_toast/bot_toast.dart';
+import '../../../provider/user_provider.dart';
 
 class Login extends StatefulWidget {
   static const String routeName = '/login';
@@ -48,12 +50,17 @@ class _LoginState extends State<Login> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                addVerticalSpace(MediaQuery.of(context).size.width * 0.21),
+                addVerticalSpace(MediaQuery.of(context).size.width * 0.19),
                 Center(
                   child: Text("Welcome.",
                       style: Theme.of(context).textTheme.displayLarge),
                 ),
-                addVerticalSpace(MediaQuery.of(context).size.width * 0.21),
+                addVerticalSpace(MediaQuery.of(context).size.width * 0.06),
+                SizedBox(
+                  height: 140,
+                  width: 140,
+                  child: Image.asset("assets/images/logo.jpeg"),
+                ),
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -66,7 +73,7 @@ class _LoginState extends State<Login> {
                     ),
                   ],
                 ),
-                addVerticalSpace(MediaQuery.of(context).size.width * 0.17),
+                addVerticalSpace(MediaQuery.of(context).size.width * 0.1),
                 InputTextNumber(
                     context,
                     "Phone",
@@ -102,26 +109,26 @@ class _LoginState extends State<Login> {
                       ),
                       prefixIcon: const Icon(
                         Icons.lock_sharp,
-                        color: Color.fromARGB(255, 10, 190, 106),
+                        color: Color(0xFF006837),
                       ),
                       suffixIcon: IconButton(
                         onPressed: _togglePasswordView,
                         icon: isHidden
                             ? Icon(Icons.visibility_off, color: Colors.grey)
-                            : Icon(Icons.visibility, color: Colors.green),
+                            : Icon(Icons.visibility, color: Color(0xFF006837)),
                       ),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(15),
                         borderSide: const BorderSide(
                           width: 1,
-                          color: Colors.green,
+                          color: Color(0xFF006837),
                         ),
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(15),
                         borderSide: const BorderSide(
                           width: 1,
-                          color: Colors.green,
+                          color: Color(0xFF006837),
                         ),
                       ),
                     ),
@@ -191,12 +198,15 @@ class _LoginState extends State<Login> {
                                 json.decode(response.body);
 
                             print("yes");
-
+                            Provider.of<UserProvider>(context, listen: false)
+                                .setUser(
+                                    output['user_id']!, output['user_id']!);
                             await storage.write(
                                 key: 'token', value: output['Token']);
                             print(output);
                             String? tok = await storage.read(key: "token");
                             print(tok);
+                            // String? tok = await storage.read(key: "userid");
 
                             await storage.write(
                                 key: 'userid', value: output['user_id']);
@@ -208,18 +218,34 @@ class _LoginState extends State<Login> {
                                 .setAccountType(output['role']);
                             String? userid = await storage.read(key: "userid");
                             print(userid);
-
+                            BotToast.showText(
+                              text: "Welcome! You have successfully logged in.",
+                              duration: Duration(seconds: 2),
+                              contentColor: Colors.white,
+                              textStyle: TextStyle(
+                                  fontSize: 16.0, color: Color(0xFF006837)),
+                            );
                             Navigator.of(context).pushNamedAndRemoveUntil(
                                 '/', (Route<dynamic> route) => false);
-                          } else if (response.statusCode == 408) {
-                            print("408");
-
-                            print("500");
                           } else {
+                            BotToast.showText(
+                              text: "Failed to login: ${response.statusCode}",
+                              duration: Duration(seconds: 2),
+                              contentColor: Colors.white,
+                              textStyle: TextStyle(
+                                  fontSize: 16.0, color: Color(0xFF006837)),
+                            );
                             throw Exception(
                                 'Failed to login: ${response.statusCode}');
                           }
                         } catch (e) {
+                          BotToast.showText(
+                            text: "Failed to login: ${e}",
+                            duration: Duration(seconds: 2),
+                            contentColor: Colors.white,
+                            textStyle: TextStyle(
+                                fontSize: 16.0, color: Color(0xFF006837)),
+                          );
                           print("dont work:${e}");
                         }
                         print("data");

@@ -5,7 +5,6 @@ import '../../../provider/drop_down_provider.dart';
 
 Widget accountSelector(BuildContext context) {
   return Container(
-    // width: MediaQuery.of(context).size.width * 0.71,
     child: Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -22,7 +21,7 @@ Widget accountSelector(BuildContext context) {
             width: MediaQuery.of(context).size.width * 0.50,
             decoration: BoxDecoration(
               border: Border.all(
-                color: Colors.green,
+                color: Color(0xFF006837),
               ),
               borderRadius: BorderRadius.circular(15),
             ),
@@ -49,7 +48,7 @@ Widget accountSelector(BuildContext context) {
                 padding: EdgeInsets.only(right: 15.0),
                 child: Icon(
                   Icons.arrow_drop_down_circle_sharp,
-                  color: Colors.green,
+                  color: Color(0xFF006837),
                 ),
               ),
             ),

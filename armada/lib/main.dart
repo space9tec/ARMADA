@@ -7,10 +7,14 @@ import 'provider/drop_down_provider.dart';
 import 'provider/drower_provider.dart';
 import 'provider/item_provider.dart';
 import 'provider/machine_status_provider.dart';
+import 'provider/user_provider.dart';
 import 'view/screens/home_screen/guest_screen.dart';
+import 'package:bot_toast/bot_toast.dart';
+
 void main() {
   runApp(const MyApp());
 }
+
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
   // This widget is the root of our application.
@@ -23,11 +27,14 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => DrawerNotifire()),
         ChangeNotifierProvider(create: (_) => LocationSelectorProvider()),
         ChangeNotifierProvider(create: (_) => MachineStatusProvider()),
+        ChangeNotifierProvider(create: (_) => UserProvider()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'Armada',
         theme: customtheme(),
+        builder: BotToastInit(), // Initialize BotToast here
+        navigatorObservers: [BotToastNavigatorObserver()],
         onGenerateRoute: ROUTE.onGenerateRouth,
         initialRoute: Guest.routeName,
       ),

@@ -1,8 +1,5 @@
-import 'package:armada/utils/user_preferences.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-
-import '../../widgets/widgets.dart';
 import 'package:armada/models/user.dart';
 
 class EditFarmerProfile extends StatefulWidget {
@@ -28,7 +25,7 @@ class _EditFarmerProfileState extends State<EditFarmerProfile> {
 
   @override
   Widget build(BuildContext context) {
-    final user = UserPreferences.myUser;
+    // final user = UserPreferences.myUser;
 
     return Scaffold(
       appBar: AppBar(
@@ -47,10 +44,10 @@ class _EditFarmerProfileState extends State<EditFarmerProfile> {
           const SizedBox(
             height: 20,
           ),
-          ProfileEdit(
-            imagePath: user.imagePath,
-            onClicked: () async {},
-          ),
+          // ProfileEdit(
+          //   imagePath: user.imagePath,
+          //   onClicked: () async {},
+          // ),
           const SizedBox(
             height: 35,
           ),
@@ -128,35 +125,6 @@ class _EditFarmerProfileState extends State<EditFarmerProfile> {
           const SizedBox(
             height: 25,
           ),
-          // Padding(
-          //   padding: const EdgeInsets.only(left: 28.0, right: 28.0),
-          //   child: TextFormField(
-          //     controller: _about,
-          //     maxLength: 200,
-          //     maxLines: 4,
-          //     keyboardType: TextInputType.multiline,
-          //     decoration: InputDecoration(
-          //       border: OutlineInputBorder(
-          //           borderRadius: BorderRadius.circular(15),
-          //           borderSide: const BorderSide(
-          //             width: 1,
-          //             color: Colors.green,
-          //           )),
-          //       focusedBorder: OutlineInputBorder(
-          //           borderRadius: BorderRadius.circular(15),
-          //           borderSide: const BorderSide(
-          //             width: 1,
-          //             color: Colors.green,
-          //           )),
-          //       prefixIcon: Icon(
-          //         Icons.person,
-          //         color: Theme.of(context).primaryColor,
-          //       ),
-          //       labelText: "About",
-          //       helperText: "Write about you.",
-          //     ),
-          //   ),
-          // )
         ],
       ),
     );
@@ -169,10 +137,10 @@ class _EditFarmerProfileState extends State<EditFarmerProfile> {
             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
           ),
           const SizedBox(height: 4),
-          Text(
-            user.email,
-            style: TextStyle(color: Colors.grey),
-          )
+          // Text(
+          //   user.email,
+          //   style: TextStyle(color: Colors.grey),
+          // )
         ],
       );
 
@@ -186,10 +154,10 @@ class _EditFarmerProfileState extends State<EditFarmerProfile> {
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16),
-            Text(
-              user.about,
-              style: TextStyle(fontSize: 16, height: 1.4),
-            ),
+            // Text(
+            //   // user,
+            //   style: TextStyle(fontSize: 16, height: 1.4),
+            // ),
           ],
         ),
       );

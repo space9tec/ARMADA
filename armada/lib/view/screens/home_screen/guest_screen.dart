@@ -1,5 +1,9 @@
+import 'dart:convert';
+
 import 'package:armada/utils/helper_widget.dart';
 import 'package:flutter/material.dart';
+import '../../../models/machine.dart';
+import '../../../networkhandler.dart';
 import '../../widgets/gustnavigationDrawer.dart';
 import '../../widgets/widgets.dart';
 
@@ -20,6 +24,8 @@ class Guest extends StatefulWidget {
 }
 
 class _GuestState extends State<Guest> {
+  NetworkHandler networkHandler = NetworkHandler();
+  List<MachineM> machine = [];
   late PageController _pageController;
   String userRole = 'farmer';
   List<String> images = [
@@ -28,10 +34,23 @@ class _GuestState extends State<Guest> {
     "assets/images/tracter3.png",
   ];
   int activePage = 1;
+
   @override
   void initState() {
     super.initState();
     _pageController = PageController(viewportFraction: 0.8);
+
+    fetchData();
+  }
+
+  void fetchData() async {
+    var response = await networkHandler.get("/api/machinery/");
+
+    setState(() {
+      machine = (json.decode(response.body) as List)
+          .map((data) => MachineM.fromJson(data))
+          .toList();
+    });
   }
 
   @override
@@ -43,11 +62,17 @@ class _GuestState extends State<Guest> {
         bottom: PreferredSize(
           preferredSize:
               Size.fromHeight(MediaQuery.of(context).size.width * 0.15),
-          child: Column(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
+              // SizedBox(
+              //   height: 80,
+              //   width: 80,
+              //   child: Image.asset("assets/images/logo.jpeg"),
+              // ),
               SizedBox(
                 width: MediaQuery.of(context).size.width * 0.75,
-                height: 65,
+                height: MediaQuery.of(context).size.height * 0.08,
                 child: Padding(
                   padding: const EdgeInsets.all(10.0),
                   child: TextField(
@@ -58,7 +83,7 @@ class _GuestState extends State<Guest> {
                       hintText: 'Search',
                       prefixIcon: const Icon(
                         Icons.search,
-                        color: Color.fromARGB(255, 10, 190, 106),
+                        color: Color.fromARGB(255, 6, 163, 90),
                       ),
                       border: InputBorder.none,
                       contentPadding: EdgeInsets.zero,
@@ -87,7 +112,7 @@ class _GuestState extends State<Guest> {
                           height: 30,
                           width: 30,
                           decoration: BoxDecoration(
-                            color: Theme.of(context).primaryColor,
+                            color: Color.fromARGB(255, 0, 117, 63),
                             borderRadius: BorderRadius.circular(9),
                           ),
                           child: const Center(
@@ -110,71 +135,67 @@ class _GuestState extends State<Guest> {
         physics: const BouncingScrollPhysics(
             decelerationRate: ScrollDecelerationRate.fast),
         child: Column(
+          mainAxisSize: MainAxisSize.min, // Set mainAxisSize to min
           children: [
             SizedBox(
-              height: MediaQuery.of(context).size.height,
+              height: MediaQuery.of(context).size.height * 0.27,
               child: Center(
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Container(
-                          decoration: BoxDecoration(
-                            boxShadow: [
-                              BoxShadow(
-                                color: const Color.fromARGB(255, 192, 233, 192)
-                                    .withOpacity(0.5),
-                                blurRadius: 3,
-                              ),
-                            ],
-                            borderRadius: const BorderRadius.all(
-                              Radius.circular(15),
-                            ),
+                    Container(
+                      decoration: BoxDecoration(
+                        boxShadow: [
+                          BoxShadow(
+                            color: const Color.fromARGB(255, 192, 233, 192)
+                                .withOpacity(0.5),
+                            blurRadius: 3,
                           ),
-                          width: MediaQuery.of(context).size.width,
-                          height: MediaQuery.of(context).size.height * 0.25,
-                          child: PageView.builder(
-                              itemCount: images.length,
-                              controller: _pageController,
-                              onPageChanged: (page) {
-                                setState(() {
-                                  activePage = page;
-                                });
-                              },
-                              pageSnapping: true,
-                              itemBuilder: (context, pagePosition) {
-                                return GestureDetector(
-                                  onTap: () {
-                                    Navigator.pushNamed(
-                                        context, '/main_service');
-                                  },
-                                  child: Container(
-                                      margin: const EdgeInsets.all(5),
-                                      child: Image.asset(images[pagePosition])),
-                                );
-                              }),
-                        ),
-                        Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: indicators(images.length, activePage))
-                      ],
-                    ),
-                    addVerticalSpace(25),
-                    Expanded(
-                      child: GridView.count(
-                        physics: const NeverScrollableScrollPhysics(),
-                        crossAxisCount: 2,
-                        childAspectRatio: 1 / 1.5,
-                        children: List.generate(
-                          5,
-                          (index) => CustomProductItemWidget(),
+                        ],
+                        borderRadius: const BorderRadius.all(
+                          Radius.circular(15),
                         ),
                       ),
+                      width: MediaQuery.of(context).size.width,
+                      height: MediaQuery.of(context).size.height * 0.25,
+                      child: PageView.builder(
+                          itemCount: images.length,
+                          controller: _pageController,
+                          onPageChanged: (page) {
+                            setState(() {
+                              activePage = page;
+                            });
+                          },
+                          pageSnapping: true,
+                          itemBuilder: (context, pagePosition) {
+                            return GestureDetector(
+                              onTap: () {
+                                // Navigator.pushNamed(context, '/main_service');
+                              },
+                              child: Container(
+                                  margin: const EdgeInsets.all(5),
+                                  child: Image.asset(images[pagePosition])),
+                            );
+                          }),
                     ),
+                    Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: indicators(images.length, activePage))
                   ],
                 ),
               ),
+            ),
+            addVerticalSpace(25),
+            GridView.count(
+              physics:
+                  const ClampingScrollPhysics(), // Remove NeverScrollableScrollPhysics
+              crossAxisCount: 2,
+              childAspectRatio: 1 / 1.5,
+              shrinkWrap: true, // Added shrinkWrap property
+              children: List.generate(machine.length, (index) {
+                final machines = machine[index];
+                return CustomProductItemWidget(machines);
+              }),
             ),
           ],
         ),

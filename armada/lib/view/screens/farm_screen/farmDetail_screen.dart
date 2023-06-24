@@ -73,24 +73,6 @@ class farmDetail extends StatelessWidget {
               SliverAppBar(
                 automaticallyImplyLeading: false,
                 leadingWidth: 0,
-                // title: Padding(
-                //   padding: EdgeInsets.only(bottom: 10),
-                //   // child: Row(
-                //   //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                //   //   children: [
-                //   //     GestureDetector(
-                //   //       onTap: () {
-                //   //         Navigator.pop(context);
-                //   //       },
-                //   //       child: const Icon(Icons.arrow_back),
-                //   //     ),
-                //   //     GestureDetector(
-                //   //       onTap: null,
-                //   //       child: const Icon(Icons.more_horiz),
-                //   //     )
-                //   //   ],
-                //   // ),
-                // ),
                 pinned: true,
                 snap: false,
                 floating: true,
