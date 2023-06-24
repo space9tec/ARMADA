@@ -176,7 +176,22 @@ class _CustomProductItemWidgetState extends State<CustomProductItemWidget> {
                 height: 18,
                 width: 64,
                 decoration: BoxDecoration(color: Colors.green),
-                child: Text(widget.machine.status),
+                child: Container(
+                  padding: EdgeInsets.all(16.0),
+                  decoration: BoxDecoration(
+                    color: Colors.red,
+                    borderRadius: BorderRadius.circular(20.0),
+                    border: Border.all(
+                      color: Colors.green,
+                      width: 2.0,
+                    ),
+                  ),
+                  child: Text(
+                    widget.machine.status,
+                    style: TextStyle(fontSize: 18.0),
+                  ),
+                ),
+                // Text(widget.machine.status),
               ),
             ],
           )

@@ -1,242 +1,183 @@
-// import 'dart:convert';
+import 'dart:convert';
 
-// import 'package:armada/models/message.dart';
+// import 'package:chararmada/model/message.dart';
 // import 'package:flutter/material.dart';
-// import 'package:http/http.dart' as http;
+// import 'networkhandler.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 
-// // class ChatPage extends StatefulWidget {
-// //   final String farmerId;
-// //   final String receiverId;
+import '../../../models/message.dart';
+import '../../../networkhandler.dart';
+import '../../../services/socket_service.dart';
 
-// //   ChatPage({required this.farmerId, required this.receiverId});
+class ChatPage extends StatefulWidget {
+  final String receiver;
+  final String name;
+  final String sender;
+  final SocketService socketService;
 
-// //   @override
-// //   _ChatPageState createState() => _ChatPageState();
-// // }
+  ChatPage({
+    Key? key,
+    required this.receiver,
+    required this.sender,
+    required this.socketService,
+    required this.name,
+  }) : super(key: key);
 
-// // class _ChatPageState extends State<ChatPage> {
-// //   List<Message> _messages = [];
+  @override
+  _ChatPageState createState() => _ChatPageState();
+}
 
-// //   final TextEditingController _controller = TextEditingController();
+class _ChatPageState extends State<ChatPage> {
+  final TextEditingController _messageController = TextEditingController();
+  List<Message> messages = [];
+  final ScrollController _controller = ScrollController();
+  NetworkHandler networkHandler = NetworkHandler();
 
-// //   @override
-// //   void initState() {
-// //     super.initState();
-// //     // Call API endpoint to retrieve chat history
-// //     _getMessages();
-// //   }
+  @override
+  void initState() {
+    super.initState();
 
-// //   void _getMessages() async {
-// //     // Call Node.js API endpoint to retrieve chat history
-// //     final response = await http.get(Uri.parse(
-// //         'http://your-node-app-url.com/messages?farmerId=${widget.farmerId}&receiverId=${widget.receiverId}'));
+    // Fetch initial messages
+    fetchData().then((_) {
+      // Initialize socket and listen for incoming message events
+      widget.socketService.initSocket(widget.sender);
+      widget.socketService.socket.on('message', (data) {
+        if (mounted) {
+          setState(() {
+            addMessage(data);
+            SchedulerBinding.instance
+                .addPostFrameCallback((_) => _controller.animateTo(
+                      _controller.position.maxScrollExtent,
+                      duration: Duration(milliseconds: 300),
+                      curve: Curves.easeOut,
+                    ));
+          });
+        }
+      });
+    });
+  }
 
-// //     if (response.statusCode == 200) {
-// //       setState(() {
-// //         // Update the UI with the retrieved chat history
-// //         _messages = List<Message>.from(
-// //             json.decode(response.body).map((model) => Message.fromJson(model)));
-// //       });
-// //     } else {
-// //       print('Failed to retrieve chat history');
-// //     }
-// //   }
+  void addMessage(data) {
+    setState(() {
+      messages.add(Message.fromJson(data));
+    });
+  }
 
-// //   void _sendMessage() async {
-// //     // Call Node.js API endpoint to send message
-// //     final response =
-// //         await http.post(Uri.parse('http://your-node-app-url.com/messages'),
-// //             headers: {'content-type': 'application/json'},
-// //             body: json.encode({
-// //               'sender': widget.farmerId,
-// //               'receiver': widget.receiverId,
-// //               'content': _controller.text,
-// //             }));
+  @override
+  void dispose() {
+    widget.socketService.socket.off('message');
+    widget.socketService.closeConnection();
+    super.dispose();
+  }
 
-// //     if (response.statusCode == 201) {
-// //       setState(() {
-// //         // Add the sent message to the chat history
-// //         // _messages.add(Message(
-// //         //   sender: widget.farmerId,
-// //         //   receiver: widget.receiverId,
-// //         //   content: _controller.text,
-// //         //   timestamp: DateTime.now(),
-// //         // ));
-// //         // Clear the text input field
-// //         _controller.clear();
-// //       });
-// //     } else {
-// //       print('Failed to send message');
-// //     }
-// //   }
+  Future<void> fetchData() async {
+    try {
+      final response = await networkHandler
+          .get("/fetch-messages/${widget.sender}/${widget.receiver}");
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        setState(() {
+          messages = List<Message>.from(
+              data['messages'].map((message) => Message.fromJson(message)));
+        });
+        // Log the fetched data
+        print(data);
+      } else {
+        throw Exception('Failed to fetch messages');
+      }
+    } catch (error) {
+      print(error.toString());
+    }
+  }
 
-// //   @override
-// //   Widget build(BuildContext context) {
-// //     return Scaffold(
-// //       appBar: AppBar(title: Text(widget.receiverId)),
-// //       body: Column(
-// //         children: [
-// //           Expanded(
-// //             child: ListView.builder(
-// //               itemCount: _messages.length,
-// //               itemBuilder: (context, index) {
-// //                 final message = _messages[index];
-// //                 // Determine whether to align the message to the left or right based on the sender and receiver
-// //                 final alignment = message.senderId == widget.farmerId
-// //                     ? Alignment.centerRight
-// //                     : Alignment.centerLeft;
-// //                 return Container(
-// //                   alignment: alignment,
-// //                   child: Text(message.content),
-// //                 );
-// //               },
-// //             ),
-// //           ),
-// //           Padding(
-// //             padding: EdgeInsets.all(8.0),
-// //             child: Row(
-// //               children: [
-// //                 Expanded(
-// //                   child: TextField(
-// //                     controller: _controller,
-// //                     decoration: InputDecoration(hintText: 'Type a message...'),
-// //                     onSubmitted: (value) {
-// //                       _sendMessage();
-// //                     },
-// //                   ),
-// //                 ),
-// //                 IconButton(
-// //                   icon: Icon(Icons.send),
-// //                   onPressed: () {
-// //                     _sendMessage();
-// //                   },
-// //                 ),
-// //               ],
-// //             ),
-// //           ),
-// //         ],
-// //       ),
-// //     );
-// //   }
-// // }
-// class ChatScreen extends StatefulWidget {
-//   final String receiverId;
-//   final String receiverName;
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        elevation: 0,
+        backgroundColor: Theme.of(context).primaryColor,
+      ),
+      body: Column(
+        children: [
+          Expanded(
+            child: ListView.builder(
+              controller: _controller,
+              itemCount: messages.length,
+              itemBuilder: (BuildContext context, int index) {
+                final message = messages[index];
+                bool isMe = message.sender == widget.sender;
+                // Only show messages that were sent/received by the current user
+                if (isMe || message.sender == widget.receiver) {
+                  return Align(
+                    alignment:
+                        isMe ? Alignment.centerRight : Alignment.centerLeft,
+                    child: Container(
+                      padding: EdgeInsets.all(8),
+                      margin: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                      decoration: BoxDecoration(
+                        color: isMe
+                            ? Color.fromARGB(255, 48, 180, 77).withOpacity(0.4)
+                            : Colors.grey.withOpacity(0.4),
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      child: Text(message.content),
+                    ),
+                  );
+                } else {
+                  // Return an empty container if the message was not sent/received by the current user
+                  return Container();
+                }
+              },
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8),
+            child: Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    controller: _messageController,
+                    decoration: InputDecoration(hintText: 'Type a message'),
+                  ),
+                ),
+                IconButton(
+                  icon: Icon(Icons.send),
+                  onPressed: _sendMessage,
+                )
+              ],
+            ),
+          )
+        ],
+      ),
+    );
+  }
 
-//   ChatScreen({required this.receiverId, required this.receiverName});
-
-//   @override
-//   _ChatScreenState createState() => _ChatScreenState();
-// }
-
-// class _ChatScreenState extends State<ChatScreen> {
-//   final TextEditingController _messageController = TextEditingController();
-//   final MessageService _messageService = MessageService();
-//   late String _userId;
-//   List<Message> _messages = [];
-
-//   @override
-//   void initState() {
-//     super.initState();
-
-//     SharedPreferences.getInstance().then((prefs) {
-//       setState(() {
-//         _userId = prefs.getString('userId')!;
-//       });
-
-//       _messageService.socket.on('new-message', (_) {
-//         _loadMessages();
-//       });
-//     });
-
-//     _loadMessages();
-//   }
-
-//   Future<void> _loadMessages() async {
-//     final messages = await _messageService.getMessages(_userId);
-//     setState(() {
-//       _messages = messages
-//           .where((m) =>
-//               m.senderId == widget.receiverId ||
-//               m.receiverId == widget.receiverId)
-//           .toList();
-//     });
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: Text(widget.receiverName),
-//       ),
-//       body: Column(
-//         children: [
-//           Expanded(
-//             child: ListView.builder(
-//               padding: EdgeInsets.all(8.0),
-//               itemCount: _messages.length,
-//               itemBuilder: (BuildContext context, int index) {
-//                 final message = _messages[index];
-//                 return Align(
-//                   alignment: message.senderId == _userId
-//                       ? Alignment.centerRight
-//                       : Alignment.centerLeft,
-//                   child: Container(
-//                     decoration: BoxDecoration(
-//                       color: message.senderId == _userId
-//                           ? Theme.of(context).accentColor
-//                           : Colors.grey[200],
-//                       borderRadius: BorderRadius.circular(8.0),
-//                     ),
-//                     margin: EdgeInsets.symmetric(vertical: 4.0),
-//                     padding:
-//                         EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-//                     child:
-//                         Text(message.message, style: TextStyle(fontSize: 16.0)),
-//                   ),
-//                 );
-//               },
-//             ),
-//           ),
-//           Container(
-//             padding: EdgeInsets.symmetric(horizontal: 8.0),
-//             child: Row(
-//               children: [
-//                 Expanded(
-//                   child: TextField(
-//                     controller: _messageController,
-//                     decoration: InputDecoration(
-//                       hintText: 'Type your message...',
-//                     ),
-//                   ),
-//                 ),
-//                 IconButton(
-//                   icon: Icon(Icons.send),
-//                   onPressed: () {
-//                     // final message = Message(
-//                     //   senderId: _userId,
-//                     //   receiverId: widget.receiverId,
-//                     //   message: _messageController.text,
-//                     //   createdAt: DateTime.now(),
-//                     // );
-//                     // _messageService.sendMessage(message);
-//                     setState(() {
-//                       // _messages.add(message);
-//                       _messageController.clear();
-//                     });
-//                   },
-//                 ),
-//               ],
-//             ),
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-
-//   @override
-//   void dispose() {
-//     _messageService.dispose();
-//     super.dispose();
-//   }
-// }
+  void _sendMessage() async {
+    String message = _messageController.text.trim();
+    if (message.isNotEmpty) {
+      try {
+        final response = await networkHandler.postt("/send-message", {
+          'sender': widget.sender,
+          'receiver': widget.receiver,
+          'content': message,
+        });
+        if (response.statusCode == 201) {
+          final data = jsonDecode(response.body);
+          setState(() {
+            messages.add(Message.fromJson(data['message']));
+          });
+          _messageController.clear();
+          SchedulerBinding.instance.addPostFrameCallback((_) =>
+              _controller.animateTo(_controller.position.maxScrollExtent,
+                  duration: Duration(milliseconds: 300),
+                  curve: Curves.easeOut));
+        } else {
+          throw Exception('Failed to send message');
+        }
+      } catch (error) {
+        print(error.toString());
+      }
+    }
+  }
+}

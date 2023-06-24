@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../../provider/user_provider.dart';
+import '../../provider/usermodel_provider.dart';
+import '../screens/message_screen/message_screen.dart';
 
 Widget bottomAppbar(BuildContext context) {
   return BottomAppBar(
@@ -23,7 +28,16 @@ Widget bottomAppbar(BuildContext context) {
                 color: Colors.white,
               ),
               onPressed: () {
-                Navigator.pushNamed(context, '/login');
+                // Navigator.pushNamed(context, '/login');
+                UserMProvider userProvider =
+                    Provider.of<UserMProvider>(context, listen: false);
+                // final userProvider = Provider.of<UserMProvider>(context);
+                final userModel = userProvider.userModel;
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => UserListPage(userl: userModel!)),
+                );
               }),
           IconButton(
               icon: const Icon(

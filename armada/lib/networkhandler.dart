@@ -22,6 +22,16 @@ class NetworkHandler {
     // }
   }
 
+  Future gett(String urlp) async {
+    urlp = formater(urlp);
+    Uri url = Uri.parse(urlp);
+
+    var response = await http.get(url);
+    // if (response.statusCode == 200 || response.statusCode == 201) {
+    return response;
+    // }
+  }
+
   // static const XFile imageFile = XFile("default_image.jpg");
   Future<http.Response> post(
       String urlp, Map<String, String> body, String userr,

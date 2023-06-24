@@ -1,6 +1,4 @@
-import 'package:armada/utils/user_preferences.dart';
 import 'package:flutter/material.dart';
-import '../../widgets/widgets.dart';
 import 'package:armada/models/user.dart';
 
 class Editfarm extends StatefulWidget {
@@ -133,7 +131,7 @@ class _EditfarmState extends State<Editfarm> {
   Widget buildName(User user) => Column(
         children: [
           Text(
-            user.name,
+            user.firstname,
             style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
           ),
           const SizedBox(height: 4),
