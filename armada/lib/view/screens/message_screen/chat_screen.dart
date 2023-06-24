@@ -73,10 +73,11 @@ class _ChatPageState extends State<ChatPage> {
 
   Future<void> fetchData() async {
     try {
-      final response = await networkHandler
-          .get("/fetch-messages/${widget.sender}/${widget.receiver}");
+      final response = await networkHandler.get(
+          "/api/message/fetch-messages/${widget.sender}/${widget.receiver}");
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
+        print(data);
         setState(() {
           messages = List<Message>.from(
               data['messages'].map((message) => Message.fromJson(message)));
@@ -157,7 +158,8 @@ class _ChatPageState extends State<ChatPage> {
     String message = _messageController.text.trim();
     if (message.isNotEmpty) {
       try {
-        final response = await networkHandler.postt("/send-message", {
+        final response =
+            await networkHandler.postt("/api/message/send-message", {
           'sender': widget.sender,
           'receiver': widget.receiver,
           'content': message,

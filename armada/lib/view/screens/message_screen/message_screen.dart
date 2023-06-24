@@ -38,8 +38,8 @@ class _UserListPageState extends State<UserListPage> {
     }
 
     try {
-      var response =
-          await networkHandler.get("/fetch-users/${widget.userl.useid}");
+      var response = await networkHandler
+          .get("/api/message/fetch-users/${widget.userl.useid}");
 
       if (response.statusCode == 200) {
         var data = json.decode(response.body);
@@ -48,6 +48,7 @@ class _UserListPageState extends State<UserListPage> {
             data['contacts'] != null &&
             data['newMessageCounts'] != null) {
           setState(() {
+            print(data);
             contacts = List.from(data['contacts'])
                 .map((contactJson) =>
                     Contact.fromJson(json.decode(json.encode(contactJson))))

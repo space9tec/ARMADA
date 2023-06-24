@@ -10,7 +10,7 @@ class Contact {
   factory Contact.fromJson(Map<String, dynamic> json) {
     return Contact(
       userid: json['_id'],
-      username: json['first_name'],
+      username: json['username'],
     );
   }
 }
