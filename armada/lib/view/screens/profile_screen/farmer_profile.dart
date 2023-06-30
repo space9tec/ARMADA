@@ -94,7 +94,7 @@ class _FarmerProfileState extends State<FarmerProfile> {
   Widget buildName(User user) => Column(
         children: [
           Text(
-            user.name,
+            user.firstname,
             style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
           ),
           const SizedBox(height: 4),

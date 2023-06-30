@@ -133,7 +133,7 @@ class _EditFarmerProfileState extends State<EditFarmerProfile> {
   Widget buildName(User user) => Column(
         children: [
           Text(
-            user.name,
+            user.firstname,
             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
           ),
           const SizedBox(height: 4),

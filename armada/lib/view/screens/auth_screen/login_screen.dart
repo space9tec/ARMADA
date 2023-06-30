@@ -7,7 +7,9 @@ import 'package:armada/view/widgets/widgets.dart';
 import 'package:armada/networkhandler.dart';
 import 'package:provider/provider.dart';
 import 'package:bot_toast/bot_toast.dart';
+import '../../../models/user.dart';
 import '../../../provider/user_provider.dart';
+import '../../../provider/usermodel_provider.dart';
 
 class Login extends StatefulWidget {
   static const String routeName = '/login';
@@ -218,6 +220,24 @@ class _LoginState extends State<Login> {
                                 .setAccountType(output['role']);
                             String? userid = await storage.read(key: "userid");
                             print(userid);
+
+                            UserMProvider userProvider =
+                                Provider.of<UserMProvider>(context,
+                                    listen: false);
+
+                            // Set the user ID in the provider
+                            userProvider.setUserModel(output['user_id']);
+                            // USER MODEL PROVIDER
+                            // final userProvider = Provider.of<UserMProvider>(
+                            //     context,
+                            //     listen: false);
+                            // // create the user model instance using the response data
+                            // final userModel = User.fromJson(output['user_id']);
+                            // // store the user model instance in the UserProvider
+                            // userProvider.setUserModel(userModel);
+                            // user model provider
+
+                            //TOAST
                             BotToast.showText(
                               text: "Welcome! You have successfully logged in.",
                               duration: Duration(seconds: 2),
@@ -225,6 +245,7 @@ class _LoginState extends State<Login> {
                               textStyle: TextStyle(
                                   fontSize: 16.0, color: Color(0xFF006837)),
                             );
+                            //toast end
                             Navigator.of(context).pushNamedAndRemoveUntil(
                                 '/', (Route<dynamic> route) => false);
                           } else {
