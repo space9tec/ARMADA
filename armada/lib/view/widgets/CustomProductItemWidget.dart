@@ -24,8 +24,8 @@ class _CustomProductItemWidgetState extends State<CustomProductItemWidget> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 165,
-      height: 265,
+      width: MediaQuery.of(context).size.width * 0.3,
+      height: MediaQuery.of(context).size.width * 0.3,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -75,8 +75,8 @@ class _CustomProductItemWidgetState extends State<CustomProductItemWidget> {
                 padding: const EdgeInsets.all(10.0),
                 child: Container(
                   alignment: Alignment.centerLeft,
-                  width: 150,
-                  height: 150,
+                  width: MediaQuery.of(context).size.width * 0.35,
+                  height: MediaQuery.of(context).size.height * 0.2,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(20),
                   ),
@@ -171,28 +171,28 @@ class _CustomProductItemWidgetState extends State<CustomProductItemWidget> {
                     style: Theme.of(context).textTheme.bodyMedium),
               ),
               addHorizontalSpace(25),
+              // Container(
+
               Container(
                 padding: EdgeInsets.all(1),
                 height: 18,
-                width: 64,
-                decoration: BoxDecoration(color: Colors.green),
-                child: Container(
-                  padding: EdgeInsets.all(16.0),
-                  decoration: BoxDecoration(
-                    color: Colors.red,
-                    borderRadius: BorderRadius.circular(20.0),
-                    border: Border.all(
-                      color: Colors.green,
-                      width: 2.0,
-                    ),
-                  ),
-                  child: Text(
-                    widget.machine.status,
-                    style: TextStyle(fontSize: 18.0),
+                width: 84,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20.0),
+                  border: Border.all(
+                    color: Colors.green,
+                    width: 1.0,
                   ),
                 ),
-                // Text(widget.machine.status),
+                child: Center(
+                  child: Text(
+                    widget.machine.status,
+                    style: TextStyle(fontSize: 15.0, color: Colors.green),
+                  ),
+                ),
               ),
+              // Text(widget.machine.status),
+              // ),
             ],
           )
         ],

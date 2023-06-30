@@ -131,7 +131,7 @@ class _ServiceProviderProfileState extends State<ServiceProviderProfile> {
                             const SizedBox(
                               height: 15,
                             ),
-                            Text("Recipes",
+                            Text("Machines",
                                 style: Theme.of(context).textTheme.bodyMedium)
                           ],
                         ),
@@ -144,7 +144,7 @@ class _ServiceProviderProfileState extends State<ServiceProviderProfile> {
                             const SizedBox(
                               height: 15,
                             ),
-                            Text("Following",
+                            Text("Booked",
                                 style: Theme.of(context).textTheme.bodyMedium)
                           ],
                         ),
@@ -155,7 +155,7 @@ class _ServiceProviderProfileState extends State<ServiceProviderProfile> {
                             const SizedBox(
                               height: 15,
                             ),
-                            Text("Followers",
+                            Text("Requests",
                                 style: Theme.of(context).textTheme.bodyMedium)
                           ],
                         ),
@@ -182,24 +182,24 @@ class _ServiceProviderProfileState extends State<ServiceProviderProfile> {
                     textLeft: "All",
                     textRight: "Booked",
                   ),
-                  GridView.count(
-                    physics: const NeverScrollableScrollPhysics(),
-                    crossAxisCount: 2,
-                    shrinkWrap: true,
-                    childAspectRatio: 1 / 1.3,
-                    children: List.generate(machine.length,
-                        // (index) => CustomProductItemWidget(),
-                        (index) {
-                      final machines = machine[index];
+                  // GridView.count(
+                  //   physics: const NeverScrollableScrollPhysics(),
+                  //   crossAxisCount: 2,
+                  //   shrinkWrap: true,
+                  //   childAspectRatio: 1 / 1.3,
+                  //   children: List.generate(machine.length,
+                  //       // (index) => CustomProductItemWidget(),
+                  //       (index) {
+                  //     final machines = machine[index];
 
-                      return CustomProductItemWidget(machines);
-                    }
-                        // 5,
-                        // (index) => CustomProductItemWidget(
-                        //   showUser: false,
-                        // ),
-                        ),
-                  ),
+                  //     return CustomProductItemWidget(machines);
+                  //   }
+                  //       // 5,
+                  //       // (index) => CustomProductItemWidget(
+                  //       //   showUser: false,
+                  //       // ),
+                  //       ),
+                  // ),
                 ],
               ),
             )

@@ -175,6 +175,7 @@ class _ChatPageState extends State<ChatPage> {
                   duration: Duration(milliseconds: 300),
                   curve: Curves.easeOut));
         } else {
+          print(response.body);
           throw Exception('Failed to send message');
         }
       } catch (error) {

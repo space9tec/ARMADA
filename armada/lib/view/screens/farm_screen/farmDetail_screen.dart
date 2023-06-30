@@ -2,6 +2,7 @@ import 'package:armada/configuration/theme_manager.dart';
 import 'package:armada/models/farm.dart';
 import 'package:armada/networkhandler.dart';
 import 'package:armada/utils/helper_widget.dart';
+import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -52,9 +53,32 @@ class farmDetail extends StatelessWidget {
                           ),
                           ElevatedButton(
                             child: Text('Delete'),
-                            onPressed: () {
+                            onPressed: () async {
                               // Perform the delete operation here
-                              Navigator.of(context).pop();
+                              Map<String, String> data = {
+                                "_id": farmlist.farmid,
+                              };
+                              // var response = await networkHandler.postt(
+                              //     "/api/farm/delete", data);
+                              var response = await networkHandler
+                                  .delete("/api/farm/${farmlist.farmid}");
+                              if (response.statusCode == 200) {
+                                Navigator.pushNamed(context, '/farm_screen');
+
+                                BotToast.showText(
+                                  text: "Farm deleted",
+                                  duration: Duration(seconds: 2),
+                                  contentColor: Colors.white,
+                                  textStyle: TextStyle(
+                                      fontSize: 16.0, color: Color(0xFF006837)),
+                                );
+                                // Navigator.of(context).pushNamedAndRemoveUntil(
+                                //     '/guest', (Route<dynamic> route) => false);
+                                Navigator.of(context).pop();
+                              } else {
+                                print("faild");
+                                print(response.body.toString());
+                              }
                             },
                           ),
                         ],

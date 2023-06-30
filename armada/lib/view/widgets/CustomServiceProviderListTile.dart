@@ -39,7 +39,7 @@ class _CustomServiceProviderListTileState
               break;
             case 2:
               value.setCurrentDrawer(2);
-              Navigator.pushNamed(context, '/');
+              Navigator.pushNamed(context, '/aboutscreen');
               break;
           }
         },

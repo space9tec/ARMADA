@@ -1,6 +1,7 @@
 import 'package:armada/configuration/theme_manager.dart';
 import 'package:armada/networkhandler.dart';
 import 'package:armada/utils/helper_widget.dart';
+import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -52,9 +53,32 @@ class machineDetail extends StatelessWidget {
                           ),
                           ElevatedButton(
                             child: Text('Delete'),
-                            onPressed: () {
+                            onPressed: () async {
                               // Perform the delete operation here
-                              Navigator.of(context).pop();
+                              Map<String, String> data = {
+                                // "phone": machinlist.machineId,
+                                "id": machinlist.machineId,
+                              };
+                              var response = await networkHandler.delete(
+                                  "/api/machinery/${machinlist.machineId}");
+
+                              if (response.statusCode == 200) {
+                                Navigator.pushNamed(context, '/machie_screen');
+
+                                BotToast.showText(
+                                  text: "Machine deleted",
+                                  duration: Duration(seconds: 2),
+                                  contentColor: Colors.white,
+                                  textStyle: TextStyle(
+                                      fontSize: 16.0, color: Color(0xFF006837)),
+                                );
+                                // Navigator.of(context).pushNamedAndRemoveUntil(
+                                // Navigator.of(context).pop();
+                                //     '/guest', (Route<dynamic> route) => false);
+                              } else {
+                                print("faild");
+                                print(response.body.toString());
+                              }
                             },
                           ),
                         ],

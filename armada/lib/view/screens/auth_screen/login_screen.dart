@@ -7,7 +7,6 @@ import 'package:armada/view/widgets/widgets.dart';
 import 'package:armada/networkhandler.dart';
 import 'package:provider/provider.dart';
 import 'package:bot_toast/bot_toast.dart';
-import '../../../models/user.dart';
 import '../../../provider/user_provider.dart';
 import '../../../provider/usermodel_provider.dart';
 

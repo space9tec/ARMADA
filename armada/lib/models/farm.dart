@@ -1,4 +1,5 @@
 class FarmM {
+  final String farmid;
   final String farmname;
   final String croptype;
   final String soiltype;
@@ -8,6 +9,7 @@ class FarmM {
   final int longtude;
 
   FarmM({
+    required this.farmid,
     required this.farmname,
     required this.croptype,
     required this.soiltype,
@@ -19,6 +21,7 @@ class FarmM {
 
   factory FarmM.fromJson(Map<String, dynamic> json) {
     return FarmM(
+        farmid: json['_id'],
         farmname: json['farm_name'],
         croptype: json['crops_grown'],
         soiltype: json['soil_type'],

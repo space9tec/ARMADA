@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:armada/utils/helper_widget.dart';
 import 'package:flutter/material.dart';
 import '../../../models/machine.dart';
@@ -26,13 +25,13 @@ class Guest extends StatefulWidget {
 class _GuestState extends State<Guest> {
   NetworkHandler networkHandler = NetworkHandler();
   List<MachineM> machine = [];
-  late PageController _pageController;
-  String userRole = 'farmer';
   List<String> images = [
     "assets/images/tracter1.png",
     "assets/images/tracter2.png",
     "assets/images/tracter3.png",
   ];
+  late PageController _pageController;
+  String userRole = 'farmer';
   int activePage = 1;
 
   @override
@@ -62,14 +61,15 @@ class _GuestState extends State<Guest> {
         bottom: PreferredSize(
           preferredSize:
               Size.fromHeight(MediaQuery.of(context).size.width * 0.15),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
+          child: Column(
             children: [
-              // SizedBox(
-              //   height: 80,
-              //   width: 80,
-              //   child: Image.asset("assets/images/logo.jpeg"),
-              // ),
+              Text(
+                "ARMADA",
+                style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20),
+              ),
               SizedBox(
                 width: MediaQuery.of(context).size.width * 0.75,
                 height: MediaQuery.of(context).size.height * 0.08,

@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:bot_toast/bot_toast.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:armada/networkhandler.dart';
@@ -189,6 +190,13 @@ class _UploadFarmState extends State<UploadFarm> {
                           imageFile: imageFile!);
 
                       if (response.statusCode == 201) {
+                        BotToast.showText(
+                          text: "Welcome! You have successfully logged in.",
+                          duration: Duration(seconds: 2),
+                          contentColor: Colors.white,
+                          textStyle: TextStyle(
+                              fontSize: 16.0, color: Color(0xFF006837)),
+                        );
                         Navigator.pushNamed(context, '/farm_screen');
                       } else {
                         // String output = json.decode(response.toString());

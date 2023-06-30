@@ -45,10 +45,9 @@ class gustnavigationDrawer extends StatelessWidget {
             height: MediaQuery.of(context).size.height * 0.43,
             child: ListView.builder(
               itemBuilder: (context, index) {
-                return CustomListTile(
+                return gCustomListTile(
                     ind: index,
                     title: gustDrawerItem[index].title,
-                    isSelected: index,
                     icon: gustDrawerItem[index].icon);
               },
               itemCount: gustDrawerItem.length,
@@ -61,7 +60,7 @@ class gustnavigationDrawer extends StatelessWidget {
             height: MediaQuery.of(context).size.height * 0.3,
             child: ListView.builder(
               itemBuilder: (context, index) {
-                return BCustomListTile(
+                return BgCustomListTile(
                   title: gustBDrawerItem[index].title,
                   icon: gustBDrawerItem[index].icon,
                   ind: index,
