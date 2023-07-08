@@ -16,10 +16,15 @@ class NetworkHandler {
 
     String? token = await storage.read(key: "token");
     String cookie = 'jwt=$token';
+    try {
+      var response = await http.get(url, headers: {'Cookie': cookie});
+      return response;
+    } catch (e) {
+      throw NetworkException('No internet connection');
+    }
 
-    var response = await http.get(url, headers: {'Cookie': cookie});
     // if (response.statusCode == 200 || response.statusCode == 201) {
-    return response;
+
     // }
   }
 
@@ -220,24 +225,31 @@ class NetworkHandler {
     Uri url = Uri.parse(endpoint);
     String? token = await storage.read(key: "token");
     String cookie = 'jwt=$token';
-    var request = http.MultipartRequest('PUT', url);
-    // String jsonString = json.encode(data);
-    request.headers['Content-Type'] = 'application/json';
-    request.headers['Cookie'] = cookie;
+
+    var response = await http.put(
+      url,
+      headers: {'Content-Type': 'application/json', 'Cookie': cookie},
+      body: json.encode(data),
+    );
+    return response;
+    // var request = http.MultipartRequest('PUT', url);
+    // // String jsonString = json.encode(data);
+    // request.headers['Content-Type'] = 'application/json';
+    // request.headers['Cookie'] = cookie;
     // var uri = Uri.parse(baseUrl + endpoint);
     // var request = http.MultipartRequest("PUT", uri);
 
-    for (var key in data.keys) {
-      if (data[key] is File) {
-        var file = await http.MultipartFile.fromPath(key, data[key].path);
-        request.files.add(file);
-      } else {
-        request.fields[key] = data[key];
-      }
-    }
+    // for (var key in data.keys) {
+    //   if (data[key] is File) {
+    //     var file = await http.MultipartFile.fromPath(key, data[key].path);
+    //     request.files.add(file);
+    //   } else {
+    //     request.fields[key] = data[key];
+    //   }
+    // }
 
-    var response = await request.send();
-    return http.Response.fromStream(response);
+    // var response = await request.send();
+    // return http.Response.fromStream(response);
   }
 
   Future<http.Response> putt(String endpoint) async {
@@ -275,4 +287,10 @@ class NetworkHandler {
   String formater(String url) {
     return baseURL + url;
   }
+}
+
+class NetworkException implements Exception {
+  final String message;
+
+  NetworkException(this.message);
 }

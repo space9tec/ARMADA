@@ -1,14 +1,11 @@
 import 'dart:convert';
-import 'package:armada/provider/drop_down_provider.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:armada/utils/helper_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:armada/view/widgets/widgets.dart';
 import 'package:armada/networkhandler.dart';
-import 'package:provider/provider.dart';
 import 'package:bot_toast/bot_toast.dart';
-import '../../../provider/user_provider.dart';
-import '../../../provider/usermodel_provider.dart';
+import '../../../models/usermodel.dart';
 
 class Login extends StatefulWidget {
   static const String routeName = '/login';
@@ -32,6 +29,8 @@ class _LoginState extends State<Login> {
   final formKey = GlobalKey<FormState>();
   final TextEditingController _numbercontroller = TextEditingController();
   final TextEditingController _passwordcontroller = TextEditingController();
+
+  late UserModel usermode;
 
   bool value = false;
   bool isHidden = true;
@@ -199,33 +198,65 @@ class _LoginState extends State<Login> {
                                 json.decode(response.body);
 
                             print("yes");
-                            Provider.of<UserProvider>(context, listen: false)
-                                .setUser(
-                                    output['user_id']!, output['user_id']!);
+                            // Provider.of<UserProvider>(context, listen: false)
+                            //     .setUser(
+                            //         output['user_id']!, output['user_id']!);
+
+                            // set token
                             await storage.write(
                                 key: 'token', value: output['Token']);
+
                             print(output);
+
+                            // read token
                             String? tok = await storage.read(key: "token");
                             print(tok);
+                            // Provider.of<Authenticate>(context, listen: false)
+                            //     .setAuthenticate(true);
                             // String? tok = await storage.read(key: "userid");
+                            // final Map<String, dynamic> jsonData =
+                            //     output["user"] as Map<String, dynamic>;
 
-                            await storage.write(
-                                key: 'userid', value: output['user_id']);
+                            // // Create an instance of UserModel using the factory method with the parsed map
+                            // print(output);
+                            // final UserModel user = UserModel.fromJson(jsonData);
+                            print(output['user']);
+                            Map<String, dynamic> userData = output['user'];
 
-                            // String? userrole=await storage.write(
-                            //     key: 'userrole', value: );
-                            Provider.of<DropDownProvider>(context,
-                                    listen: false)
-                                .setAccountType(output['role']);
-                            String? userid = await storage.read(key: "userid");
-                            print(userid);
+                            // Create UserModel instance using the user data
+                            UserModel user = UserModel.fromJson(userData);
+                            // UserModel user = UserModel.fromJson(output);
+                            print(user.firstname);
+                            // usermode = (json.decode(output['user']))
+                            //     .map((data) => UserModel.fromJson(data));
+                            // UserModel userm = UserModel.fromJson(userData);
 
-                            UserMProvider userProvider =
-                                Provider.of<UserMProvider>(context,
-                                    listen: false);
+// Convert UserModel to JSON
+                            String userJson = json.encode(user.toJson());
 
-                            // Set the user ID in the provider
-                            userProvider.setUserModel(output['user_id']);
+// Store the JSON representation of UserModel securely
+                            // await storage.write(key: 'user', value: userJson);
+                            await storage.write(key: 'userm', value: userJson);
+                            // usermode.
+                            // set user id
+                            // await storage.write(
+                            //     key: 'userid', value: output['user_id']);
+
+                            // // String? userrole=await storage.write(
+                            // //     key: 'userrole', value: );
+                            // // set role
+                            // Provider.of<DropDownProvider>(context,
+                            //         listen: false)
+                            //     .setAccountType(output['role']);
+                            // String? userid = await storage.read(key: "userid");
+                            // print(userid);
+
+                            // UserMProvider userProvider =
+                            //     Provider.of<UserMProvider>(context,
+                            //         listen: false);
+
+                            // // Set the user ID in the provider
+                            // userProvider.setUserModel(output['user_id']);
                             // USER MODEL PROVIDER
                             // final userProvider = Provider.of<UserMProvider>(
                             //     context,
@@ -236,6 +267,9 @@ class _LoginState extends State<Login> {
                             // userProvider.setUserModel(userModel);
                             // user model provider
 
+                            // get and set user model
+
+                            // end get and set user model
                             //TOAST
                             BotToast.showText(
                               text: "Welcome! You have successfully logged in.",
@@ -249,18 +283,18 @@ class _LoginState extends State<Login> {
                                 '/', (Route<dynamic> route) => false);
                           } else {
                             BotToast.showText(
-                              text: "Failed to login: ${response.statusCode}",
+                              text: "Failed to loginn: ${response.statusCode}",
                               duration: Duration(seconds: 2),
                               contentColor: Colors.white,
                               textStyle: TextStyle(
                                   fontSize: 16.0, color: Color(0xFF006837)),
                             );
                             throw Exception(
-                                'Failed to login: ${response.statusCode}');
+                                'Failed to : ${response.statusCode}');
                           }
                         } catch (e) {
                           BotToast.showText(
-                            text: "Failed to login: ${e}",
+                            text: "Failed to logi: ${e}",
                             duration: Duration(seconds: 2),
                             contentColor: Colors.white,
                             textStyle: TextStyle(

@@ -71,7 +71,7 @@ class _SignUpState extends State<SignUp> {
                   child: Text("Create Account.",
                       style: Theme.of(context).textTheme.displayLarge),
                 ),
-                addVerticalSpace(MediaQuery.of(context).size.width * 0.10),
+                addVerticalSpace(MediaQuery.of(context).size.width * 0.20),
                 InputText(
                     context,
                     "First Name",
@@ -222,7 +222,7 @@ class _SignUpState extends State<SignUp> {
                   ),
                 ),
                 addVerticalSpace(15.0),
-                accountSelector(context),
+                // accountSelector(context),
                 addVerticalSpace(10.0),
                 Row(
                   children: [
@@ -258,7 +258,7 @@ class _SignUpState extends State<SignUp> {
                             "last_name": _lastNamecontroller.text,
                             "phone": _numberController.text,
                             "password": _passwordcontroller.text,
-                            "role": _selectedAccountType!,
+                            "role": "Farmer",
                           };
                           var response = await networkHandler.post(
                               "/api/auth/register", data, "userData",

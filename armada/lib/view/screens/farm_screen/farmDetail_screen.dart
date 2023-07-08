@@ -5,24 +5,48 @@ import 'package:armada/utils/helper_widget.dart';
 import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../farm_screen/edit_farm_screen.dart';
 
 import '../../../provider/item_provider.dart';
+import 'farms_screen.dart';
 
-class farmDetail extends StatelessWidget {
+class farmDetail extends StatefulWidget {
   const farmDetail(
       {super.key, required this.farmlist, required this.networkHandler});
   final FarmM farmlist;
   final NetworkHandler networkHandler;
+
+  @override
+  State<farmDetail> createState() => _farmDetailState();
+}
+
+class _farmDetailState extends State<farmDetail> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: InkWell(
+          onTap: () {
+            Navigator.push(context,
+                MaterialPageRoute(builder: ((context) => FarmScreen())));
+          },
+          child: Icon(Icons.arrow_back_ios_new_rounded),
+        ),
         elevation: 0,
         backgroundColor: Theme.of(context).primaryColor,
         actions: [
           IconButton(
             onPressed: () {
-              Navigator.pushNamed(context, '/edit_farm');
+              // Navigator.pushNamed(context, '/edit_farm');
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: ((context) => Editfarm(
+                        farmlist: widget.farmlist,
+                        networkHandler: widget.networkHandler,
+                      )),
+                ),
+              );
             },
             icon: const Icon(Icons.edit_sharp),
           ),
@@ -56,12 +80,12 @@ class farmDetail extends StatelessWidget {
                             onPressed: () async {
                               // Perform the delete operation here
                               Map<String, String> data = {
-                                "_id": farmlist.farmid,
+                                "_id": widget.farmlist.farmid,
                               };
                               // var response = await networkHandler.postt(
                               //     "/api/farm/delete", data);
-                              var response = await networkHandler
-                                  .delete("/api/farm/${farmlist.farmid}");
+                              var response = await widget.networkHandler.delete(
+                                  "/api/farm/${widget.farmlist.farmid}");
                               if (response.statusCode == 200) {
                                 Navigator.pushNamed(context, '/farm_screen');
 
@@ -74,7 +98,7 @@ class farmDetail extends StatelessWidget {
                                 );
                                 // Navigator.of(context).pushNamedAndRemoveUntil(
                                 //     '/guest', (Route<dynamic> route) => false);
-                                Navigator.of(context).pop();
+                                // Navigator.of(context).pop();
                               } else {
                                 print("faild");
                                 print(response.body.toString());
@@ -140,17 +164,17 @@ class farmDetail extends StatelessWidget {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    "Farm name: ${farmlist.farmname}",
+                                    "Farm name: ${widget.farmlist.farmname}",
                                     style: textTheme().displayMedium,
                                   ),
                                   addVerticalSpace(10),
                                   Text(
-                                    "Size: ${farmlist.farmsize}",
+                                    "Size: ${widget.farmlist.farmsize}",
                                     style: textTheme().displayMedium,
                                   ),
                                   addVerticalSpace(10),
                                   Text(
-                                    "Crop type : ${farmlist.croptype}",
+                                    "Crop type : ${widget.farmlist.croptype}",
                                     style: textTheme().displayMedium,
                                   ),
                                   addVerticalSpace(10),

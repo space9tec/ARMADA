@@ -1,9 +1,11 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:bot_toast/bot_toast.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:armada/networkhandler.dart';
+import '../../../models/usermodel.dart';
 import '../../../utils/helper_widget.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../widgets/widgets.dart';
@@ -113,11 +115,11 @@ class _UploadFarmState extends State<UploadFarm> {
                           children: [
                             InputTextFarmLocation(
                                 context,
-                                "Location.",
+                                "Region.",
                                 "Location",
                                 false,
                                 Icons.person_3_sharp,
-                                TextInputType.number,
+                                TextInputType.text,
                                 _location),
                           ],
                         ),
@@ -170,28 +172,38 @@ class _UploadFarmState extends State<UploadFarm> {
                 ),
                 InkWell(
                   onTap: () async {
-                    String? userid = await storage.read(key: "userid");
-                    print(userid);
+                    // String? userid = await storage.read(key: "userid");
+                    // print(userid);
+                    // UserModel usermode = UserModel(
+                    //     firstname: '',
+                    //     password: '',
+                    //     lastname: '',
+                    //     phone: '',
+                    //     useid: '',
+                    //     image: '');
+                    String? userJson = await storage.read(key: 'userm');
+                    UserModel usermode =
+                        UserModel.fromJson(json.decode(userJson!));
 
                     if (formKey.currentState!.validate()) {
                       Map<String, String> data = {
                         "farm_size": _farmSize.text,
                         "farm_name": _farmName.text,
-                        "latitude": _location.text,
+                        "region": _location.text,
                         "crops_grown": _croptype.text,
                         "soil_type": _soiltype.text,
-                        "longitude": _polygonlocation.text,
-                        "owner_id": userid!,
+                        // "longitude": _polygonlocation.text,
+                        "owner_id": usermode.useid,
                       };
                       print(data);
 
                       var response = await networkHandler.post(
                           "/api/farm/", data, "farmData",
-                          imageFile: imageFile!);
+                          imageFile: imageFile);
 
                       if (response.statusCode == 201) {
                         BotToast.showText(
-                          text: "Welcome! You have successfully logged in.",
+                          text: "Posted.",
                           duration: Duration(seconds: 2),
                           contentColor: Colors.white,
                           textStyle: TextStyle(

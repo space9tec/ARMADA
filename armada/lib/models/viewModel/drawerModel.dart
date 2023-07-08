@@ -13,9 +13,9 @@ List<DrawerModel> DrawerItem = [
   DrawerModel(icon: Icons.person, title: "About"),
 ];
 List<DrawerModel> gustDrawerItem = [
-  DrawerModel(icon: Icons.person, title: "Home"),
+  DrawerModel(icon: Icons.home, title: "Home"),
   DrawerModel(icon: Icons.person, title: "Sign up"),
-  DrawerModel(icon: Icons.person, title: "About"),
+  DrawerModel(icon: Icons.info, title: "About"),
 ];
 
 List<DrawerModel> BDrawerItem = [
@@ -26,7 +26,7 @@ List<DrawerModel> BDrawerItem = [
 List<DrawerModel> gustBDrawerItem = [
   DrawerModel(icon: Icons.settings, title: "Setting"),
   DrawerModel(icon: Icons.help, title: "Help"),
-  DrawerModel(icon: Icons.help, title: "Contact"),
+  DrawerModel(icon: Icons.contact_page_outlined, title: "Contact us"),
 ];
 List<DrawerModel> ServiceProviderDrawerItem = [
   DrawerModel(icon: Icons.settings, title: "Profile"),

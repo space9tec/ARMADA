@@ -54,7 +54,7 @@ class gustnavigationDrawer extends StatelessWidget {
             ),
           ),
           const Divider(
-            color: Colors.black,
+            color: Color.fromARGB(255, 156, 155, 155),
           ),
           Container(
             height: MediaQuery.of(context).size.height * 0.3,
@@ -66,7 +66,7 @@ class gustnavigationDrawer extends StatelessWidget {
                   ind: index,
                 );
               },
-              itemCount: BDrawerItem.length,
+              itemCount: gustBDrawerItem.length,
             ),
           ),
         ],

@@ -56,25 +56,18 @@ class _CustomListTileState extends State<CustomListTile> {
                   bottom: BorderSide(
                       style: BorderStyle.solid,
                       width: 1,
-                      color: Theme.of(context).primaryColor)),
-              color: (value.getCurrentDrawer == widget.isSelected)
-                  ? Theme.of(context).primaryColor
-                  : Colors.transparent,
+                      color: Colors.black12)),
+              color: Colors.transparent,
             ),
             child: Row(
               children: [
-                Icon(widget.icon,
-                    color: value.getCurrentDrawer == widget.isSelected
-                        ? Colors.white
-                        : Theme.of(context).primaryColor),
-                SizedBox(width: 5),
+                Icon(widget.icon, color: Colors.grey),
+                SizedBox(width: 15),
                 Text(
                   widget.title,
                   style: TextStyle(
-                    color: (value.getCurrentDrawer == widget.isSelected)
-                        ? Colors.white
-                        : Theme.of(context).primaryColor,
-                    fontSize: 20,
+                    color: Theme.of(context).primaryColor,
+                    fontSize: 17,
                   ),
                 )
               ],
@@ -136,18 +129,18 @@ class _BCustomListTileState extends State<BCustomListTile> {
                   bottom: BorderSide(
                       style: BorderStyle.solid,
                       width: 1,
-                      color: Theme.of(context).primaryColor)),
+                      color: Colors.black12)),
               color: Colors.transparent,
             ),
             child: Row(
               children: [
-                Icon(widget.icon, color: Theme.of(context).primaryColor),
-                SizedBox(width: 5),
+                Icon(widget.icon, color: Colors.grey),
+                SizedBox(width: 15),
                 Text(
                   widget.title,
                   style: TextStyle(
                     color: Theme.of(context).primaryColor,
-                    fontSize: 20,
+                    fontSize: 17,
                   ),
                 )
               ],
@@ -234,18 +227,18 @@ class _gCustomListTileState extends State<gCustomListTile> {
                   bottom: BorderSide(
                       style: BorderStyle.solid,
                       width: 1,
-                      color: Theme.of(context).primaryColor)),
+                      color: Colors.black12)),
               color: Colors.transparent,
             ),
             child: Row(
               children: [
-                Icon(widget.icon, color: Theme.of(context).primaryColor),
-                SizedBox(width: 5),
+                Icon(widget.icon, color: Colors.grey),
+                SizedBox(width: 15),
                 Text(
                   widget.title,
                   style: TextStyle(
                     color: Theme.of(context).primaryColor,
-                    fontSize: 20,
+                    fontSize: 17,
                   ),
                 )
               ],
@@ -307,18 +300,18 @@ class _BgCustomListTileState extends State<BgCustomListTile> {
                   bottom: BorderSide(
                       style: BorderStyle.solid,
                       width: 1,
-                      color: Theme.of(context).primaryColor)),
+                      color: Colors.black12)),
               color: Colors.transparent,
             ),
             child: Row(
               children: [
-                Icon(widget.icon, color: Theme.of(context).primaryColor),
-                SizedBox(width: 5),
+                Icon(widget.icon, color: Colors.grey),
+                SizedBox(width: 15),
                 Text(
                   widget.title,
                   style: TextStyle(
                     color: Theme.of(context).primaryColor,
-                    fontSize: 20,
+                    fontSize: 17,
                   ),
                 )
               ],

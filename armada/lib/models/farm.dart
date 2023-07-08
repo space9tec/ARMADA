@@ -4,9 +4,9 @@ class FarmM {
   final String croptype;
   final String soiltype;
   final String? imagename;
-  final int farmsize;
-  final int latitud;
-  final int longtude;
+  final int? farmsize;
+  // final int latitud;
+  final String? longtude;
 
   FarmM({
     required this.farmid,
@@ -15,7 +15,7 @@ class FarmM {
     required this.soiltype,
     required this.imagename,
     required this.farmsize,
-    required this.latitud,
+    // required this.latitud,
     required this.longtude,
   });
 
@@ -27,7 +27,7 @@ class FarmM {
         soiltype: json['soil_type'],
         imagename: json['image'],
         farmsize: json['farm_size'],
-        latitud: json['latitude'],
-        longtude: json['longitude']);
+        // latitud: json['latitude'],
+        longtude: json['region']);
   }
 }

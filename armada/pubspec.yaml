@@ -50,6 +50,14 @@ dependencies:
   flutter_native_splash: ^2.3.1
   smooth_page_indicator:
   shared_preferences:
+  flutter_launcher_icons:
+  liquid_pull_to_refresh: ^3.0.1
+  internet_connection_checker:
+
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/images/logo.jpeg"
 
 flutter_native_splash:
   color: "#42a5f5"
