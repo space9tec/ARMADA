@@ -47,7 +47,7 @@ dependencies:
   intl: ^0.18.1
   bot_toast: ^4.0.4
   socket_io_client: ^2.0.2
-  flutter_native_splash: ^2.3.1
+  # flutter_native_splash: ^2.3.1
   smooth_page_indicator:
   shared_preferences:
   flutter_launcher_icons:
@@ -59,9 +59,9 @@ flutter_icons:
   ios: true
   image_path: "assets/images/logo.jpeg"
 
-flutter_native_splash:
-  color: "#42a5f5"
-  image: assets/images/Armada-logo.png
+# flutter_native_splash:
+#   color: "#42a5f5"
+#   image: assets/images/Armada-logo.png
 
 dev_dependencies:
   build_runner:

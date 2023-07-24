@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:armada/utils/helper_widget.dart';
 import 'package:image_picker/image_picker.dart';
@@ -8,6 +10,7 @@ import '../../widgets/widgets.dart';
 import 'package:armada/networkhandler.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:bot_toast/bot_toast.dart';
+import '../../../models/usermodel.dart';
 
 class AddMachine extends StatefulWidget {
   static const String routeName = '/AddMachine';
@@ -36,8 +39,6 @@ class _AddMachineState extends State<AddMachine> {
   final TextEditingController _year = TextEditingController();
   final TextEditingController _horsepower = TextEditingController();
   final TextEditingController _hourmeter = TextEditingController();
-  final TextEditingController _region = TextEditingController();
-
   final TextEditingController _requiredpower = TextEditingController();
   final TextEditingController _workingcapacity = TextEditingController();
   final TextEditingController _graintank = TextEditingController();
@@ -59,79 +60,295 @@ class _AddMachineState extends State<AddMachine> {
   final ImagePicker picker = ImagePicker();
 
   final _formKey = GlobalKey<FormState>();
+
+  final _machinestatus = ["Free", "In Maintenance", "Booked"];
+  String _selectedmachinestatus = "Free";
+  final _regions = [
+    'Tigray',
+    'Afar',
+    "Amhara",
+    "Oromia",
+    "Somali",
+    "SNNPR",
+    "Gambela",
+    "Benishangul",
+    "Harari"
+  ];
+  String _selectedregion = "Tigray";
+
+  @override
+  void dispose() {
+    _loadingcapacity.dispose();
+    _platformdimension.dispose();
+    _sideboardheight.dispose();
+    _numberoftires.dispose();
+    _tankcapacity.dispose();
+    _numberofrows.dispose();
+    _additionalinformation.dispose();
+    _graintypes.dispose();
+    _graintank.dispose();
+    _workingcapacity.dispose();
+    _requiredpower.dispose();
+    _hourmeter.dispose();
+    _horsepower.dispose();
+    _year.dispose();
+    _model.dispose();
+    _manufacturer.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        elevation: 0,
+        backgroundColor: Theme.of(context).primaryColor,
+        actions: [
+          IconButton(
+            onPressed: () {
+              Navigator.pushNamed(context, '/display_notification');
+            },
+            icon: const Icon(Icons.notifications_sharp),
+          ),
+        ],
+      ),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(12.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              addVerticalSpace(55.0),
-              const Text('Select a Machinery type:'),
+              addVerticalSpace(5.0),
+              const Text('Machinery type:',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+              addVerticalSpace(20.0),
+              // Machinery Type
               Column(
                 children: [
                   Row(
                     children: [
-                      Radio(
-                        value: 'Tractor',
-                        groupValue: _currentCarType,
-                        onChanged: (value) {
-                          setState(() {
-                            _currentCarType = value!;
-                          });
-                        },
+                      Expanded(
+                        child: RadioListTile(
+                          contentPadding: EdgeInsets.all(0.0),
+                          value: 'Tractor',
+                          groupValue: _currentCarType,
+                          dense: true,
+                          selected: _currentCarType == 'Tractor',
+                          selectedTileColor: Color.fromARGB(255, 183, 212, 183),
+                          activeColor: Theme.of(context).primaryColor,
+                          tileColor: Color.fromARGB(255, 234, 240, 234),
+                          title: const Text("Tractor",
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 15)),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(5.0),
+                          ),
+                          onChanged: (value) {
+                            setState(() {
+                              _currentCarType = value!;
+                              _loadingcapacity.clear();
+                              _platformdimension.clear();
+                              _sideboardheight.clear();
+                              _numberoftires.clear();
+                              _tankcapacity.clear();
+                              _numberofrows.clear();
+                              _additionalinformation.clear();
+                              _graintypes.clear();
+                              _graintank.clear();
+                              _workingcapacity.clear();
+                              _requiredpower.clear();
+                              _hourmeter.clear();
+                              _horsepower.clear();
+                              _year.clear();
+                              _model.clear();
+                              _manufacturer.clear();
+                            });
+                          },
+                        ),
                       ),
-                      Text('Tractor'),
-                      Radio(
-                        value: 'Combine Harvester',
-                        groupValue: _currentCarType,
-                        onChanged: (value) {
-                          setState(() {
-                            _currentCarType = value!;
-                          });
-                        },
+                      SizedBox(width: 5.0),
+                      Expanded(
+                        child: RadioListTile(
+                          contentPadding: EdgeInsets.all(0.0),
+                          dense: true,
+                          selected: _currentCarType == 'Combine Harvester',
+                          selectedTileColor: Color.fromARGB(255, 183, 212, 183),
+                          activeColor: Theme.of(context).primaryColor,
+                          tileColor: Color.fromARGB(255, 234, 240, 234),
+                          title: const Text("Combine harvester",
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 13)),
+                          value: 'Combine Harvester',
+                          groupValue: _currentCarType,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(5.0),
+                          ),
+                          onChanged: (value) {
+                            setState(() {
+                              _currentCarType = value!;
+
+                              _loadingcapacity.clear();
+                              _platformdimension.clear();
+                              _sideboardheight.clear();
+                              _numberoftires.clear();
+                              _tankcapacity.clear();
+                              _numberofrows.clear();
+                              _additionalinformation.clear();
+                              _graintypes.clear();
+                              _graintank.clear();
+                              _workingcapacity.clear();
+                              _requiredpower.clear();
+                              _hourmeter.clear();
+                              _horsepower.clear();
+                              _year.clear();
+                              _model.clear();
+                              _manufacturer.clear();
+                            });
+                          },
+                        ),
                       ),
-                      Text('Combine harvester'),
                     ],
                   ),
+                  SizedBox(height: 5),
                   Row(
                     children: [
-                      Radio(
-                        value: 'Thresher',
-                        groupValue: _currentCarType,
-                        onChanged: (value) {
-                          setState(() {
-                            _currentCarType = value!;
-                          });
-                        },
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width * 0.3,
+                        child: RadioListTile(
+                          contentPadding: EdgeInsets.all(0.0),
+                          dense: true,
+                          selected: _currentCarType == 'Thresher',
+                          selectedTileColor: Color.fromARGB(255, 183, 212, 183),
+                          activeColor: Theme.of(context).primaryColor,
+                          tileColor: Color.fromARGB(255, 234, 240, 234),
+                          title: const Text("Thresher",
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 13)),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(5.0),
+                          ),
+                          value: 'Thresher',
+                          groupValue: _currentCarType,
+                          onChanged: (value) {
+                            setState(() {
+                              _currentCarType = value!;
+                              _loadingcapacity.clear();
+                              _platformdimension.clear();
+                              _sideboardheight.clear();
+                              _numberoftires.clear();
+                              _tankcapacity.clear();
+                              _numberofrows.clear();
+                              _additionalinformation.clear();
+                              _graintypes.clear();
+                              _graintank.clear();
+                              _workingcapacity.clear();
+                              _requiredpower.clear();
+                              _hourmeter.clear();
+                              _horsepower.clear();
+                              _year.clear();
+                              _model.clear();
+                              _manufacturer.clear();
+                            });
+                          },
+                        ),
                       ),
-                      Text('Thresher'),
-                      Radio(
-                        value: 'Tractor Attachment',
-                        groupValue: _currentCarType,
-                        onChanged: (value) {
-                          setState(() {
-                            _currentCarType = value!;
-                          });
-                        },
+                      SizedBox(width: 5),
+                      Expanded(
+                        child: RadioListTile(
+                          contentPadding: EdgeInsets.all(0.0),
+                          dense: true,
+                          selected: _currentCarType == 'Tractor Attachment',
+                          selectedTileColor: Color.fromARGB(255, 183, 212, 183),
+                          activeColor: Theme.of(context).primaryColor,
+                          tileColor: Color.fromARGB(255, 234, 240, 234),
+                          title: const Text("Tractor Attachment",
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 13)),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(5.0),
+                          ),
+                          value: 'Tractor Attachment',
+                          groupValue: _currentCarType,
+                          onChanged: (value) {
+                            setState(() {
+                              _currentCarType = value!;
+                              _loadingcapacity.clear();
+                              _platformdimension.clear();
+                              _sideboardheight.clear();
+                              _numberoftires.clear();
+                              _tankcapacity.clear();
+                              _numberofrows.clear();
+                              _additionalinformation.clear();
+                              _graintypes.clear();
+                              _graintank.clear();
+                              _workingcapacity.clear();
+                              _requiredpower.clear();
+                              _hourmeter.clear();
+                              _horsepower.clear();
+                              _year.clear();
+                              _model.clear();
+                              _manufacturer.clear();
+                            });
+                          },
+                        ),
                       ),
-                      Text('Tractor Attachments'),
-                      Radio(
-                        value: 'Other',
-                        groupValue: _currentCarType,
-                        onChanged: (value) {
-                          setState(() {
-                            _currentCarType = value!;
-                          });
-                        },
+                      SizedBox(width: 5),
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width * 0.25,
+                        child: RadioListTile(
+                          contentPadding: EdgeInsets.all(0.0),
+                          dense: true,
+                          selected: _currentCarType == 'Other',
+                          selectedTileColor: Color.fromARGB(255, 183, 212, 183),
+                          activeColor: Theme.of(context).primaryColor,
+                          tileColor: Color.fromARGB(255, 234, 240, 234),
+                          title: const Text("Other",
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 13)),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(5.0),
+                          ),
+                          value: 'Other',
+                          groupValue: _currentCarType,
+                          onChanged: (value) {
+                            setState(() {
+                              _currentCarType = value!;
+                              _loadingcapacity.clear();
+                              _platformdimension.clear();
+                              _sideboardheight.clear();
+                              _numberoftires.clear();
+                              _tankcapacity.clear();
+                              _numberofrows.clear();
+                              _additionalinformation.clear();
+                              _graintypes.clear();
+                              _graintank.clear();
+                              _workingcapacity.clear();
+                              _requiredpower.clear();
+                              _hourmeter.clear();
+                              _horsepower.clear();
+                              _year.clear();
+                              _model.clear();
+                              _manufacturer.clear();
+                            });
+                          },
+                        ),
                       ),
-                      Text('Other'),
                     ],
                   ),
                 ],
               ),
+              addVerticalSpace(20.0),
+
               if (_currentCarType == 'Tractor')
                 _buildTractorInputs(_currentCarType),
               if (_currentCarType == 'Combine Harvester')
@@ -177,55 +394,122 @@ class _AddMachineState extends State<AddMachine> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(
-            width: MediaQuery.of(context).size.width * 0.71,
-            height: MediaQuery.of(context).size.height * 0.08,
-            child: TextFormField(
-              controller: _manufacturer,
-              decoration: const InputDecoration(labelText: 'Manufacturer'),
-              validator: (value) {
-                if (value == null) {
-                  return "Can not be Empity";
-                }
-                return null;
-              },
-            ),
-          ),
-          SizedBox(
-            width: MediaQuery.of(context).size.width * 0.71,
-            height: MediaQuery.of(context).size.height * 0.08,
-            child: TextFormField(
-              controller: _model,
-              decoration: const InputDecoration(labelText: 'Model'),
-              validator: (value) {
-                if (value == null) {
-                  return "Can not be Empity";
-                }
-                return null;
-              },
-            ),
-          ),
+          // manufacturer
+          newmachineInput(
+              context: context,
+              icon: Icons.person,
+              keybordtype: TextInputType.name,
+              labletext: "manufacturer",
+              manufacturer: _manufacturer,
+              widthl: 0.65),
+          SizedBox(height: 5),
+          // model
+          Row(children: [
+            newmachineInput(
+                context: context,
+                icon: Icons.model_training,
+                keybordtype: TextInputType.name,
+                labletext: "Model",
+                manufacturer: _model,
+                widthl: 0.5),
+            SizedBox(width: 10),
+            newmachineInput(
+                context: context,
+                icon: Icons.calendar_month_outlined,
+                keybordtype: TextInputType.datetime,
+                labletext: "Year",
+                manufacturer: _year,
+                widthl: 0.4),
+          ]),
+
+          SizedBox(height: 5),
+
           if (machintype == "Tractor") tractor(),
           if (machintype == "Combine Harvester") Combineharvester(),
           if (machintype == "Thresher") Thresher(),
           if (machintype == "Other") Other(),
-          SizedBox(
-            width: MediaQuery.of(context).size.width * 0.71,
-            height: MediaQuery.of(context).size.height * 0.08,
-            child: TextFormField(
-              controller: _region,
-              decoration: const InputDecoration(labelText: 'Region'),
-              validator: (value) {
-                if (value == null) {
-                  return "Can not be Empity";
-                }
-                return null;
-              },
-              onSaved: (value) {},
-            ),
+          SizedBox(height: 10),
+
+          // Region
+          Row(
+            children: [
+              SizedBox(
+                width: MediaQuery.of(context).size.width * 0.4,
+                child: DropdownButtonFormField(
+                  value: _selectedregion,
+                  items: _regions
+                      .map((e) => DropdownMenuItem(
+                            child: Text(e),
+                            value: e,
+                          ))
+                      .toList(),
+                  onChanged: (val) {
+                    setState(() {
+                      _selectedregion = val as String;
+                    });
+                  },
+                  icon: Icon(Icons.arrow_drop_down_circle),
+                  dropdownColor: Colors.white,
+                  decoration: InputDecoration(
+                    labelText: "Region",
+                    labelStyle: TextStyle(color: Colors.grey),
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15),
+                        borderSide: const BorderSide(
+                          width: 1,
+                          color: Color(0xFF006837),
+                        )),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(15),
+                      borderSide: const BorderSide(
+                        width: 1,
+                        color: Color(0xFF006837),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(width: 10),
+              SizedBox(
+                width: MediaQuery.of(context).size.width * 0.5,
+                child: DropdownButtonFormField(
+                  value: _selectedmachinestatus,
+                  items: _machinestatus
+                      .map((e) => DropdownMenuItem(
+                            child: Text(e),
+                            value: e,
+                          ))
+                      .toList(),
+                  onChanged: (val) {
+                    setState(() {
+                      _selectedmachinestatus = val as String;
+                    });
+                  },
+                  icon: Icon(Icons.arrow_drop_down_circle),
+                  dropdownColor: Colors.white,
+                  decoration: InputDecoration(
+                    labelText: "Status",
+                    labelStyle: TextStyle(color: Colors.grey),
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15),
+                        borderSide: const BorderSide(
+                          width: 1,
+                          color: Color(0xFF006837),
+                        )),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(15),
+                      borderSide: const BorderSide(
+                        width: 1,
+                        color: Color(0xFF006837),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
-          addVerticalSpace(5),
-          machineStatusSelector(context),
+          addVerticalSpace(10),
+          // Machine Image
           Row(
             children: [
               SizedBox(
@@ -249,204 +533,54 @@ class _AddMachineState extends State<AddMachine> {
             ],
           ),
           addVerticalSpace(15),
+          // Add machine request
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Consumer<MachineStatusProvider>(
                 builder: (context, value, child) => ElevatedButton(
                   onPressed: () async {
-                    _selectedStatus = value.selectedAccount;
-                    String? userid = await storage.read(key: "userid");
-                    if (imageFile != null) {
-                      if (_formKey.currentState!.validate()) {
-                        if (machintype == "Tractor") {
-                          Map<String, String> data = {
-                            "model": _model.text,
-                            "manufacturer": _manufacturer.text,
-                            "type": _currentCarType,
-                            "owner_id": userid!,
-                            "status": _selectedStatus!,
-                            "year": _year.text,
-                            "region": _region.text,
-                            "hour_meter": _hourmeter.text,
-                            "horsepower": _horsepower.text,
-                          };
+                    String? userJson = await storage.read(key: 'userm');
+                    UserModel usermode =
+                        UserModel.fromJson(json.decode(userJson!));
 
-                          var response = await networkHandler.post(
-                              "/api/machinery/", data, "machineData",
-                              imageFile: imageFile!);
+                    if (_formKey.currentState!.validate()) {
+                      // if (machintype == "Tractor") {
+                      Map<String, String> data = {
+                        "model": _model.text,
+                        "manufacturer": _manufacturer.text,
+                        "type": _currentCarType,
+                        "owner_id": usermode.useid,
+                        "status": _selectedmachinestatus,
+                        "year": _year.text,
+                        "region": _selectedregion,
+                        "hour_meter": _hourmeter.text,
+                        "horsepower": _horsepower.text,
+                        "grain_tank_capacity": _graintank.text,
+                        "grain_types": _graintypes.text,
+                        "working_capacity": _workingcapacity.text,
+                        "required_power": _requiredpower.text,
+                        "additional_info": _additionalinformation.text,
+                      };
 
-                          if (response.statusCode == 201) {
-                            print("Posted");
-                            BotToast.showText(
-                              text: "successfully Posted.",
-                              duration: Duration(seconds: 2),
-                              contentColor: Colors.white,
-                              textStyle: TextStyle(
-                                  fontSize: 16.0, color: Color(0xFF006837)),
-                            );
-                            Navigator.pushNamed(context, '/machie_screen');
-                          } else {
-                            print("faild");
-                            print(response.body.toString());
+                      var response = await networkHandler.post(
+                          "/api/machinery/", data, "machineData",
+                          imageFile: imageFile);
 
-                            setState(() {
-                              // validate = false;
-                              // errorText = output;
-                            });
-                          }
-                        } else if (machintype == "Combine Harvester") {
-                          Map<String, String> data = {
-                            "model": _model.text,
-                            "manufacturer": _manufacturer.text,
-                            "type": _currentCarType,
-                            "owner_id": userid!,
-                            "status": _selectedStatus!,
-                            "year": _year.text,
-                            "region": _region.text,
-                            "grain_tank_capacity": _graintank.text,
-                            "grain_types": _graintypes.text,
-                          };
-
-                          var response = await networkHandler.post(
-                              "/api/machinery/", data, "machineData",
-                              imageFile: imageFile!);
-
-                          if (response.statusCode == 201) {
-                            print("Posted");
-                            BotToast.showText(
-                              text: "successfully Posted.",
-                              duration: Duration(seconds: 2),
-                              contentColor: Colors.white,
-                              textStyle: TextStyle(
-                                  fontSize: 16.0, color: Color(0xFF006837)),
-                            );
-                            Navigator.pushNamed(context, '/machie_screen');
-                          } else {
-                            print("faild");
-                            print(response.body.toString());
-
-                            setState(() {
-                              // validate = false;
-                              // errorText = output;
-                            });
-                          }
-                        } else if (machintype == "Thresher") {
-                          Map<String, String> data = {
-                            "model": _model.text,
-                            "manufacturer": _manufacturer.text,
-                            "type": _currentCarType,
-                            "owner_id": userid!,
-                            "status": _selectedStatus!,
-                            "year": _year.text,
-                            "region": _region.text,
-                            "working_capacity": _workingcapacity.text,
-                            "required_power": _requiredpower.text,
-                          };
-
-                          var response = await networkHandler.post(
-                              "/api/machinery/", data, "machineData",
-                              imageFile: imageFile!);
-
-                          if (response.statusCode == 201) {
-                            print("Posted");
-                            BotToast.showText(
-                              text: "successfully Posted.",
-                              duration: Duration(seconds: 2),
-                              contentColor: Colors.white,
-                              textStyle: TextStyle(
-                                  fontSize: 16.0, color: Color(0xFF006837)),
-                            );
-                            Navigator.pushNamed(context, '/machie_screen');
-                          } else {
-                            print("faild");
-                            print(response.body.toString());
-
-                            setState(() {
-                              // validate = false;
-                              // errorText = output;
-                            });
-                          }
-                        } else if (machintype == "Other") {
-                          Map<String, String> data = {
-                            "model": _model.text,
-                            "manufacturer": _manufacturer.text,
-                            "type": _currentCarType,
-                            "owner_id": userid!,
-                            "status": _selectedStatus!,
-                            "region": _region.text,
-                            "additional_info": _additionalinformation.text,
-                          };
-
-                          var response = await networkHandler.post(
-                              "/api/machinery/", data, "machineData",
-                              imageFile: imageFile!);
-
-                          if (response.statusCode == 201) {
-                            print("Posted");
-                            BotToast.showText(
-                              text: "successfully Posted.",
-                              duration: Duration(seconds: 2),
-                              contentColor: Colors.white,
-                              textStyle: TextStyle(
-                                  fontSize: 16.0, color: Color(0xFF006837)),
-                            );
-                            Navigator.pushNamed(context, '/machie_screen');
-                          } else {
-                            print("faild");
-                            print(response.body.toString());
-
-                            setState(() {
-                              // validate = false;
-                              // errorText = output;
-                            });
-                          }
-                        } else if (machintype == "Tractor") {
-                          Map<String, String> data = {
-                            "model": _model.text,
-                            "manufacturer": _manufacturer.text,
-                            "type": _currentCarType,
-                            "owner_id": userid!,
-                            "status": _selectedStatus!,
-                            "year": _year.text,
-                            "region": _region.text,
-                            "hour_meter": _hourmeter.text,
-                            "horsepower": _horsepower.text,
-                          };
-
-                          var response = await networkHandler.post(
-                              "/api/machinery/", data, "machineData",
-                              imageFile: imageFile!);
-
-                          if (response.statusCode == 201) {
-                            print("Posted");
-                            BotToast.showText(
-                              text: "successfully Posted.",
-                              duration: Duration(seconds: 2),
-                              contentColor: Colors.white,
-                              textStyle: TextStyle(
-                                  fontSize: 16.0, color: Color(0xFF006837)),
-                            );
-                            Navigator.pushNamed(context, '/machie_screen');
-                          } else {
-                            print("faild");
-                            print(response.body.toString());
-
-                            setState(() {
-                              // validate = false;
-                              // errorText = output;
-                            });
-                          }
-                        }
+                      if (response.statusCode == 201) {
+                        print("Posted");
+                        BotToast.showText(
+                          text: "successfully Posted.",
+                          duration: Duration(seconds: 2),
+                          contentColor: Colors.white,
+                          textStyle: TextStyle(
+                              fontSize: 16.0, color: Color(0xFF006837)),
+                        );
+                        Navigator.pushNamed(context, '/machie_screen');
+                      } else {
+                        print("faild");
+                        print(response.body.toString());
                       }
-                    } else {
-                      BotToast.showText(
-                        text: "inseart Image.",
-                        duration: Duration(seconds: 2),
-                        contentColor: Colors.white,
-                        textStyle:
-                            TextStyle(fontSize: 16.0, color: Color(0xFF006837)),
-                      );
                     }
                   },
                   style: ElevatedButton.styleFrom(
@@ -461,7 +595,7 @@ class _AddMachineState extends State<AddMachine> {
                     ),
                     child: const Center(
                       child: Text(
-                        "Post",
+                        "Add",
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 20,
@@ -471,8 +605,6 @@ class _AddMachineState extends State<AddMachine> {
                   ),
                 ),
               ),
-              // addHorizontalSpace(25),
-              // Button(context, "cancel", '/', Colors.grey, 325, 40),
             ],
           ),
         ],
@@ -566,7 +698,7 @@ class _AddMachineState extends State<AddMachine> {
     // final image = NetworkImage(widget.imagePath);
     final image = Image.asset(
       fit: BoxFit.scaleDown,
-      height: 100,
+      height: 70,
       "assets/images/tracter1.png",
     );
 
@@ -578,8 +710,8 @@ class _AddMachineState extends State<AddMachine> {
               ? image.image
               : FileImage(File(imageFile!.path)),
           fit: BoxFit.cover,
-          width: 128,
-          height: 128,
+          width: 108,
+          height: 108,
           child: InkWell(
             onTap: () {},
           ),
@@ -600,48 +732,26 @@ class _AddMachineState extends State<AddMachine> {
     return Container(
       child: Column(
         children: [
-          SizedBox(
-            width: MediaQuery.of(context).size.width * 0.71,
-            height: MediaQuery.of(context).size.height * 0.08,
-            child: TextFormField(
-              controller: _year,
-              decoration: const InputDecoration(labelText: 'Year'),
-              validator: (value) {
-                if (value == null) {
-                  return "Can not be Empity";
-                }
-                return null;
-              },
-            ),
-          ),
-          SizedBox(
-            width: MediaQuery.of(context).size.width * 0.71,
-            height: MediaQuery.of(context).size.height * 0.08,
-            child: TextFormField(
-              controller: _horsepower,
-              decoration: const InputDecoration(labelText: 'Horsepower '),
-              keyboardType: TextInputType.number,
-              validator: (value) {
-                if (value == null) {
-                  return "Can not be Empity";
-                }
-                return null;
-              },
-            ),
-          ),
-          SizedBox(
-            width: MediaQuery.of(context).size.width * 0.71,
-            height: MediaQuery.of(context).size.height * 0.08,
-            child: TextFormField(
-              controller: _hourmeter,
-              decoration: const InputDecoration(labelText: 'Hour meter'),
-              validator: (value) {
-                if (value == null) {
-                  return "Can not be Empity";
-                }
-                return null;
-              },
-            ),
+          Row(children: [
+            newmachineInput(
+                context: context,
+                icon: Icons.power_input,
+                keybordtype: TextInputType.datetime,
+                labletext: "Horsepower",
+                manufacturer: _horsepower,
+                widthl: 0.6),
+          ]),
+          SizedBox(height: 10),
+          Row(
+            children: [
+              newmachineInput(
+                  context: context,
+                  icon: Icons.format_line_spacing_outlined,
+                  keybordtype: TextInputType.datetime,
+                  labletext: "Hour meter",
+                  manufacturer: _hourmeter,
+                  widthl: 0.6),
+            ],
           ),
         ],
       ),
@@ -652,37 +762,25 @@ class _AddMachineState extends State<AddMachine> {
     return Container(
       child: Column(
         children: [
-          TextFormField(
-            controller: _year,
-            decoration: const InputDecoration(labelText: 'Year'),
-            validator: (value) {
-              if (value == null) {
-                return "Can not be Empity";
-              }
-              return null;
-            },
-          ),
-          TextFormField(
-            controller: _graintank,
-            decoration: const InputDecoration(labelText: 'Grain Tank Capacity'),
-            keyboardType: TextInputType.number,
-            validator: (value) {
-              if (value == null) {
-                return "Can not be Empity";
-              }
-              return null;
-            },
-          ),
-          TextFormField(
-            controller: _graintypes,
-            decoration: const InputDecoration(labelText: 'Grain Types'),
-            validator: (value) {
-              if (value == null) {
-                return "Can not be Empity";
-              }
-              return null;
-            },
-          ),
+          SizedBox(height: 5),
+          Row(children: [
+            newmachineInput(
+                context: context,
+                icon: Icons.person,
+                keybordtype: TextInputType.number,
+                labletext: "Grain Tank Capacity",
+                manufacturer: _graintank,
+                widthl: 0.5),
+            SizedBox(width: 10),
+            newmachineInput(
+                context: context,
+                icon: Icons.person,
+                keybordtype: TextInputType.number,
+                labletext: "Grain Types",
+                manufacturer: _graintypes,
+                widthl: 0.4),
+          ]),
+          SizedBox(height: 5),
         ],
       ),
     );
@@ -692,38 +790,21 @@ class _AddMachineState extends State<AddMachine> {
     return Container(
       child: Column(
         children: [
-          TextFormField(
-            controller: _year,
-            decoration: const InputDecoration(labelText: 'Year'),
-            validator: (value) {
-              if (value == null) {
-                return "Can not be Empity";
-              }
-              return null;
-            },
-          ),
-          TextFormField(
-            controller: _requiredpower,
-            decoration: const InputDecoration(labelText: 'Required power (hp)'),
-            keyboardType: TextInputType.number,
-            validator: (value) {
-              if (value == null) {
-                return "Can not be Empity";
-              }
-              return null;
-            },
-          ),
-          TextFormField(
-            controller: _workingcapacity,
-            decoration:
-                const InputDecoration(labelText: 'Working Capacity (kg/hr)'),
-            validator: (value) {
-              if (value == null) {
-                return "Can not be Empity";
-              }
-              return null;
-            },
-          ),
+          newmachineInput(
+              context: context,
+              icon: Icons.power_input,
+              keybordtype: TextInputType.number,
+              labletext: "Required power (hp)",
+              manufacturer: _requiredpower,
+              widthl: 0.75),
+          SizedBox(height: 10),
+          newmachineInput(
+              context: context,
+              icon: Icons.power_input,
+              keybordtype: TextInputType.number,
+              labletext: "Working Capacity (kg/hr)",
+              manufacturer: _workingcapacity,
+              widthl: 0.75),
         ],
       ),
     );
@@ -733,18 +814,15 @@ class _AddMachineState extends State<AddMachine> {
     return Container(
       child: Column(
         children: [
-          TextFormField(
-            controller: _additionalinformation,
-            decoration:
-                const InputDecoration(labelText: 'Additional Information'),
-            keyboardType: TextInputType.number,
-            validator: (value) {
-              if (value == null) {
-                return "Can not be Empity";
-              }
-              return null;
-            },
-          ),
+          SizedBox(height: 5),
+          newmachineInput(
+              context: context,
+              icon: Icons.power_input,
+              keybordtype: TextInputType.number,
+              labletext: "Additional Information",
+              manufacturer: _additionalinformation,
+              widthl: 0.75),
+          SizedBox(height: 5),
         ],
       ),
     );
@@ -1183,6 +1261,7 @@ class _AddMachineState extends State<AddMachine> {
         Row(
           children: [
             Radio(
+              activeColor: Theme.of(context).primaryColor,
               value: 'Disc Plough',
               groupValue: _currentTractorAttachmentsType,
               onChanged: (value) {
@@ -1193,6 +1272,7 @@ class _AddMachineState extends State<AddMachine> {
             ),
             Text('Disc Plough'),
             Radio(
+              activeColor: Theme.of(context).primaryColor,
               value: 'Disc Harrow',
               groupValue: _currentTractorAttachmentsType,
               onChanged: (value) {
@@ -1203,6 +1283,7 @@ class _AddMachineState extends State<AddMachine> {
             ),
             Text('Disc Harrow '),
             Radio(
+              activeColor: Theme.of(context).primaryColor,
               value: 'Planter',
               groupValue: _currentTractorAttachmentsType,
               onChanged: (value) {
@@ -1217,6 +1298,7 @@ class _AddMachineState extends State<AddMachine> {
         Row(
           children: [
             Radio(
+              activeColor: Theme.of(context).primaryColor,
               value: 'Sprayer',
               groupValue: _currentTractorAttachmentsType,
               onChanged: (value) {
@@ -1227,6 +1309,7 @@ class _AddMachineState extends State<AddMachine> {
             ),
             Text('Sprayer'),
             Radio(
+              activeColor: Theme.of(context).primaryColor,
               value: 'Baler',
               groupValue: _currentTractorAttachmentsType,
               onChanged: (value) {
@@ -1237,6 +1320,7 @@ class _AddMachineState extends State<AddMachine> {
             ),
             Text('Baler'),
             Radio(
+              activeColor: Theme.of(context).primaryColor,
               value: 'Trailer',
               groupValue: _currentTractorAttachmentsType,
               onChanged: (value) {
@@ -1248,6 +1332,7 @@ class _AddMachineState extends State<AddMachine> {
             Text('Trailer'),
             Radio(
               value: 'Other',
+              activeColor: Theme.of(context).primaryColor,
               groupValue: _currentTractorAttachmentsType,
               onChanged: (value) {
                 setState(() {
@@ -1259,6 +1344,73 @@ class _AddMachineState extends State<AddMachine> {
           ],
         ),
       ],
+    );
+  }
+}
+
+class newmachineInput extends StatelessWidget {
+  const newmachineInput({
+    super.key,
+    required this.context,
+    required this.keybordtype,
+    required this.labletext,
+    required this.icon,
+    required TextEditingController manufacturer,
+    required this.widthl,
+  }) : _manufacturer = manufacturer;
+
+  final BuildContext context;
+  final TextInputType keybordtype;
+  final String labletext;
+  final IconData icon;
+  final double widthl;
+  final TextEditingController _manufacturer;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: MediaQuery.of(context).size.width * widthl,
+      height: MediaQuery.of(context).size.height * 0.08,
+      child: TextFormField(
+        controller: _manufacturer,
+        keyboardType: keybordtype,
+        obscureText: false,
+        validator: (value) {
+          if (value == null || value.isEmpty) {
+            return "Can't be Empity.";
+          }
+          return null;
+        },
+        style: const TextStyle(
+          fontSize: 17,
+          color: Colors.black,
+        ),
+        decoration: InputDecoration(
+          labelText: labletext,
+          // hintText: "manufacturer",
+          labelStyle: const TextStyle(
+            fontSize: 17,
+            color: Colors.grey,
+          ),
+          prefixIcon: Icon(
+            icon,
+            color: const Color(0xFF006837),
+          ),
+          border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(15),
+              borderSide: const BorderSide(
+                width: 1,
+                color: Color(0xFF006837),
+              )),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(15),
+            borderSide: const BorderSide(
+              width: 1,
+              color: Color(0xFF006837),
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

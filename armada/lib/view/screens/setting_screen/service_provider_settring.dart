@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:provider/provider.dart';
+
+import '../../../provider/themeProvider.dart';
+import '../../../services/tokenManager.dart';
 
 class SettingsPage extends StatefulWidget {
   static const String routeName = '/service_provider_setting';
 
   static Route route() {
     return MaterialPageRoute(
-      settings: RouteSettings(name: routeName),
-      builder: (context) => SettingsPage(),
+      settings: const RouteSettings(name: routeName),
+      builder: (context) => const SettingsPage(),
     );
   }
 
@@ -19,7 +22,7 @@ class SettingsPage extends StatefulWidget {
 
 class _SettingsPageState extends State<SettingsPage> {
   bool _notificationEnabled = false;
-  bool _darkModeEnabled = false;
+  @override
   void initState() {
     super.initState();
     fetchData();
@@ -27,8 +30,7 @@ class _SettingsPageState extends State<SettingsPage> {
 
   String? token;
   fetchData() async {
-    final storage = new FlutterSecureStorage();
-    token = await storage.read(key: 'token');
+    token = await TokenManager().getToken();
 
     setState(() {
       if (token != null) {
@@ -39,19 +41,14 @@ class _SettingsPageState extends State<SettingsPage> {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text("Settings"),
+        title: const Text("Settings"),
         elevation: 0,
         backgroundColor: Theme.of(context).primaryColor,
-        // actions: [
-        //   IconButton(
-        //     onPressed: () {},
-        //     icon: const Icon(Icons.done),
-        //   ),
-        // ],
       ),
-      backgroundColor: const Color(0xfff6f6f6),
+      // backgroundColor: const Color(0xfff6f6f6),
       body: Center(
         child: Container(
           constraints: const BoxConstraints(maxWidth: 400),
@@ -60,14 +57,10 @@ class _SettingsPageState extends State<SettingsPage> {
               _SingleSection(
                 title: "General",
                 children: [
-                  // _CustomListTile(
-                  //     title: "Notification",
-                  //     icon: Icons.notifications,
-                  //     url: "notification"),
                   if (token != null)
                     ListTile(
-                      leading: Icon(Icons.notifications),
-                      title: Text('Notification Enable'),
+                      leading: const Icon(Icons.notifications),
+                      title: const Text('Notification Enable'),
                       trailing: Switch(
                         value: _notificationEnabled,
                         activeColor: Theme.of(context).primaryColor,
@@ -79,29 +72,25 @@ class _SettingsPageState extends State<SettingsPage> {
                       ),
                     ),
                   ListTile(
-                    leading: Icon(Icons.monochrome_photos),
-                    title: Text('Dark Mode'),
+                    leading: const Icon(Icons.monochrome_photos),
+                    title: const Text('Dark Mode'),
                     trailing: Switch(
-                      activeColor: Colors.black87,
-                      value: _darkModeEnabled,
+                      activeColor: const Color.fromRGBO(0, 0, 0, 0.867),
+                      // value: _darkModeEnabled,
+                      value: themeProvider.currentThemeMode,
                       onChanged: (value) {
-                        setState(() {
-                          _darkModeEnabled = value;
-                        });
+                        themeProvider.toggleTheme();
+                        // setState(() {
+                        //   _darkModeEnabled = value;
+                        // });
+                        print(themeProvider.currentThemeMode);
                       },
                     ),
                   ),
-                  // _CustomListTile(
-                  //   title: "Dark Mode",
-                  //   icon: Icons.monochrome_photos,
-                  //   url: "h",
-                  // ),
-                  _CustomListTilelanguage(
+                  const _CustomListTilelanguage(
                       title: "Language",
                       icon: Icons.language,
                       value: "English"),
-                  // const _CustomListTile(
-                  //     title: "Security Status", icon: Icons.security),
                 ],
               ),
               if (token != null)
@@ -122,9 +111,6 @@ class _SettingsPageState extends State<SettingsPage> {
               const _SingleSection(
                 title: "About",
                 children: [
-                  // _CustomListTile(
-                  // title: "Multiple Users", icon: Icons.person_2),
-                  // _CustomListTile(title: "Lock Screen", icon: Icons.lock),
                   _CustomListTile(
                     title: "Privecy policy",
                     icon: Icons.display_settings,
@@ -135,7 +121,6 @@ class _SettingsPageState extends State<SettingsPage> {
                     icon: Icons.audio_file,
                     url: "TermsandConditions",
                   ),
-                  // _CustomListTile(title: "Themes", icon: Icons.piano_outlined)
                 ],
               ),
             ],
@@ -150,7 +135,7 @@ class _CustomListTile extends StatelessWidget {
   final String title;
   final IconData icon;
   final String url;
-  // final Widget? trailing;
+
   const _CustomListTile(
       {Key? key, required this.title, required this.icon, required this.url})
       : super(key: key);
@@ -160,14 +145,9 @@ class _CustomListTile extends StatelessWidget {
     return ListTile(
       title: Text(title),
       leading: Icon(icon),
-      trailing: Icon(Icons.arrow_forward_ios_rounded),
-
-      // trailing: Container(
-      //   width: MediaQuery.of(context).size.width * 0.2,
-      //   child: trailing ?? const Icon(Icons.forward, size: 18),
-      // ),
+      trailing: const Icon(Icons.arrow_forward_ios_rounded),
       onTap: () {
-        Navigator.pushNamed(context, '/${url}');
+        Navigator.pushNamed(context, '/$url');
       },
     );
   }
@@ -177,7 +157,6 @@ class _CustomListTilelanguage extends StatelessWidget {
   final String title;
   final IconData icon;
   final String value;
-  // final Widget? trailing;
   const _CustomListTilelanguage(
       {Key? key, required this.title, required this.icon, required this.value})
       : super(key: key);
@@ -188,21 +167,8 @@ class _CustomListTilelanguage extends StatelessWidget {
       dense: true,
       title: Text(title),
       leading: Icon(icon),
-      trailing: Icon(Icons.arrow_forward_ios_rounded),
+      trailing: const Icon(Icons.arrow_forward_ios_rounded),
       subtitle: Text(value),
-      // trailing: Container(
-      //   width: MediaQuery.of(context).size.width * 0.2,
-      //   child: trailing ?? const Icon(Icons.forward, size: 18),
-      // ),
-      //  dense: dense,
-      // enabled: enabled && isLoading != true,
-      // selected: selected,
-      // contentPadding: padding,
-      // leading: leading,
-      // title: title,
-      // subtitle: isTwoLine && hideValue != true ? _valueWidget : null,
-      // trailing: _trailingWidget,
-      // onTap: onTap,
       onTap: () {},
     );
   }
@@ -236,7 +202,7 @@ class _SingleSection extends StatelessWidget {
         ),
         Container(
           width: double.infinity,
-          color: Colors.white,
+          // color: Colors.white,
           child: Column(
             children: children,
           ),

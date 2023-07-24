@@ -1,11 +1,14 @@
 import 'dart:convert';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:armada/utils/helper_widget.dart';
+
 import 'package:flutter/material.dart';
-import 'package:armada/view/widgets/widgets.dart';
-import 'package:armada/networkhandler.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:bot_toast/bot_toast.dart';
+
 import '../../../models/usermodel.dart';
+import '../../../networkhandler.dart';
+import '../../../services/tokenManager.dart';
+import '../../../utils/helper_widget.dart';
+import '../../widgets/inputText.dart';
 
 class Login extends StatefulWidget {
   static const String routeName = '/login';
@@ -26,7 +29,10 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
+  NetworkHandler networkHandler = NetworkHandler();
   final formKey = GlobalKey<FormState>();
+  final storage = const FlutterSecureStorage();
+
   final TextEditingController _numbercontroller = TextEditingController();
   final TextEditingController _passwordcontroller = TextEditingController();
 
@@ -34,11 +40,9 @@ class _LoginState extends State<Login> {
 
   bool value = false;
   bool isHidden = true;
-
-  NetworkHandler networkHandler = NetworkHandler();
-  final storage = new FlutterSecureStorage();
   bool validate = true;
   String? errorText;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -114,8 +118,10 @@ class _LoginState extends State<Login> {
                       suffixIcon: IconButton(
                         onPressed: _togglePasswordView,
                         icon: isHidden
-                            ? Icon(Icons.visibility_off, color: Colors.grey)
-                            : Icon(Icons.visibility, color: Color(0xFF006837)),
+                            ? const Icon(Icons.visibility_off,
+                                color: Colors.grey)
+                            : const Icon(Icons.visibility,
+                                color: Color(0xFF006837)),
                       ),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(15),
@@ -178,147 +184,86 @@ class _LoginState extends State<Login> {
                   ),
                 ),
                 addVerticalSpace(MediaQuery.of(context).size.width * 0.12),
-                Container(
-                  child: InkWell(
-                    onTap: () async {
-                      checkUser();
-                      print("object");
-                      if (formKey.currentState!.validate() && validate) {
-                        Map<String, String> data = {
-                          "phone": _numbercontroller.text,
-                          "password": _passwordcontroller.text,
-                        };
-                        print(data);
+                InkWell(
+                  onTap: () async {
+                    checkUser();
 
-                        try {
-                          var response = await networkHandler.postt(
-                              "/api/auth/login", data);
-                          if (response.statusCode == 200) {
-                            Map<String, dynamic> output =
-                                json.decode(response.body);
+                    if (formKey.currentState!.validate() && validate) {
+                      Map<String, String> data = {
+                        "phone": _numbercontroller.text,
+                        "password": _passwordcontroller.text,
+                      };
+                      print(data);
 
-                            print("yes");
-                            // Provider.of<UserProvider>(context, listen: false)
-                            //     .setUser(
-                            //         output['user_id']!, output['user_id']!);
+                      try {
+                        var response =
+                            await networkHandler.postt("/api/auth/login", data);
+                        if (response.statusCode == 200) {
+                          Map<String, dynamic> output =
+                              json.decode(response.body);
 
-                            // set token
-                            await storage.write(
-                                key: 'token', value: output['Token']);
+                          // set token
+                          await TokenManager().setToken(output['Token']);
 
-                            print(output);
+                          // set usermodel
+                          Map<String, dynamic> userData = output['user'];
 
-                            // read token
-                            String? tok = await storage.read(key: "token");
-                            print(tok);
-                            // Provider.of<Authenticate>(context, listen: false)
-                            //     .setAuthenticate(true);
-                            // String? tok = await storage.read(key: "userid");
-                            // final Map<String, dynamic> jsonData =
-                            //     output["user"] as Map<String, dynamic>;
+                          // Create UserModel instance using the user data
+                          UserModel user = UserModel.fromJson(userData);
+                          // UserModel user = UserModel.fromJson(output);
 
-                            // // Create an instance of UserModel using the factory method with the parsed map
-                            // print(output);
-                            // final UserModel user = UserModel.fromJson(jsonData);
-                            print(output['user']);
-                            Map<String, dynamic> userData = output['user'];
+                          // Convert UserModel to JSON
+                          String userJson = json.encode(user.toJson());
 
-                            // Create UserModel instance using the user data
-                            UserModel user = UserModel.fromJson(userData);
-                            // UserModel user = UserModel.fromJson(output);
-                            print(user.firstname);
-                            // usermode = (json.decode(output['user']))
-                            //     .map((data) => UserModel.fromJson(data));
-                            // UserModel userm = UserModel.fromJson(userData);
+                          // Store the JSON representation of UserModel securely
 
-// Convert UserModel to JSON
-                            String userJson = json.encode(user.toJson());
+                          await storage.write(key: 'userm', value: userJson);
 
-// Store the JSON representation of UserModel securely
-                            // await storage.write(key: 'user', value: userJson);
-                            await storage.write(key: 'userm', value: userJson);
-                            // usermode.
-                            // set user id
-                            // await storage.write(
-                            //     key: 'userid', value: output['user_id']);
-
-                            // // String? userrole=await storage.write(
-                            // //     key: 'userrole', value: );
-                            // // set role
-                            // Provider.of<DropDownProvider>(context,
-                            //         listen: false)
-                            //     .setAccountType(output['role']);
-                            // String? userid = await storage.read(key: "userid");
-                            // print(userid);
-
-                            // UserMProvider userProvider =
-                            //     Provider.of<UserMProvider>(context,
-                            //         listen: false);
-
-                            // // Set the user ID in the provider
-                            // userProvider.setUserModel(output['user_id']);
-                            // USER MODEL PROVIDER
-                            // final userProvider = Provider.of<UserMProvider>(
-                            //     context,
-                            //     listen: false);
-                            // // create the user model instance using the response data
-                            // final userModel = User.fromJson(output['user_id']);
-                            // // store the user model instance in the UserProvider
-                            // userProvider.setUserModel(userModel);
-                            // user model provider
-
-                            // get and set user model
-
-                            // end get and set user model
-                            //TOAST
-                            BotToast.showText(
-                              text: "Welcome! You have successfully logged in.",
-                              duration: Duration(seconds: 2),
-                              contentColor: Colors.white,
-                              textStyle: TextStyle(
-                                  fontSize: 16.0, color: Color(0xFF006837)),
-                            );
-                            //toast end
-                            Navigator.of(context).pushNamedAndRemoveUntil(
-                                '/', (Route<dynamic> route) => false);
-                          } else {
-                            BotToast.showText(
-                              text: "Failed to loginn: ${response.statusCode}",
-                              duration: Duration(seconds: 2),
-                              contentColor: Colors.white,
-                              textStyle: TextStyle(
-                                  fontSize: 16.0, color: Color(0xFF006837)),
-                            );
-                            throw Exception(
-                                'Failed to : ${response.statusCode}');
-                          }
-                        } catch (e) {
+                          //TOAST
                           BotToast.showText(
-                            text: "Failed to logi: ${e}",
-                            duration: Duration(seconds: 2),
-                            contentColor: Colors.white,
-                            textStyle: TextStyle(
+                            text: "You have successfully logged in.",
+                            duration: const Duration(seconds: 2),
+                            contentColor: Color.fromARGB(255, 201, 194, 194),
+                            textStyle: const TextStyle(
                                 fontSize: 16.0, color: Color(0xFF006837)),
                           );
-                          print("dont work:${e}");
+                          //toast end
+                          Navigator.of(context).pushNamedAndRemoveUntil(
+                              '/home', (Route<dynamic> route) => false);
+                        } else {
+                          BotToast.showText(
+                            text: "Failed to login",
+                            duration: const Duration(seconds: 2),
+                            contentColor: Colors.white,
+                            textStyle: const TextStyle(
+                                fontSize: 16.0, color: Color(0xFF006837)),
+                          );
+                          throw Exception('Failed to : ${response.statusCode}');
                         }
-                        print("data");
+                      } catch (e) {
+                        BotToast.showText(
+                          text: "Failed to logi: $e",
+                          duration: const Duration(seconds: 2),
+                          contentColor: Colors.white,
+                          textStyle: const TextStyle(
+                              fontSize: 16.0, color: Color(0xFF006837)),
+                        );
                       }
-                    },
-                    child: Container(
-                      width: MediaQuery.of(context).size.width * 0.63,
-                      height: 55,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(15),
-                        color: Theme.of(context).primaryColor,
-                      ),
-                      child: const Center(
-                        child: Text(
-                          "login",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 20,
-                          ),
+                    }
+                  },
+                  child: Container(
+                    width: MediaQuery.of(context).size.width * 0.63,
+                    height: 55,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(15),
+                      color: Theme.of(context).primaryColor,
+                    ),
+                    child: const Center(
+                      child: Text(
+                        "login",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 20,
                         ),
                       ),
                     ),

@@ -1,9 +1,13 @@
 import 'package:armada/provider/drower_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:armada/networkhandler.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:bot_toast/bot_toast.dart';
+import '../../main.dart';
+import '../../provider/provider.dart';
+import '../../services/tokenManager.dart';
 
 class CustomListTile extends StatefulWidget {
   final String title;
@@ -41,6 +45,10 @@ class _CustomListTileState extends State<CustomListTile> {
               Navigator.pushNamed(context, '/farm_screen');
               break;
             case 2:
+              value.setCurrentDrawer(1);
+              Navigator.pushNamed(context, '/machie_screen');
+              break;
+            case 3:
               value.setCurrentDrawer(2);
               Navigator.pushNamed(context, '/aboutscreen');
               break;
@@ -66,7 +74,7 @@ class _CustomListTileState extends State<CustomListTile> {
                 Text(
                   widget.title,
                   style: TextStyle(
-                    color: Theme.of(context).primaryColor,
+                    // color: Theme.of(context).primaryColor,
                     fontSize: 17,
                   ),
                 )
@@ -139,7 +147,7 @@ class _BCustomListTileState extends State<BCustomListTile> {
                 Text(
                   widget.title,
                   style: TextStyle(
-                    color: Theme.of(context).primaryColor,
+                    // color: Theme.of(context).primaryColor,
                     fontSize: 17,
                   ),
                 )
@@ -155,18 +163,25 @@ class _BCustomListTileState extends State<BCustomListTile> {
     final storage = new FlutterSecureStorage();
 
     var response = await networkHandler.get("/api/auth/logout");
-    String? token = await storage.read(key: "token");
+    String? token = await TokenManager().getToken();
     if (token != null) {
       if (response.statusCode == 200) {
-        await storage.delete(key: "token");
+        // await storage.delete(key: "token");
+        await TokenManager().removeToken();
+        await storage.delete(key: "userm");
+        await TokenManager().removeToken();
+
         BotToast.showText(
           text: "Logged out",
           duration: Duration(seconds: 2),
           contentColor: Colors.white,
           textStyle: TextStyle(fontSize: 16.0, color: Color(0xFF006837)),
         );
+
         Navigator.of(context)
             .pushNamedAndRemoveUntil('/guest', (Route<dynamic> route) => false);
+        // runApp(MyApp(showHomw: false));
+        // SystemNavigator.pop();
         print("Logedout");
       } else {
         print("failed");

@@ -27,25 +27,25 @@ class _ForgetPasswordState extends State<ForgetPassword> {
     return Scaffold(
       body: SingleChildScrollView(
         child: Padding(
-          padding: EdgeInsets.all(12.0),
+          padding: const EdgeInsets.all(12.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              addVerticalSpace(89),
+              addVerticalSpace(MediaQuery.of(context).size.height * 0.1),
               Center(
                 child: Text("Forget Password.",
                     style: Theme.of(context).textTheme.displayLarge),
               ),
-              addVerticalSpace(60),
+              addVerticalSpace(MediaQuery.of(context).size.height * 0.07),
               Center(
                 child: Text(
                     "Enter the verification code sent\n         to your phone number.",
                     style: Theme.of(context).textTheme.titleLarge),
               ),
-              addVerticalSpace(45),
+              addVerticalSpace(MediaQuery.of(context).size.height * 0.05),
               SizedBox(
-                width: MediaQuery.of(context).size.width - 120,
-                height: 50,
+                width: MediaQuery.of(context).size.width * 0.6,
+                height: MediaQuery.of(context).size.height * 0.08,
                 child: TextFormField(
                   keyboardType: TextInputType.number,
                   obscureText: false,
@@ -58,7 +58,6 @@ class _ForgetPasswordState extends State<ForgetPassword> {
                       fontSize: 17,
                       color: Colors.grey,
                     ),
-                    border: InputBorder.none,
                     focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(15),
                         borderSide: const BorderSide(
@@ -74,12 +73,12 @@ class _ForgetPasswordState extends State<ForgetPassword> {
                   ),
                 ),
               ),
-              addVerticalSpace(62),
+              addVerticalSpace(MediaQuery.of(context).size.height * 0.09),
               Text(
                 "Did't recieve the code?",
                 style: Theme.of(context).textTheme.bodyLarge,
               ),
-              addVerticalSpace(1.0),
+              addVerticalSpace(MediaQuery.of(context).size.height * 0.01),
               GestureDetector(
                 onTap: () {},
                 child: Text(
@@ -87,9 +86,14 @@ class _ForgetPasswordState extends State<ForgetPassword> {
                   style: Theme.of(context).textTheme.displaySmall,
                 ),
               ),
-              addVerticalSpace(170),
-              Button(context, "Continue", '/newpassword',
-                  Theme.of(context).primaryColor, 150, 55),
+              addVerticalSpace(MediaQuery.of(context).size.height * 0.21),
+              Button(
+                  context,
+                  "Continue",
+                  '/newpassword',
+                  Theme.of(context).primaryColor,
+                  MediaQuery.of(context).size.width * 0.5,
+                  MediaQuery.of(context).size.height * 0.09),
             ],
           ),
         ),

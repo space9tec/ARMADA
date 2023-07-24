@@ -107,7 +107,7 @@ Widget InputText(
 Widget InputTextFarmSize(BuildContext context, String hint, String labelhint,
     TextInputType ktype, TextEditingController controller) {
   return SizedBox(
-    width: MediaQuery.of(context).size.width * 0.3,
+    width: MediaQuery.of(context).size.width * 0.4,
     height: MediaQuery.of(context).size.height * 0.08,
     child: TextFormField(
       controller: controller,
@@ -152,7 +152,7 @@ Widget InputTextFarmSize(BuildContext context, String hint, String labelhint,
 Widget InputTextSoilType(BuildContext context, String hint, String labelhint,
     TextInputType ktype, TextEditingController controller) {
   return SizedBox(
-    width: MediaQuery.of(context).size.width - 280,
+    width: MediaQuery.of(context).size.width * 0.71,
     height: MediaQuery.of(context).size.height * 0.08,
     child: TextFormField(
       controller: controller,

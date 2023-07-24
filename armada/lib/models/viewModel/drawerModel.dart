@@ -10,6 +10,7 @@ class DrawerModel {
 List<DrawerModel> DrawerItem = [
   DrawerModel(icon: Icons.person, title: "Profile"),
   DrawerModel(icon: Icons.landscape, title: "Farm"),
+  DrawerModel(icon: Icons.car_repair_rounded, title: "Machinery"),
   DrawerModel(icon: Icons.person, title: "About"),
 ];
 List<DrawerModel> gustDrawerItem = [

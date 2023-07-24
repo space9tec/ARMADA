@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:armada/models/machine.dart';
 import 'package:flutter/material.dart';
+import '../../../models/usermodel.dart';
 import '../../widgets/widgets.dart';
 import 'package:armada/networkhandler.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -35,21 +36,18 @@ class _MachineScreenState extends State<MachineScreen> {
 
   void fetchData() async {
     var response = await networkHandler.get("/api/machinery/");
-    String? ownerid = await storage.read(key: "userid");
-
+    // String? ownerid = await storage.read(key: "userid");
+    String? userJson = await storage.read(key: 'userm');
+    UserModel usermode = UserModel.fromJson(json.decode(userJson!));
     List<dynamic> responseData = json.decode(response.body);
 
-    List<dynamic> filteredData =
-        responseData.where((data) => data['owner_id'] == ownerid).toList();
+    List<dynamic> filteredData = responseData
+        .where((data) => data['owner_id'] == usermode.useid)
+        .toList();
 
     setState(() {
       machine = filteredData.map((data) => MachineM.fromJson(data)).toList();
     });
-    // setState(() {
-    //   machine = (json.decode(response.body) as List)
-    //       .map((data) => MachineM.fromJson(data))
-    //       .toList();
-    // });
   }
 
   @override
@@ -172,9 +170,9 @@ class _MachineScreenState extends State<MachineScreen> {
           backgroundColor: Theme.of(context).primaryColor),
       // ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      drawer: ServiceProvidernavigationDrawer(),
+      drawer: navigationDrawer(),
       // bottom navbar
-      bottomNavigationBar: ServiceProviderbottomAppbar(context),
+      bottomNavigationBar: bottomAppbar(context),
     );
   }
 }

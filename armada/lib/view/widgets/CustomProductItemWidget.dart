@@ -1,18 +1,15 @@
 import 'dart:ui';
 
-import 'package:armada/models/machine.dart';
-import 'package:armada/utils/helper_widget.dart';
 import 'package:flutter/material.dart';
 
+import '../../models/model.dart';
+import '../../utils/helper_widget.dart';
 import '../screens/screens.dart';
 
 class CustomProductItemWidget extends StatefulWidget {
-  MachineM machine;
+  final MachineM machine;
 
-  CustomProductItemWidget(MachineM this.machine,
-      {Key? key, this.showUser = true})
-      : super(key: key);
-  final bool showUser;
+  const CustomProductItemWidget(this.machine, {Key? key}) : super(key: key);
 
   @override
   State<CustomProductItemWidget> createState() =>
@@ -21,20 +18,60 @@ class CustomProductItemWidget extends StatefulWidget {
 
 class _CustomProductItemWidgetState extends State<CustomProductItemWidget> {
   bool favorite = false;
+
   @override
   Widget build(BuildContext context) {
     return Container(
+      margin: EdgeInsets.all(5),
+      decoration: BoxDecoration(
+        border: Border.symmetric(),
+        color: Colors.black.withOpacity(0.04),
+        borderRadius: BorderRadius.circular(15),
+      ),
       width: MediaQuery.of(context).size.width * 0.3,
-      height: MediaQuery.of(context).size.width * 0.3,
+      height: MediaQuery.of(context).size.width * 0.27,
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          // Name and profail picture
-          widget.showUser == true
-              ? InkWell(
+          InkWell(
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: ((context) => ItemPage(machine: widget.machine)),
+                  ));
+            },
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+              child: Row(
+                children: [
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(2),
+                    clipBehavior: Clip.antiAlias,
+                    child: Image.asset(
+                      "assets/images/farmer_profile.png",
+                      height: 32,
+                      width: 32,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  const SizedBox(
+                    width: 10,
+                  ),
+                  Text(
+                    widget.machine.manufacturer,
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+                ],
+              ),
+            ),
+          ),
+
+          Stack(
+            children: [
+              SizedBox(
+                child: InkWell(
                   onTap: () {
-                    // Navigator.pushNamed(context, '/itemPage',
-                    //     arguments: widget.machine);
                     Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -42,64 +79,17 @@ class _CustomProductItemWidgetState extends State<CustomProductItemWidget> {
                               ItemPage(machine: widget.machine)),
                         ));
                   },
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10),
-                    child: Row(
-                      children: [
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(2),
-                          clipBehavior: Clip.antiAlias,
-                          child: Image.asset(
-                            "assets/images/farmer1.png",
-                            height: 32,
-                            width: 32,
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                        const SizedBox(
-                          width: 10,
-                        ),
-                        Text(widget.machine.manufacturer,
-                            style: Theme.of(context).textTheme.bodyMedium),
-                      ],
-                    ),
-                  ),
-                )
-              : const SizedBox(),
-
-          // product image and favorite botton
-          Stack(
-            children: [
-              // Product image
-              Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: Container(
-                  alignment: Alignment.centerLeft,
-                  width: MediaQuery.of(context).size.width * 0.35,
-                  height: MediaQuery.of(context).size.height * 0.2,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: InkWell(
-                    onTap: () {
-                      // Navigator.pushNamed(context, '/itemPage',
-                      //     arguments: widget.machine);
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: ((context) =>
-                                ItemPage(machine: widget.machine)),
-                          ));
-                    },
+                  child: Container(
+                    width: MediaQuery.of(context).size.width,
+                    height: MediaQuery.of(context).size.height * 0.2,
                     child: Image.network(
-                        "https://armada-server.glitch.me/api/machinery/image/${widget.machine.imageFile}"),
-                    // child: Image.asset(
-                    //   "assets/images/tracter1.png",
-                    //   fit: BoxFit.cover,
-                    // ),
+                      "https://armada-server.glitch.me/api/machinery/image/${widget.machine.imageFile}",
+                      fit: BoxFit.cover,
+                    ),
                   ),
                 ),
               ),
+              // ),
               // Favorite botton
               Positioned(
                 top: 20,
@@ -152,49 +142,60 @@ class _CustomProductItemWidgetState extends State<CustomProductItemWidget> {
           ),
 
           // producte name
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10),
-            child: Text(
-              widget.machine.type,
-              style: Theme.of(context).textTheme.bodyLarge,
-            ),
-          ),
-          const SizedBox(
-            height: 5,
-          ),
-          Row(
-            // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10),
-                child: Text(" ${widget.machine.year}",
-                    style: Theme.of(context).textTheme.bodyMedium),
-              ),
-              addHorizontalSpace(25),
-              // Container(
-
-              Container(
-                padding: EdgeInsets.all(1),
-                height: 18,
-                width: 84,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20.0),
-                  border: Border.all(
-                    color: Colors.green,
-                    width: 1.0,
-                  ),
-                ),
-                child: Center(
+          Container(
+              child: Column(children: [
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(left: 10),
                   child: Text(
-                    widget.machine.status,
-                    style: TextStyle(fontSize: 15.0, color: Colors.green),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    widget.machine.type,
+                    style: Theme.of(context).textTheme.bodyLarge,
                   ),
                 ),
+              ],
+            ),
+            const SizedBox(
+              height: 5,
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(" ${widget.machine.year}",
+                      style: Theme.of(context).textTheme.bodyMedium),
+                  // ),
+                  addHorizontalSpace(25),
+                  // Container(
+
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 15),
+                    height: MediaQuery.of(context).size.height * 0.025,
+                    // width: MediaQuery.of(context).size.width * 0.05,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20.0),
+                      border: Border.all(
+                        color: Colors.green,
+                        width: 1.0,
+                      ),
+                    ),
+                    child: Center(
+                      child: Text(
+                        widget.machine.status,
+                        style: Theme.of(context).textTheme.bodyMedium,
+                      ),
+                    ),
+                  ),
+                  // Text(widget.machine.status),
+                  // ),
+                ],
               ),
-              // Text(widget.machine.status),
-              // ),
-            ],
-          )
+            )
+          ]))
         ],
       ),
     );

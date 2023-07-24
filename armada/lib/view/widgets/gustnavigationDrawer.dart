@@ -2,8 +2,8 @@ import 'package:armada/view/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import '../../models/viewModel/drawerModel.dart';
 
-class gustnavigationDrawer extends StatelessWidget {
-  gustnavigationDrawer({super.key});
+class GustNavigationDrawer extends StatelessWidget {
+  const GustNavigationDrawer({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -13,7 +13,7 @@ class gustnavigationDrawer extends StatelessWidget {
         children: [
           UserAccountsDrawerHeader(
             onDetailsPressed: () {},
-            otherAccountsPictures: [],
+            otherAccountsPictures: const [],
             accountName: GestureDetector(
               onTap: () {
                 Navigator.pushNamed(context, '/login');
@@ -41,7 +41,7 @@ class gustnavigationDrawer extends StatelessWidget {
               color: Theme.of(context).primaryColor,
             ),
           ),
-          Container(
+          SizedBox(
             height: MediaQuery.of(context).size.height * 0.43,
             child: ListView.builder(
               itemBuilder: (context, index) {
@@ -56,7 +56,7 @@ class gustnavigationDrawer extends StatelessWidget {
           const Divider(
             color: Color.fromARGB(255, 156, 155, 155),
           ),
-          Container(
+          SizedBox(
             height: MediaQuery.of(context).size.height * 0.3,
             child: ListView.builder(
               itemBuilder: (context, index) {

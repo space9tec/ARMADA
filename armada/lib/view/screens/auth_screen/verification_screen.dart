@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:armada/networkhandler.dart';
 import 'package:armada/utils/helper_widget.dart';
+import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -172,7 +173,7 @@ class _VerifyState extends State<Verify> {
                   ),
                   child: const Center(
                     child: Text(
-                      "login",
+                      "Verify",
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 20,
@@ -268,8 +269,14 @@ class _VerifyState extends State<Verify> {
       //   }
       // });
       // VerifyFarm();
-      Navigator.of(context).pushNamedAndRemoveUntil(
-          '/VerifyFarm', (Route<dynamic> route) => false);
+      BotToast.showText(
+        text: "Welcome! You have successfully registered.",
+        duration: Duration(seconds: 2),
+        contentColor: Colors.white,
+        textStyle: TextStyle(fontSize: 16.0, color: Color(0xFF006837)),
+      );
+      Navigator.of(context)
+          .pushNamedAndRemoveUntil('/', (Route<dynamic> route) => false);
 
       // Navigator.push(
       //   context,

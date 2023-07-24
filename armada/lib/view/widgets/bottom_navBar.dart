@@ -1,15 +1,14 @@
-import 'package:armada/view/screens/home_screen/guest_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import '../../models/usermodel.dart';
+import 'dart:convert';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
-import '../../provider/usermodel_provider.dart';
 import '../screens/message_screen/message_screen.dart';
-import 'package:internet_connection_checker/internet_connection_checker.dart';
 
 Widget bottomAppbar(BuildContext context) {
   return BottomAppBar(
     color: Theme.of(context).bottomAppBarTheme.color,
-    child: Container(
+    child: SizedBox(
       height: 65,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -25,19 +24,44 @@ Widget bottomAppbar(BuildContext context) {
           ),
           IconButton(
               icon: const Icon(
-                Icons.message,
+                Icons.align_vertical_bottom,
                 color: Colors.white,
               ),
               onPressed: () {
-                // Navigator.pushNamed(context, '/login');
-                UserMProvider userProvider =
-                    Provider.of<UserMProvider>(context, listen: false);
-                // final userProvider = Provider.of<UserMProvider>(context);
-                final userModel = userProvider.userModel;
+                Navigator.pushNamed(context, '/owneritem');
+              }),
+          IconButton(
+              icon: const Icon(
+                Icons.message,
+                color: Colors.white,
+              ),
+              onPressed: () async {
+                final storage = const FlutterSecureStorage();
+
+                String? userJson = await storage.read(key: 'userm');
+                print("hell");
+                print(userJson);
+                // Convert JSON to UserModel
+                //             UserModel usermode = const UserModel(
+                // firstname: '',
+                // password: '',
+                // lastname: '',
+                // phone: '',
+                // useid: '',
+                // image: '');
+
+                UserModel usermode = UserModel.fromJson(json.decode(userJson!));
+
+                // Use the storedUser object as needed in your application
+
+                // UserMProvider userProvider =
+                //     Provider.of<UserMProvider>(context, listen: false);
+
+                // final userModel = userProvider.userModel;
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => UserListPage(userl: userModel!)),
+                      builder: (context) => UserListPage(userl: usermode)),
                 );
               }),
           IconButton(
@@ -48,6 +72,14 @@ Widget bottomAppbar(BuildContext context) {
               onPressed: () {
                 Navigator.pushNamed(context, '/contrat_page');
               }),
+          IconButton(
+              icon: const Icon(
+                Icons.account_box_sharp,
+                color: Colors.white,
+              ),
+              onPressed: () {
+                Navigator.pushNamed(context, '/farmer_profile');
+              }),
         ],
       ),
     ),
@@ -57,7 +89,7 @@ Widget bottomAppbar(BuildContext context) {
 Widget gustbottomAppbar(BuildContext context) {
   return BottomAppBar(
     color: Theme.of(context).bottomAppBarTheme.color,
-    child: Container(
+    child: SizedBox(
       height: 65,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -65,16 +97,15 @@ Widget gustbottomAppbar(BuildContext context) {
           Row(
             children: [
               IconButton(
-                icon: Icon(
+                icon: const Icon(
                   Icons.home,
                   color: Colors.white,
                 ),
-                // Add some spacing between the icon and tex
                 onPressed: () {
                   Navigator.pushNamed(context, '/guest');
                 },
               ),
-              Text('Home', style: TextStyle(color: Colors.white)),
+              const Text('Home', style: TextStyle(color: Colors.white)),
             ],
           ),
           Row(
@@ -88,7 +119,7 @@ Widget gustbottomAppbar(BuildContext context) {
                   onPressed: () {
                     Navigator.pushNamed(context, '/login');
                   }),
-              Text('Login', style: TextStyle(color: Colors.white)),
+              const Text('Login', style: TextStyle(color: Colors.white)),
             ],
           ),
         ],

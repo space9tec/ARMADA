@@ -1,20 +1,16 @@
 import 'dart:convert';
+import 'dart:ui';
 
-import 'package:armada/utils/helper_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import '../../../models/machine.dart';
-import '../../../models/usermodel.dart';
-import '../../../networkhandler.dart';
-import '../../../provider/drop_down_provider.dart';
-import '../../widgets/widgets.dart';
-import '../screens.dart';
-import 'guest_screen.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import '../../../models/farm.dart';
+
+import '../../../models/model.dart';
+import '../../../networkhandler.dart';
+import '../../../utils/helper_widget.dart';
+import '../../widgets/widgets.dart';
 
 class HomeScreen extends StatefulWidget {
-  static const String routeName = '/';
+  static const String routeName = '/home';
 
   static Route route() {
     return MaterialPageRoute(
@@ -31,19 +27,74 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   NetworkHandler networkHandler = NetworkHandler();
-  List<MachineM> machine = [];
-  List<FarmM> farm = [];
+  final storage = const FlutterSecureStorage();
+  final TextEditingController _searchController = TextEditingController();
+  late PageController _pageController;
 
-  UserModel usermode = UserModel(
+  List<FarmM> farm = [];
+  List<MachineM> machine = [];
+  List<MachineM> machinefilter = [];
+  List<MachineM> filteredMachines = [];
+  List<MachineM> displayedMachines = [];
+
+  bool filt = false;
+  int activePage = 1;
+  bool circulat = false;
+  bool isSearching = false;
+  bool loading = false;
+
+  List<String> images = [
+    "assets/images/tracter1.png",
+    "assets/images/tracter2.png",
+    "assets/images/tracter3.png",
+  ];
+  UserModel usermode = const UserModel(
       firstname: '',
       password: '',
       lastname: '',
       phone: '',
       useid: '',
       image: '');
+
+  final _regions = [
+    "select",
+    'Tigray',
+    'Afar',
+    "Amhara",
+    "Oromia",
+    "Somali",
+    "SNNPR",
+    "Gambela",
+    "Benishangul",
+    "Harari"
+  ];
+  String _selectedregion = "select";
+
+  final _machinetype = [
+    "select",
+    'Tractor',
+    'Combine Harvester',
+    "Thresher",
+    "Tractor Attachment",
+    "Other"
+  ];
+  String _selectedmachinetype = "select";
+
+  final _attachmenttype = [
+    "select",
+    'Disc Plough',
+    'Disc Harrow',
+    "Planter",
+    "Sprayer",
+    "Baler",
+    "Trailer",
+    "Other",
+  ];
+  String _selectedattachmenttype = "select";
+
+  @override
   void initState() {
     _pageController = PageController(viewportFraction: 0.8);
-
     super.initState();
     fetchData();
   }
@@ -56,31 +107,23 @@ class _HomeScreenState extends State<HomeScreen> {
     if (userJson != null) {
       // Convert JSON to UserModel
       usermode = UserModel.fromJson(json.decode(userJson));
-
-      // Use the storedUser object as needed in your application
-      print('Stored user: ${usermode.firstname} ${usermode.lastname}');
     }
     setState(() {
-      machine = (json.decode(response.body) as List)
-          .map((data) => MachineM.fromJson(data))
-          .toList();
-    });
-//farm
-    var responsefarm = await networkHandler.get("/api/farm/");
+      if (mounted) {
+        machine = (json.decode(response.body) as List)
+            .map((data) => MachineM.fromJson(data))
+            .toList();
 
-    // setState(() {
-    //   farm = (json.decode(response.body) as List)
-    //       .map((data) => FarmM.fromJson(data))
-    //       .toList();
-    // });
-    // String? ownerid = await storage.read(key: "userid");
-    String? user = await storage.read(key: 'userm');
-    UserModel usermodel = UserModel.fromJson(json.decode(user!));
+        loading = true;
+      }
+    });
+
+    var responsefarm = await networkHandler.get("/api/farm/");
 
     List<dynamic> responseDatam = json.decode(responsefarm.body);
 
     List<dynamic> filteredData = responseDatam
-        .where((data) => data['owner_id'] == usermodel.useid)
+        .where((data) => data['owner_id'] == usermode.useid)
         .toList();
 
     setState(() {
@@ -88,206 +131,629 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
-  late PageController _pageController;
-  String? userRole;
-  List<String> images = [
-    "assets/images/tracter1.png",
-    "assets/images/tracter2.png",
-    "assets/images/tracter3.png",
-  ];
-  final storage = new FlutterSecureStorage();
+  void _performSearch(String searchQuery) {
+    setState(() {
+      if (searchQuery.isEmpty) {
+        displayedMachines = List.from(machine);
+      } else {
+        displayedMachines = machine.where((machine) {
+          return machine.manufacturer
+                  .toLowerCase()
+                  .contains(searchQuery.toLowerCase()) ||
+              machine.type.toLowerCase().contains(searchQuery.toLowerCase());
+        }).toList();
+      }
+    });
+  }
 
-  int activePage = 1;
-  bool circulat = false;
+  void _applyFilters() {
+    setState(() {
+      filteredMachines = machine.where((machine) {
+        bool regionMatches =
+            _selectedregion == "select" || machine.region == _selectedregion;
+        bool typeMatches = _selectedmachinetype == "select" ||
+            machine.type == _selectedmachinetype;
+        bool attachmentMatches = _selectedattachmenttype == "select" ||
+            machine.attachmenttype == _selectedattachmenttype;
+
+        return regionMatches && typeMatches && attachmentMatches;
+      }).toList();
+      filt = true;
+    });
+
+    Navigator.pop(context);
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    switch (
-        Provider.of<DropDownProvider>(context, listen: false).selectedAccount) {
-      case 'Service Provider':
-        return ServiceProviderHomeScreen();
-      case 'Farmer':
-        return DefaultTabController(
-          length: farm.length + 1,
-          child: Scaffold(
-            appBar: AppBar(
-              elevation: 0,
-              backgroundColor: Theme.of(context).primaryColor,
-              actions: [
-                IconButton(
-                  onPressed: () {
-                    Navigator.pushNamed(context, '/display_notification');
-                  },
-                  icon: const Icon(Icons.notifications_sharp),
-                ),
-              ],
-              bottom: PreferredSize(
-                preferredSize:
-                    Size.fromHeight(MediaQuery.of(context).size.width * 0.26),
-                child: Column(
-                  children: [
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width * 0.75,
-                      height: MediaQuery.of(context).size.height * 0.08,
-                      child: Padding(
-                        padding: const EdgeInsets.all(10.0),
-                        child: TextField(
-                          style: const TextStyle(
-                            color: Colors.grey,
-                          ),
-                          decoration: InputDecoration(
-                            hintText: 'Search',
-                            prefixIcon: const Icon(
-                              Icons.search,
-                              color: Color.fromARGB(255, 6, 163, 90),
-                            ),
-                            border: InputBorder.none,
-                            contentPadding: EdgeInsets.zero,
-                            filled: true,
-                            fillColor: Colors.white,
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(15),
-                              borderSide: const BorderSide(
-                                width: 1,
-                                color: Colors.green,
+    return DefaultTabController(
+      length: farm.length + 1,
+      child: Scaffold(
+        appBar: AppBar(
+          elevation: 0,
+          backgroundColor: Theme.of(context).primaryColor,
+          actions: [
+            IconButton(
+              onPressed: () {
+                Navigator.pushNamed(context, '/display_notification');
+              },
+              icon: const Icon(Icons.notifications_sharp),
+            ),
+          ],
+          bottom: PreferredSize(
+            preferredSize:
+                Size.fromHeight(MediaQuery.of(context).size.width * 0.26),
+            child: Column(
+              children: [
+                SizedBox(
+                  width: MediaQuery.of(context).size.width * 0.75,
+                  height: MediaQuery.of(context).size.height * 0.08,
+                  child: Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: TextField(
+                      controller: _searchController,
+                      style: const TextStyle(
+                        color: Colors.grey,
+                      ),
+                      onChanged: (value) {
+                        setState(() {
+                          isSearching = value.isNotEmpty;
+                        });
+                        _performSearch(value);
+                      },
+                      decoration: InputDecoration(
+                        hintText: 'Search',
+                        prefixIcon: isSearching
+                            ? const Icon(
+                                Icons.search,
+                                color: Colors.white,
+                              )
+                            : const Icon(
+                                Icons.search,
+                                color: Color.fromARGB(255, 6, 163, 90),
                               ),
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(15),
-                              borderSide: const BorderSide(
-                                width: 1,
-                                color: Colors.green,
-                              ),
-                            ),
-                            suffixIcon: GestureDetector(
-                              onTap: () {
-                                Navigator.pushNamed(context, '/search');
-                              },
-                              child: Container(
-                                margin: const EdgeInsets.all(7),
-                                height: 30,
-                                width: 30,
-                                decoration: BoxDecoration(
-                                  color: Theme.of(context).primaryColor,
-                                  borderRadius: BorderRadius.circular(9),
-                                ),
-                                child: const Center(
-                                    child: Icon(
-                                  Icons.filter_list_sharp,
-                                  color: Colors.white,
-                                )),
-                              ),
-                            ),
+                        border: InputBorder.none,
+                        contentPadding: EdgeInsets.zero,
+                        filled: true,
+                        fillColor: Colors.white,
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(15),
+                          borderSide: const BorderSide(
+                            width: 1,
+                            color: Colors.green,
                           ),
                         ),
-                      ),
-                    ),
-                    TabBar(
-                      tabs: [
-                        Tab(text: 'All'),
-                        // Tab(text: usermode.firstname),
-                        ...farm
-                            .map((farm) => Tab(text: farm.farmname))
-                            .toList(),
-                        // Tab(text: 'Location 2'),
-                      ],
-                      // isScrollable: true,
-                      indicatorColor: Colors.white,
-                      indicatorSize: TabBarIndicatorSize.tab,
-                      indicatorWeight: 3,
-                      labelColor: Colors.white,
-                      labelStyle: const TextStyle(
-                          fontSize: 15.0, fontWeight: FontWeight.bold),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            body: SingleChildScrollView(
-              physics: const NeverScrollableScrollPhysics(),
-              child: SizedBox(
-                height: MediaQuery.of(context).size.height * 0.79,
-                child: TabBarView(
-                  children: [
-                    SingleChildScrollView(
-                      child: Column(
-                        children: [
-                          Container(
-                            decoration: BoxDecoration(
-                              boxShadow: [
-                                BoxShadow(
-                                  color:
-                                      const Color.fromARGB(255, 192, 233, 192)
-                                          .withOpacity(0.5),
-                                  blurRadius: 3,
-                                ),
-                              ],
-                              borderRadius: const BorderRadius.all(
-                                Radius.circular(15),
-                              ),
-                            ),
-                            width: MediaQuery.of(context).size.width,
-                            height: MediaQuery.of(context).size.height * 0.24,
-                            child: PageView.builder(
-                                itemCount: images.length,
-                                controller: _pageController,
-                                onPageChanged: (page) {
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(15),
+                          borderSide: const BorderSide(
+                            width: 1,
+                            color: Colors.green,
+                          ),
+                        ),
+                        suffixIcon: isSearching
+                            ? IconButton(
+                                icon: const Icon(Icons.clear,
+                                    color: Color.fromARGB(255, 6, 163, 90)),
+                                onPressed: () {
+                                  _searchController.clear();
                                   setState(() {
-                                    activePage = page;
+                                    isSearching = false;
+                                    displayedMachines = List.from(machine);
                                   });
                                 },
-                                pageSnapping: true,
-                                itemBuilder: (context, pagePosition) {
-                                  return GestureDetector(
-                                    onTap: () {
-                                      // Navigator.pushNamed(
-                                      //     context, '/main_service');
-                                    },
-                                    child: Container(
-                                        margin: const EdgeInsets.all(5),
-                                        child:
-                                            Image.asset(images[pagePosition])),
-                                  );
-                                }),
-                          ),
-                          Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: indicators(images.length, activePage)),
-                          addVerticalSpace(25),
-                          GridView.count(
-                            shrinkWrap: true,
-                            physics: const NeverScrollableScrollPhysics(),
-                            crossAxisCount: 2,
-                            childAspectRatio: 1 / 1.5,
-                            children: List.generate(machine.length, (index) {
-                              final machines = machine[index];
-                              return CustomProductItemWidget(machines);
-                            }),
-                          ),
-                        ],
+                              )
+                            : GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    showModalBottomSheet(
+                                        shape: const RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.vertical(
+                                            top: Radius.circular(25),
+                                          ),
+                                        ),
+                                        clipBehavior:
+                                            Clip.antiAliasWithSaveLayer,
+                                        context: context,
+                                        builder: (context) =>
+                                            _custombottomSheetFilter(context));
+                                  });
+                                },
+                                child: Container(
+                                  margin: const EdgeInsets.all(7),
+                                  height: 30,
+                                  width: 30,
+                                  decoration: BoxDecoration(
+                                    color:
+                                        const Color.fromARGB(255, 0, 117, 63),
+                                    borderRadius: BorderRadius.circular(9),
+                                  ),
+                                  child: const Center(
+                                      child: Icon(
+                                    Icons.filter_list_sharp,
+                                    color: Colors.white,
+                                  )),
+                                ),
+                              ),
                       ),
                     ),
-                    ...farm.map((farm) => buildFarmWidget(farm)).toList(),
-                    // const Center(child: Text("Insert Your farm location")),
+                  ),
+                ),
+                TabBar(
+                  tabs: [
+                    const Tab(text: 'All'),
+                    ...farm.map((farm) => Tab(text: farm.longtude)).toList(),
                   ],
+                  indicatorColor: Colors.white,
+                  indicatorSize: TabBarIndicatorSize.tab,
+                  indicatorWeight: 3,
+                  labelColor: Colors.white,
+                  labelStyle: const TextStyle(
+                      fontSize: 15.0, fontWeight: FontWeight.bold),
+                ),
+              ],
+            ),
+          ),
+        ),
+        body: Stack(
+          children: [
+            SingleChildScrollView(
+              physics: const NeverScrollableScrollPhysics(),
+              child: SizedBox(
+                height: MediaQuery.of(context).size.height * 0.68,
+                child: filt
+                    ? TabBarView(children: [
+                        SingleChildScrollView(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              GridView.count(
+                                physics: const ClampingScrollPhysics(),
+                                crossAxisCount: 2,
+                                childAspectRatio: 1 / 1.5,
+                                shrinkWrap: true,
+                                children: List.generate(filteredMachines.length,
+                                    (index) {
+                                  final filteredMachine =
+                                      filteredMachines[index];
+                                  return CustomProductItemWidget(
+                                      filteredMachine);
+                                }),
+                              )
+                            ],
+                          ),
+                        ),
+                        ...farm
+                            .map((farm) => buildFarmWidget(
+                                farm, context, filteredMachines))
+                            .toList(),
+                      ])
+                    : TabBarView(
+                        children: [
+                          SingleChildScrollView(
+                            child: Column(
+                              children: [
+                                Container(
+                                  decoration: BoxDecoration(
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: const Color.fromARGB(
+                                                255, 192, 233, 192)
+                                            .withOpacity(0.5),
+                                        blurRadius: 3,
+                                      ),
+                                    ],
+                                    borderRadius: const BorderRadius.all(
+                                      Radius.circular(15),
+                                    ),
+                                  ),
+                                  width: MediaQuery.of(context).size.width,
+                                  height:
+                                      MediaQuery.of(context).size.height * 0.24,
+                                  child: PageView.builder(
+                                      itemCount: images.length,
+                                      controller: _pageController,
+                                      onPageChanged: (page) {
+                                        setState(() {
+                                          activePage = page;
+                                        });
+                                      },
+                                      pageSnapping: true,
+                                      itemBuilder: (context, pagePosition) {
+                                        return GestureDetector(
+                                          onTap: () {},
+                                          child: Container(
+                                              margin: const EdgeInsets.all(5),
+                                              child: Image.asset(
+                                                  images[pagePosition])),
+                                        );
+                                      }),
+                                ),
+                                Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children:
+                                        indicators(images.length, activePage)),
+                                addVerticalSpace(15),
+                                loading
+                                    ? Center(
+                                        child: GridView.count(
+                                          shrinkWrap: true,
+                                          physics:
+                                              const NeverScrollableScrollPhysics(),
+                                          crossAxisCount: 2,
+                                          childAspectRatio: 1 / 1.4,
+                                          children: List.generate(
+                                              machine.length, (index) {
+                                            final machines = machine[index];
+                                            return CustomProductItemWidget(
+                                                machines);
+                                          }),
+                                        ),
+                                      )
+                                    : Center(
+                                        child: GridView.count(
+                                            shrinkWrap: true,
+                                            physics:
+                                                const NeverScrollableScrollPhysics(),
+                                            crossAxisCount: 2,
+                                            childAspectRatio: 1 / 1.4,
+                                            children: List.generate(6, (index) {
+                                              return preloadWidget();
+                                            })),
+                                      ),
+                              ],
+                            ),
+                          ),
+                          ...farm
+                              .map((farm) =>
+                                  buildFarmWidget(farm, context, machine))
+                              .toList(),
+                        ],
+                      ),
+              ),
+            ),
+            if (isSearching)
+              GestureDetector(
+                onTap: () {
+                  FocusScope.of(context).unfocus();
+                  setState(() {
+                    isSearching = false;
+                  });
+                },
+                child: Positioned.fill(
+                  child: BackdropFilter(
+                    filter: ImageFilter.blur(sigmaX: 3, sigmaY: 3),
+                    child: Container(
+                      color: Colors.transparent,
+                    ),
+                  ),
+                ),
+              ),
+            if (isSearching)
+              Positioned(
+                top: 0,
+                left: 0,
+                right: 0,
+                child: FractionallySizedBox(
+                  widthFactor: 0.8,
+                  alignment: Alignment.topCenter,
+                  child: _buildSearchResultsCard(),
+                ),
+              ),
+          ],
+        ),
+        drawer: navigationDrawer(),
+        bottomNavigationBar: bottomAppbar(context),
+      ),
+    );
+  }
+
+  Widget _buildSearchResultsCard() {
+    int itemCount = displayedMachines.length;
+    double onehight = MediaQuery.of(context).size.height * 0.1;
+
+    double cardHeight =
+        itemCount > 0 ? (itemCount * 72.0) + onehight : onehight;
+    cardHeight = cardHeight > 400.0 ? 400.0 : cardHeight;
+    return Card(
+      margin: const EdgeInsets.symmetric(horizontal: 16.0),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: SizedBox(
+          height: cardHeight,
+          width: MediaQuery.of(context).size.width,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'Search Results',
+                style: TextStyle(
+                  fontSize: 16.0,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 8.0),
+              if (itemCount != 0)
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: displayedMachines.length,
+                    itemBuilder: (context, index) {
+                      return ListTile(
+                        title: Text(displayedMachines[index].manufacturer),
+                        subtitle: Text(displayedMachines[index].type),
+                      );
+                    },
+                  ),
+                ),
+              if (itemCount == 0)
+                const Padding(
+                  padding: EdgeInsets.only(top: 16.0),
+                  child: Center(child: Text("No search result.")),
+                )
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  _custombottomSheetFilter(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.only(left: 20, bottom: 20, right: 20),
+      height: MediaQuery.of(context).size.height * 0.6,
+      // color: Colors.white,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          SizedBox(
+            height: MediaQuery.of(context).size.height * 0.1,
+            child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  SizedBox(
+                      child: IconButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          icon: const Icon(Icons.cancel))),
+                  const Text("Filter"),
+                  const Text("Clear All")
+                ]),
+          ),
+          SizedBox(
+            width: MediaQuery.of(context).size.width * 0.8,
+            child: DropdownButtonFormField(
+              value: _selectedregion,
+              items: _regions
+                  .map((e) => DropdownMenuItem(
+                        value: e,
+                        child: Text(e),
+                      ))
+                  .toList(),
+              onChanged: (val) {
+                setState(() {
+                  _selectedregion = val as String;
+                });
+              },
+              icon: const Icon(Icons.arrow_drop_down_circle),
+              dropdownColor: Colors.white,
+              decoration: InputDecoration(
+                labelText: "Region",
+                labelStyle: const TextStyle(color: Colors.grey),
+                border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(15),
+                    borderSide: const BorderSide(
+                      width: 1,
+                      color: Color(0xFF006837),
+                    )),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(15),
+                  borderSide: const BorderSide(
+                    width: 1,
+                    color: Color(0xFF006837),
+                  ),
                 ),
               ),
             ),
-            drawer: navigationDrawer(),
-            bottomNavigationBar: bottomAppbar(context),
           ),
-        );
-      default:
-        return const Guest();
-    }
+          SizedBox(
+            width: MediaQuery.of(context).size.width * 0.6,
+            child: DropdownButtonFormField(
+              value: _selectedmachinetype,
+              items: _machinetype
+                  .map((e) => DropdownMenuItem(
+                        value: e,
+                        child: Text(e),
+                      ))
+                  .toList(),
+              onChanged: (val) {
+                setState(() {
+                  _selectedmachinetype = val as String;
+                });
+              },
+              icon: const Icon(Icons.arrow_drop_down_circle),
+              dropdownColor: Colors.white,
+              decoration: InputDecoration(
+                labelText: "Machine type",
+                labelStyle: const TextStyle(color: Colors.grey),
+                border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(15),
+                    borderSide: const BorderSide(
+                      width: 1,
+                      color: Color(0xFF006837),
+                    )),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(15),
+                  borderSide: const BorderSide(
+                    width: 1,
+                    color: Color(0xFF006837),
+                  ),
+                ),
+              ),
+            ),
+          ),
+          SizedBox(
+            width: MediaQuery.of(context).size.width * 0.6,
+            child: DropdownButtonFormField(
+              value: _selectedattachmenttype,
+              items: _attachmenttype
+                  .map((e) => DropdownMenuItem(
+                        value: e,
+                        child: Text(e),
+                      ))
+                  .toList(),
+              onChanged: (val) {
+                setState(() {
+                  _selectedattachmenttype = val as String;
+                });
+              },
+              icon: const Icon(Icons.arrow_drop_down_circle),
+              dropdownColor: Colors.white,
+              decoration: InputDecoration(
+                labelText: "Attachment Type",
+                labelStyle: const TextStyle(color: Colors.grey),
+                border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(15),
+                    borderSide: const BorderSide(
+                      width: 1,
+                      color: Color(0xFF006837),
+                    )),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(15),
+                  borderSide: const BorderSide(
+                    width: 1,
+                    color: Color(0xFF006837),
+                  ),
+                ),
+              ),
+            ),
+          ),
+          InkWell(
+            onTap: _applyFilters,
+            child: SizedBox(
+              child: Container(
+                width: MediaQuery.of(context).size.width * 0.63,
+                height: 55,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(15),
+                  color: Theme.of(context).primaryColor,
+                ),
+                child: const Center(
+                  child: Text(
+                    "Filter",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 20,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
 
-Widget buildFarmWidget(FarmM farm) {
-  // Replace with your implementation for each farm tab
-  return Container(
-    child: Center(
-      child: Text('Farm Widget for ${farm.croptype}'),
+class Skelton extends StatelessWidget {
+  final double? height, width;
+  const Skelton({key, this.height, this.width}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: height,
+      width: width,
+      padding: const EdgeInsets.all(8),
+      decoration: BoxDecoration(
+        color: Colors.black.withOpacity(0.04),
+        borderRadius: const BorderRadius.all(Radius.circular(16)),
+      ),
+    );
+  }
+}
+
+class preloadWidget extends StatelessWidget {
+  const preloadWidget({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.all(5),
+      width: MediaQuery.of(context).size.width * 0.3,
+      height: MediaQuery.of(context).size.width * 0.27,
+      child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
+        InkWell(
+          onTap: () {},
+          child: const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+            child: Row(
+              children: [
+                Skelton(width: 20, height: 20),
+                SizedBox(
+                  width: 10,
+                ),
+                Skelton(width: 80),
+              ],
+            ),
+          ),
+        ),
+        Skelton(
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.height * 0.2),
+        const SizedBox(
+          height: 15,
+        ),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Skelton(width: MediaQuery.of(context).size.width * 0.4),
+          ],
+        ),
+        const SizedBox(
+          height: 5,
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Skelton(width: MediaQuery.of(context).size.width * 0.15),
+            Skelton(width: MediaQuery.of(context).size.width * 0.25),
+          ],
+        ),
+      ]),
+    );
+  }
+}
+
+Widget buildFarmWidget(
+    FarmM farm, BuildContext context, List<MachineM> machine) {
+  List<MachineM> machinefilter = machine.where((data) {
+    return data.region == farm.longtude;
+  }).toList();
+  return SingleChildScrollView(
+    child: Column(
+      children: [
+        addVerticalSpace(25),
+        GridView.count(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          crossAxisCount: 2,
+          childAspectRatio: 1 / 1.5,
+          children: List.generate(machinefilter.length, (index) {
+            final machines = machinefilter[index];
+
+            return CustomProductItemWidget(machines);
+          }),
+        ),
+      ],
     ),
   );
 }

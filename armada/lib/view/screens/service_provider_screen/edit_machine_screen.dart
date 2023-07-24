@@ -1,33 +1,31 @@
+import 'dart:convert';
+import 'dart:io';
+
+import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
-import 'package:armada/utils/helper_widget.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
-import 'dart:io';
+
+import '../../../models/machine.dart';
+import '../../../networkhandler.dart';
 import '../../../provider/machine_status_provider.dart';
-import '../../widgets/widgets.dart';
-import 'package:armada/networkhandler.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:bot_toast/bot_toast.dart';
+import '../../../utils/helper_widget.dart';
+import '../../widgets/custom_all/button.dart';
+import '../../widgets/machineStatusSelector.dart';
+import 'machineDetail_screen.dart';
 
-class VerifyServiceProvider extends StatefulWidget {
-  static const String routeName = '/VerifyServiceProvider';
-
-  static Route route() {
-    return MaterialPageRoute(
-      settings: const RouteSettings(name: routeName),
-      builder: (context) {
-        return const VerifyServiceProvider();
-      },
-    );
-  }
-
-  const VerifyServiceProvider({super.key});
+class EditMacine extends StatefulWidget {
+  const EditMacine(
+      {super.key, required this.machinesingle, required this.networkHandler});
+  final MachineM machinesingle;
+  final NetworkHandler networkHandler;
 
   @override
-  State<VerifyServiceProvider> createState() => _VerifyServiceProviderState();
+  State<EditMacine> createState() => _EditMacineState();
 }
 
-class _VerifyServiceProviderState extends State<VerifyServiceProvider> {
+class _EditMacineState extends State<EditMacine> {
   String _currentCarType = '';
   String _currentTractorAttachmentsType = '';
 
@@ -36,8 +34,6 @@ class _VerifyServiceProviderState extends State<VerifyServiceProvider> {
   final TextEditingController _year = TextEditingController();
   final TextEditingController _horsepower = TextEditingController();
   final TextEditingController _hourmeter = TextEditingController();
-  final TextEditingController _region = TextEditingController();
-
   final TextEditingController _requiredpower = TextEditingController();
   final TextEditingController _workingcapacity = TextEditingController();
   final TextEditingController _graintank = TextEditingController();
@@ -50,6 +46,26 @@ class _VerifyServiceProviderState extends State<VerifyServiceProvider> {
   final TextEditingController _sideboardheight = TextEditingController();
   final TextEditingController _platformdimension = TextEditingController();
   final TextEditingController _loadingcapacity = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    _manufacturer.text =
+        widget.machinesingle.manufacturer; // Set initial value for text field 1
+    _model.text = widget.machinesingle.model
+        .toString(); // Set initial value for text field 2
+    _year.text = widget.machinesingle.year.toString();
+    _horsepower.text = widget.machinesingle.horsepower.toString();
+    _hourmeter.text = widget.machinesingle.hourmeter.toString();
+
+    _requiredpower.text = widget.machinesingle.requiredpower.toString();
+    _workingcapacity.text = widget.machinesingle.workingcapacity.toString();
+    _graintank.text = widget.machinesingle.graintank.toString();
+    _graintypes.text = widget.machinesingle.graintypes.toString();
+    _additionalinformation.text =
+        widget.machinesingle.additionalinformation.toString();
+  }
+
   String? _selectedStatus;
 
   NetworkHandler networkHandler = NetworkHandler();
@@ -59,128 +75,301 @@ class _VerifyServiceProviderState extends State<VerifyServiceProvider> {
   final ImagePicker picker = ImagePicker();
 
   final _formKey = GlobalKey<FormState>();
+
+  final _machinestatus = ["Free", "In Maintenance", "Booked"];
+  String _selectedmachinestatus = "Free";
+  final _regions = [
+    'Tigray',
+    'Afar',
+    "Amhara",
+    "Oromia",
+    "Somali",
+    "SNNPR",
+    "Gambela",
+    "Benishangul",
+    "Harari"
+  ];
+  String _selectedregion = "Tigray";
+
+  MachineM? machinemo;
+  // NetworkHandler? networkHandler = NetworkHandler();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        elevation: 0,
+        backgroundColor: Theme.of(context).primaryColor,
+        actions: [
+          Consumer<MachineStatusProvider>(
+            builder: (context, value, child) => IconButton(
+              // Navigator.pushNamed(context, '/display_notification');
+
+              onPressed: () async {
+                // _selectedmachinestatus = value.selectedAccount;
+
+                // String? userJson = await storage.read(key: 'userm');
+                // UserModel usermode = UserModel.fromJson(json.decode(userJson!));
+
+                // if (_formKey.currentState!.validate()) {
+                // if (machintype == "Tractor") {
+                // Map<String, String> data = {
+                //   "model": _model.text,
+                //   "manufacturer": _manufacturer.text,
+                //   "type": _currentCarType,
+                //   "owner_id": usermode.useid,
+                //   "status": _selectedmachinestatus,
+                //   "year": _year.text,
+                //   "region": _selectedregion,
+                //   "hour_meter": _hourmeter.text,
+                //   "horsepower": _horsepower.text,
+                //   "grain_tank_capacity": _graintank.text,
+                //   "grain_types": _graintypes.text,
+                //   "working_capacity": _workingcapacity.text,
+                //   "required_power": _requiredpower.text,
+                //   "additional_info": _additionalinformation.text,
+                // };
+                if (widget.machinesingle.type == "Tractor") {
+                  Map<String, String> data = {
+                    "model": _model.text,
+                    "manufacturer": _manufacturer.text,
+                    "type": _currentCarType,
+                    "status": _selectedmachinestatus,
+                    "year": _year.text,
+                    "region": _selectedregion,
+                    "hour_meter": _hourmeter.text,
+                    "horsepower": _horsepower.text,
+                  };
+
+                  var response = await networkHandler.put(
+                      "/api/machinery/${widget.machinesingle.machineId}", data);
+                  if (response.statusCode == 200) {
+                    print("Updated");
+                    Map<String, dynamic> output = json.decode(response.body);
+                    print("updated1");
+                    Map<String, dynamic> farmData = output;
+
+                    // Create UserModel instance using the user data
+                    MachineM machinem = MachineM.fromJson(farmData);
+                    // Navigator.pushNamed(context, '/farm_screen');
+                    setState(() {
+                      machinemo = machinem;
+                    });
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: ((context) => machineDetail(
+                              machinlist: machinemo!,
+                              networkHandler: networkHandler,
+                            )),
+                      ),
+                    );
+                    BotToast.showText(
+                      text: "successfully Posted.",
+                      duration: Duration(seconds: 2),
+                      contentColor: Colors.white,
+                      textStyle:
+                          TextStyle(fontSize: 16.0, color: Color(0xFF006837)),
+                    );
+                    Navigator.pushNamed(context, '/machie_screen');
+                  } else {
+                    print("faild");
+                    print(response.body.toString());
+                  }
+                } else if (widget.machinesingle.type == "Combine Harvester") {
+                  Map<String, String> data = {
+                    "model": _model.text,
+                    "manufacturer": _manufacturer.text,
+                    "type": _currentCarType,
+                    // "owner_id": userid!,
+                    "status": _selectedmachinestatus,
+                    "year": _year.text,
+                    "region": _selectedregion,
+                    "grain_tank_capacity": _graintank.text,
+                    "grain_types": _graintypes.text,
+                  };
+
+                  var response = await networkHandler.put(
+                      "/api/machinery/${widget.machinesingle.machineId}", data);
+                  if (response.statusCode == 200) {
+                    print("Updated");
+                    Map<String, dynamic> output = json.decode(response.body);
+                    print("updated1");
+                    Map<String, dynamic> farmData = output;
+
+                    // Create UserModel instance using the user data
+                    MachineM machinem = MachineM.fromJson(farmData);
+                    // Navigator.pushNamed(context, '/farm_screen');
+                    setState(() {
+                      machinemo = machinem;
+                    });
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: ((context) => machineDetail(
+                              machinlist: machinemo!,
+                              networkHandler: networkHandler,
+                            )),
+                      ),
+                    );
+                    BotToast.showText(
+                      text: "successfully Posted.",
+                      duration: Duration(seconds: 2),
+                      contentColor: Colors.white,
+                      textStyle:
+                          TextStyle(fontSize: 16.0, color: Color(0xFF006837)),
+                    );
+                    Navigator.pushNamed(context, '/machie_screen');
+                  } else {
+                    print("faild");
+                    print(response.body.toString());
+                  }
+                } else if (widget.machinesingle.type == "Thresher") {
+                  Map<String, String> data = {
+                    "model": _model.text,
+                    "manufacturer": _manufacturer.text,
+                    "type": _currentCarType,
+                    // "owner_id": userid!,
+                    "status": _selectedmachinestatus,
+                    "year": _year.text,
+                    "region": _selectedregion,
+                    "working_capacity": _workingcapacity.text,
+                    "required_power": _requiredpower.text,
+                  };
+
+                  var response = await networkHandler.put(
+                      "/api/machinery/${widget.machinesingle.machineId}", data);
+                  if (response.statusCode == 200) {
+                    print("Updated");
+                    Map<String, dynamic> output = json.decode(response.body);
+                    print("updated1");
+                    Map<String, dynamic> farmData = output;
+
+                    // Create UserModel instance using the user data
+                    MachineM machinem = MachineM.fromJson(farmData);
+                    // Navigator.pushNamed(context, '/farm_screen');
+                    setState(() {
+                      machinemo = machinem;
+                    });
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: ((context) => machineDetail(
+                              machinlist: machinemo!,
+                              networkHandler: networkHandler,
+                            )),
+                      ),
+                    );
+                    BotToast.showText(
+                      text: "successfully Posted.",
+                      duration: Duration(seconds: 2),
+                      contentColor: Colors.white,
+                      textStyle:
+                          TextStyle(fontSize: 16.0, color: Color(0xFF006837)),
+                    );
+                    Navigator.pushNamed(context, '/machie_screen');
+                  } else {
+                    print("faild");
+                    print(response.body.toString());
+                  }
+                } else if (widget.machinesingle.type == "Other") {
+                  Map<String, String> data = {
+                    "model": _model.text,
+                    "manufacturer": _manufacturer.text,
+                    "type": _currentCarType,
+                    // "owner_id": userid!,
+                    "status": _selectedmachinestatus,
+                    "region": _selectedregion,
+                    "additional_info": _additionalinformation.text,
+                  };
+
+                  var response = await networkHandler.put(
+                      "/api/machinery/${widget.machinesingle.machineId}", data);
+                  if (response.statusCode == 200) {
+                    print("Updated");
+                    Map<String, dynamic> output = json.decode(response.body);
+                    print("updated1");
+                    Map<String, dynamic> farmData = output;
+
+                    // Create UserModel instance using the user data
+                    MachineM machinem = MachineM.fromJson(farmData);
+                    // Navigator.pushNamed(context, '/farm_screen');
+                    setState(() {
+                      machinemo = machinem;
+                    });
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: ((context) => machineDetail(
+                              machinlist: machinemo!,
+                              networkHandler: networkHandler,
+                            )),
+                      ),
+                    );
+                    BotToast.showText(
+                      text: "successfully Posted.",
+                      duration: Duration(seconds: 2),
+                      contentColor: Colors.white,
+                      textStyle:
+                          TextStyle(fontSize: 16.0, color: Color(0xFF006837)),
+                    );
+                    Navigator.pushNamed(context, '/machie_screen');
+                  } else {
+                    print("faild");
+                    print(response.body.toString());
+                  }
+                }
+
+                // var response = await networkHandler.post(
+                //     "/api/machinery/", data, "machineData",
+                //     imageFile: imageFile);
+
+                // }
+              },
+              // },
+              icon: const Icon(Icons.done),
+            ),
+          ),
+        ],
+      ),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(12.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              addVerticalSpace(50.0),
-
-              Text(
-                "Verify Account",
-                style: Theme.of(context).textTheme.displayLarge,
-              ),
-              addVerticalSpace(40.0),
-              const Text('Select a Machinery type:'),
-              Column(
-                children: [
-                  Row(
-                    children: [
-                      Radio(
-                        value: 'Tractor',
-                        groupValue: _currentCarType,
-                        onChanged: (value) {
-                          setState(() {
-                            _currentCarType = value!;
-                          });
-                        },
-                      ),
-                      Text('Tractor'),
-                      Radio(
-                        value: 'Combine Harvester',
-                        groupValue: _currentCarType,
-                        onChanged: (value) {
-                          setState(() {
-                            _currentCarType = value!;
-                          });
-                        },
-                      ),
-                      Text('Combine harvester'),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      Radio(
-                        value: 'Thresher',
-                        groupValue: _currentCarType,
-                        onChanged: (value) {
-                          setState(() {
-                            _currentCarType = value!;
-                          });
-                        },
-                      ),
-                      Text('Thresher'),
-                      Radio(
-                        value: 'Tractor Attachment',
-                        groupValue: _currentCarType,
-                        onChanged: (value) {
-                          setState(() {
-                            _currentCarType = value!;
-                          });
-                        },
-                      ),
-                      Text('Tractor Attachments'),
-                      Radio(
-                        value: 'Other',
-                        groupValue: _currentCarType,
-                        onChanged: (value) {
-                          setState(() {
-                            _currentCarType = value!;
-                          });
-                        },
-                      ),
-                      Text('Other'),
-                    ],
-                  ),
-                ],
-              ),
-              if (_currentCarType == 'Tractor')
-                _buildTractorInputs(_currentCarType),
-              if (_currentCarType == 'Combine Harvester')
-                _buildTractorInputs(_currentCarType),
-              if (_currentCarType == 'Thresher')
-                _buildTractorInputs(_currentCarType),
-              if (_currentCarType == 'Tractor Attachment')
+              addVerticalSpace(20.0),
+              if (widget.machinesingle.type == 'Tractor')
+                _buildTractorInputs(widget.machinesingle.type),
+              if (widget.machinesingle.type == 'Combine Harvester')
+                _buildTractorInputs(widget.machinesingle.type),
+              if (widget.machinesingle.type == 'Thresher')
+                _buildTractorInputs(widget.machinesingle.type),
+              if (widget.machinesingle.type == 'Tractor Attachment')
                 _buildTractorAttachmentsInputs(),
-              if (_currentCarType == 'Other')
-                _buildTractorInputs(_currentCarType),
-              if (_currentCarType == 'Tractor Attachment')
-                if (_currentTractorAttachmentsType == 'Disc Plough')
-                  _buildSedanInputs(_currentTractorAttachmentsType),
-              if (_currentCarType == 'Tractor Attachment')
-                if (_currentTractorAttachmentsType == 'Disc Harrow')
-                  _buildSedanInputs(_currentTractorAttachmentsType),
-              if (_currentCarType == 'Tractor Attachment')
-                if (_currentTractorAttachmentsType == 'Planter')
-                  _buildSedanInputs(_currentTractorAttachmentsType),
-              if (_currentCarType == 'Tractor Attachment')
-                if (_currentTractorAttachmentsType == 'Sprayer')
-                  _buildSedanInputs(_currentTractorAttachmentsType),
-              if (_currentCarType == 'Tractor Attachment')
-                if (_currentTractorAttachmentsType == 'Baler')
-                  _buildSedanInputs(_currentTractorAttachmentsType),
-              if (_currentCarType == 'Tractor Attachment')
-                if (_currentTractorAttachmentsType == 'Trailer')
-                  _buildSedanInputs(_currentTractorAttachmentsType),
-              if (_currentCarType == 'Tractor Attachment')
-                if (_currentTractorAttachmentsType == 'Other')
-                  _buildSedanInputs(_currentTractorAttachmentsType),
+              if (widget.machinesingle.type == 'Other')
+                _buildTractorInputs(widget.machinesingle.type),
+              if (widget.machinesingle.type == 'Tractor Attachment')
+                if (widget.machinesingle.attachmenttype == 'Disc Plough')
+                  _buildSedanInputs(widget.machinesingle.attachmenttype),
+              if (widget.machinesingle.type == 'Tractor Attachment')
+                if (widget.machinesingle.attachmenttype == 'Disc Harrow')
+                  _buildSedanInputs(widget.machinesingle.attachmenttype),
+              if (widget.machinesingle.type == 'Tractor Attachment')
+                if (widget.machinesingle.attachmenttype == 'Planter')
+                  _buildSedanInputs(widget.machinesingle.attachmenttype),
+              if (widget.machinesingle.type == 'Tractor Attachment')
+                if (widget.machinesingle.attachmenttype == 'Sprayer')
+                  _buildSedanInputs(widget.machinesingle.attachmenttype),
+              if (widget.machinesingle.type == 'Tractor Attachment')
+                if (widget.machinesingle.attachmenttype == 'Baler')
+                  _buildSedanInputs(widget.machinesingle.attachmenttype),
+              if (widget.machinesingle.type == 'Tractor Attachment')
+                if (widget.machinesingle.attachmenttype == 'Trailer')
+                  _buildSedanInputs(widget.machinesingle.attachmenttype),
+              if (widget.machinesingle.type == 'Tractor Attachment')
+                if (widget.machinesingle.attachmenttype == 'Other')
+                  _buildSedanInputs(widget.machinesingle.attachmenttype),
               addVerticalSpace(50),
-              // if (_currentCarType == 'TractorAttachments' &&
-              //     _currentTractorAttachmentsType != '')
-              //   Row(
-              //     mainAxisAlignment: MainAxisAlignment.center,
-              //     children: [
-              //       Button(context, "Verify", '/',
-              //           Theme.of(context).primaryColor, 200, 50),
-              //       addHorizontalSpace(25),
-              //       Button(context, "cancel", '/', Colors.grey, 325, 40),
-              //     ],
-              //   ),
             ],
           ),
         ),
@@ -194,55 +383,122 @@ class _VerifyServiceProviderState extends State<VerifyServiceProvider> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(
-            width: MediaQuery.of(context).size.width * 0.71,
-            height: MediaQuery.of(context).size.height * 0.08,
-            child: TextFormField(
-              controller: _manufacturer,
-              decoration: const InputDecoration(labelText: 'Manufacturer'),
-              validator: (value) {
-                if (value == null) {
-                  return "Can not be Empity";
-                }
-                return null;
-              },
-            ),
-          ),
-          SizedBox(
-            width: MediaQuery.of(context).size.width * 0.71,
-            height: MediaQuery.of(context).size.height * 0.08,
-            child: TextFormField(
-              controller: _model,
-              decoration: const InputDecoration(labelText: 'Model'),
-              validator: (value) {
-                if (value == null) {
-                  return "Can not be Empity";
-                }
-                return null;
-              },
-            ),
-          ),
+          // manufacturer
+          newmachineInput(
+              context: context,
+              icon: Icons.person,
+              keybordtype: TextInputType.name,
+              labletext: "manufacturer",
+              manufacturer: _manufacturer,
+              widthl: 0.65),
+          SizedBox(height: 5),
+          // model
+          Row(children: [
+            newmachineInput(
+                context: context,
+                icon: Icons.model_training,
+                keybordtype: TextInputType.name,
+                labletext: "Model",
+                manufacturer: _model,
+                widthl: 0.5),
+            SizedBox(width: 10),
+            newmachineInput(
+                context: context,
+                icon: Icons.calendar_month_outlined,
+                keybordtype: TextInputType.datetime,
+                labletext: "Year",
+                manufacturer: _year,
+                widthl: 0.4),
+          ]),
+
+          SizedBox(height: 5),
+
           if (machintype == "Tractor") tractor(),
           if (machintype == "Combine Harvester") Combineharvester(),
           if (machintype == "Thresher") Thresher(),
           if (machintype == "Other") Other(),
-          SizedBox(
-            width: MediaQuery.of(context).size.width * 0.71,
-            height: MediaQuery.of(context).size.height * 0.08,
-            child: TextFormField(
-              controller: _region,
-              decoration: const InputDecoration(labelText: 'Region'),
-              validator: (value) {
-                if (value == null) {
-                  return "Can not be Empity";
-                }
-                return null;
-              },
-              onSaved: (value) {},
-            ),
+          SizedBox(height: 10),
+
+          // Region
+          Row(
+            children: [
+              SizedBox(
+                width: MediaQuery.of(context).size.width * 0.4,
+                child: DropdownButtonFormField(
+                  value: _selectedregion,
+                  items: _regions
+                      .map((e) => DropdownMenuItem(
+                            child: Text(e),
+                            value: e,
+                          ))
+                      .toList(),
+                  onChanged: (val) {
+                    setState(() {
+                      _selectedregion = val as String;
+                    });
+                  },
+                  icon: Icon(Icons.arrow_drop_down_circle),
+                  dropdownColor: Colors.white,
+                  decoration: InputDecoration(
+                    labelText: "Region",
+                    labelStyle: TextStyle(color: Colors.grey),
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15),
+                        borderSide: const BorderSide(
+                          width: 1,
+                          color: Color(0xFF006837),
+                        )),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(15),
+                      borderSide: const BorderSide(
+                        width: 1,
+                        color: Color(0xFF006837),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(width: 10),
+              SizedBox(
+                width: MediaQuery.of(context).size.width * 0.5,
+                child: DropdownButtonFormField(
+                  value: _selectedmachinestatus,
+                  items: _machinestatus
+                      .map((e) => DropdownMenuItem(
+                            child: Text(e),
+                            value: e,
+                          ))
+                      .toList(),
+                  onChanged: (val) {
+                    setState(() {
+                      _selectedmachinestatus = val as String;
+                    });
+                  },
+                  icon: Icon(Icons.arrow_drop_down_circle),
+                  dropdownColor: Colors.white,
+                  decoration: InputDecoration(
+                    labelText: "Status",
+                    labelStyle: TextStyle(color: Colors.grey),
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15),
+                        borderSide: const BorderSide(
+                          width: 1,
+                          color: Color(0xFF006837),
+                        )),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(15),
+                      borderSide: const BorderSide(
+                        width: 1,
+                        color: Color(0xFF006837),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
-          addVerticalSpace(5),
-          machineStatusSelector(context),
+          addVerticalSpace(10),
+          // Machine Image
           Row(
             children: [
               SizedBox(
@@ -266,229 +522,6 @@ class _VerifyServiceProviderState extends State<VerifyServiceProvider> {
             ],
           ),
           addVerticalSpace(15),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Consumer<MachineStatusProvider>(
-                builder: (context, value, child) => ElevatedButton(
-                  onPressed: () async {
-                    _selectedStatus = value.selectedAccount;
-                    String? userid = await storage.read(key: "userid");
-
-                    if (_formKey.currentState!.validate()) {
-                      if (machintype == "Tractor") {
-                        Map<String, String> data = {
-                          "model": _model.text,
-                          "manufacturer": _manufacturer.text,
-                          "type": _currentCarType,
-                          "owner_id": userid!,
-                          "status": _selectedStatus!,
-                          "year": _year.text,
-                          "region": _region.text,
-                          "hour_meter": _hourmeter.text,
-                          "horsepower": _horsepower.text,
-                        };
-
-                        var response = await networkHandler.post(
-                            "/api/machinery/", data, "machineData",
-                            imageFile: imageFile!);
-
-                        if (response.statusCode == 201) {
-                          print("Posted");
-                          BotToast.showText(
-                            text: "successfully Posted.",
-                            duration: Duration(seconds: 2),
-                            contentColor: Colors.white,
-                            textStyle: TextStyle(
-                                fontSize: 16.0, color: Color(0xFF006837)),
-                          );
-                          Navigator.pushNamed(context, '/');
-                        } else {
-                          print("faild");
-                          print(response.body.toString());
-                          BotToast.showText(
-                            text: "Posting Failed.",
-                            duration: Duration(seconds: 2),
-                            contentColor: Colors.white,
-                            textStyle: TextStyle(
-                                fontSize: 16.0, color: Color(0xFF006837)),
-                          );
-                          setState(() {
-                            // validate = false;
-                            // errorText = output;
-                          });
-                        }
-                      } else if (machintype == "Combine Harvester") {
-                        Map<String, String> data = {
-                          "model": _model.text,
-                          "manufacturer": _manufacturer.text,
-                          "type": _currentCarType,
-                          "owner_id": userid!,
-                          "status": _selectedStatus!,
-                          "year": _year.text,
-                          "region": _region.text,
-                          "grain_tank_capacity": _graintank.text,
-                          "grain_types": _graintypes.text,
-                        };
-
-                        var response = await networkHandler.post(
-                            "/api/machinery/", data, "machineData",
-                            imageFile: imageFile!);
-
-                        if (response.statusCode == 201) {
-                          print("Posted");
-                          BotToast.showText(
-                            text: "successfully Posted.",
-                            duration: Duration(seconds: 2),
-                            contentColor: Colors.white,
-                            textStyle: TextStyle(
-                                fontSize: 16.0, color: Color(0xFF006837)),
-                          );
-                          Navigator.pushNamed(context, '/');
-                        } else {
-                          print("faild");
-                          print(response.body.toString());
-
-                          setState(() {
-                            // validate = false;
-                            // errorText = output;
-                          });
-                        }
-                      } else if (machintype == "Thresher") {
-                        Map<String, String> data = {
-                          "model": _model.text,
-                          "manufacturer": _manufacturer.text,
-                          "type": _currentCarType,
-                          "owner_id": userid!,
-                          "status": _selectedStatus!,
-                          "year": _year.text,
-                          "region": _region.text,
-                          "working_capacity": _workingcapacity.text,
-                          "required_power": _requiredpower.text,
-                        };
-
-                        var response = await networkHandler.post(
-                            "/api/machinery/", data, "machineData",
-                            imageFile: imageFile!);
-
-                        if (response.statusCode == 201) {
-                          print("Posted");
-                          BotToast.showText(
-                            text: "successfully Posted.",
-                            duration: Duration(seconds: 2),
-                            contentColor: Colors.white,
-                            textStyle: TextStyle(
-                                fontSize: 16.0, color: Color(0xFF006837)),
-                          );
-                          Navigator.pushNamed(context, '/');
-                        } else {
-                          print("faild");
-                          print(response.body.toString());
-
-                          setState(() {
-                            // validate = false;
-                            // errorText = output;
-                          });
-                        }
-                      } else if (machintype == "Other") {
-                        Map<String, String> data = {
-                          "model": _model.text,
-                          "manufacturer": _manufacturer.text,
-                          "type": _currentCarType,
-                          "owner_id": userid!,
-                          "status": _selectedStatus!,
-                          "region": _region.text,
-                          "additional_info": _additionalinformation.text,
-                        };
-
-                        var response = await networkHandler.post(
-                            "/api/machinery/", data, "machineData",
-                            imageFile: imageFile!);
-
-                        if (response.statusCode == 201) {
-                          print("Posted");
-                          BotToast.showText(
-                            text: "successfully Posted.",
-                            duration: Duration(seconds: 2),
-                            contentColor: Colors.white,
-                            textStyle: TextStyle(
-                                fontSize: 16.0, color: Color(0xFF006837)),
-                          );
-                          Navigator.pushNamed(context, '/');
-                        } else {
-                          print("faild");
-                          print(response.body.toString());
-
-                          setState(() {
-                            // validate = false;
-                            // errorText = output;
-                          });
-                        }
-                      } else if (machintype == "Tractor") {
-                        Map<String, String> data = {
-                          "model": _model.text,
-                          "manufacturer": _manufacturer.text,
-                          "type": _currentCarType,
-                          "owner_id": userid!,
-                          "status": _selectedStatus!,
-                          "year": _year.text,
-                          "region": _region.text,
-                          "hour_meter": _hourmeter.text,
-                          "horsepower": _horsepower.text,
-                        };
-
-                        var response = await networkHandler.post(
-                            "/api/machinery/", data, "machineData",
-                            imageFile: imageFile!);
-
-                        if (response.statusCode == 201) {
-                          print("Posted");
-                          BotToast.showText(
-                            text: "successfully Posted.",
-                            duration: Duration(seconds: 2),
-                            contentColor: Colors.white,
-                            textStyle: TextStyle(
-                                fontSize: 16.0, color: Color(0xFF006837)),
-                          );
-                          Navigator.pushNamed(context, '/');
-                        } else {
-                          print("faild");
-                          print(response.body.toString());
-
-                          setState(() {
-                            // validate = false;
-                            // errorText = output;
-                          });
-                        }
-                      }
-                    }
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Theme.of(context).primaryColor,
-                  ),
-                  child: Container(
-                    width: MediaQuery.of(context).size.width - 200,
-                    height: 50,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(15),
-                      color: Theme.of(context).primaryColor,
-                    ),
-                    child: const Center(
-                      child: Text(
-                        "Verify",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 20,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              addHorizontalSpace(25),
-              Button(context, "cancel", '/', Colors.grey, 325, 40),
-            ],
-          ),
         ],
       ),
     );
@@ -580,7 +613,7 @@ class _VerifyServiceProviderState extends State<VerifyServiceProvider> {
     // final image = NetworkImage(widget.imagePath);
     final image = Image.asset(
       fit: BoxFit.scaleDown,
-      height: 100,
+      height: 70,
       "assets/images/tracter1.png",
     );
 
@@ -592,8 +625,8 @@ class _VerifyServiceProviderState extends State<VerifyServiceProvider> {
               ? image.image
               : FileImage(File(imageFile!.path)),
           fit: BoxFit.cover,
-          width: 128,
-          height: 128,
+          width: 108,
+          height: 108,
           child: InkWell(
             onTap: () {},
           ),
@@ -613,50 +646,27 @@ class _VerifyServiceProviderState extends State<VerifyServiceProvider> {
   tractor() {
     return Container(
       child: Column(
-        // crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          SizedBox(
-            width: MediaQuery.of(context).size.width * 0.71,
-            height: MediaQuery.of(context).size.height * 0.08,
-            child: TextFormField(
-              controller: _year,
-              decoration: const InputDecoration(labelText: 'Year'),
-              validator: (value) {
-                if (value == null) {
-                  return "Can not be Empity";
-                }
-                return null;
-              },
-            ),
-          ),
-          SizedBox(
-            width: MediaQuery.of(context).size.width * 0.71,
-            height: MediaQuery.of(context).size.height * 0.08,
-            child: TextFormField(
-              controller: _horsepower,
-              decoration: const InputDecoration(labelText: 'Horsepower '),
-              keyboardType: TextInputType.number,
-              validator: (value) {
-                if (value == null) {
-                  return "Can not be Empity";
-                }
-                return null;
-              },
-            ),
-          ),
-          SizedBox(
-            width: MediaQuery.of(context).size.width * 0.71,
-            height: MediaQuery.of(context).size.height * 0.08,
-            child: TextFormField(
-              controller: _hourmeter,
-              decoration: const InputDecoration(labelText: 'Hour meter'),
-              validator: (value) {
-                if (value == null) {
-                  return "Can not be Empity";
-                }
-                return null;
-              },
-            ),
+          Row(children: [
+            newmachineInput(
+                context: context,
+                icon: Icons.power_input,
+                keybordtype: TextInputType.datetime,
+                labletext: "Horsepower",
+                manufacturer: _horsepower,
+                widthl: 0.6),
+          ]),
+          SizedBox(height: 10),
+          Row(
+            children: [
+              newmachineInput(
+                  context: context,
+                  icon: Icons.format_line_spacing_outlined,
+                  keybordtype: TextInputType.datetime,
+                  labletext: "Hour meter",
+                  manufacturer: _hourmeter,
+                  widthl: 0.6),
+            ],
           ),
         ],
       ),
@@ -666,39 +676,26 @@ class _VerifyServiceProviderState extends State<VerifyServiceProvider> {
   Combineharvester() {
     return Container(
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          TextFormField(
-            controller: _year,
-            decoration: const InputDecoration(labelText: 'Year'),
-            validator: (value) {
-              if (value == null) {
-                return "Can not be Empity";
-              }
-              return null;
-            },
-          ),
-          TextFormField(
-            controller: _graintank,
-            decoration: const InputDecoration(labelText: 'Grain Tank Capacity'),
-            keyboardType: TextInputType.number,
-            validator: (value) {
-              if (value == null) {
-                return "Can not be Empity";
-              }
-              return null;
-            },
-          ),
-          TextFormField(
-            controller: _graintypes,
-            decoration: const InputDecoration(labelText: 'Grain Types'),
-            validator: (value) {
-              if (value == null) {
-                return "Can not be Empity";
-              }
-              return null;
-            },
-          ),
+          SizedBox(height: 5),
+          Row(children: [
+            newmachineInput(
+                context: context,
+                icon: Icons.person,
+                keybordtype: TextInputType.number,
+                labletext: "Grain Tank Capacity",
+                manufacturer: _graintank,
+                widthl: 0.5),
+            SizedBox(width: 10),
+            newmachineInput(
+                context: context,
+                icon: Icons.person,
+                keybordtype: TextInputType.number,
+                labletext: "Grain Types",
+                manufacturer: _graintypes,
+                widthl: 0.4),
+          ]),
+          SizedBox(height: 5),
         ],
       ),
     );
@@ -707,40 +704,22 @@ class _VerifyServiceProviderState extends State<VerifyServiceProvider> {
   Thresher() {
     return Container(
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          TextFormField(
-            controller: _year,
-            decoration: const InputDecoration(labelText: 'Year'),
-            validator: (value) {
-              if (value == null) {
-                return "Can not be Empity";
-              }
-              return null;
-            },
-          ),
-          TextFormField(
-            controller: _requiredpower,
-            decoration: const InputDecoration(labelText: 'Required power (hp)'),
-            keyboardType: TextInputType.number,
-            validator: (value) {
-              if (value == null) {
-                return "Can not be Empity";
-              }
-              return null;
-            },
-          ),
-          TextFormField(
-            controller: _workingcapacity,
-            decoration:
-                const InputDecoration(labelText: 'Working Capacity (kg/hr)'),
-            validator: (value) {
-              if (value == null) {
-                return "Can not be Empity";
-              }
-              return null;
-            },
-          ),
+          newmachineInput(
+              context: context,
+              icon: Icons.power_input,
+              keybordtype: TextInputType.number,
+              labletext: "Required power (hp)",
+              manufacturer: _requiredpower,
+              widthl: 0.75),
+          SizedBox(height: 10),
+          newmachineInput(
+              context: context,
+              icon: Icons.power_input,
+              keybordtype: TextInputType.number,
+              labletext: "Working Capacity (kg/hr)",
+              manufacturer: _workingcapacity,
+              widthl: 0.75),
         ],
       ),
     );
@@ -749,30 +728,26 @@ class _VerifyServiceProviderState extends State<VerifyServiceProvider> {
   Other() {
     return Container(
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          TextFormField(
-            controller: _additionalinformation,
-            decoration:
-                const InputDecoration(labelText: 'Additional Information'),
-            keyboardType: TextInputType.number,
-            validator: (value) {
-              if (value == null) {
-                return "Can not be Empity";
-              }
-              return null;
-            },
-          ),
+          SizedBox(height: 5),
+          newmachineInput(
+              context: context,
+              icon: Icons.power_input,
+              keybordtype: TextInputType.number,
+              labletext: "Additional Information",
+              manufacturer: _additionalinformation,
+              widthl: 0.75),
+          SizedBox(height: 5),
         ],
       ),
     );
   }
 
-  Widget _buildSedanInputs(String attachmenttype) {
+  Widget _buildSedanInputs(String? attachmenttype) {
     return Form(
       key: _formKey,
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           TextFormField(
             controller: _manufacturer,
@@ -925,13 +900,7 @@ class _VerifyServiceProviderState extends State<VerifyServiceProvider> {
 
                         if (response.statusCode == 201) {
                           print("Posted");
-                          BotToast.showText(
-                            text: "successfully Posted.",
-                            duration: Duration(seconds: 2),
-                            contentColor: Colors.white,
-                            textStyle: TextStyle(
-                                fontSize: 16.0, color: Color(0xFF006837)),
-                          );
+
                           Navigator.pushNamed(context, '/');
                         } else {
                           print("faild");
@@ -959,13 +928,7 @@ class _VerifyServiceProviderState extends State<VerifyServiceProvider> {
 
                         if (response.statusCode == 201) {
                           print("Posted");
-                          BotToast.showText(
-                            text: "successfully Posted.",
-                            duration: Duration(seconds: 2),
-                            contentColor: Colors.white,
-                            textStyle: TextStyle(
-                                fontSize: 16.0, color: Color(0xFF006837)),
-                          );
+
                           Navigator.pushNamed(context, '/');
                         } else {
                           print("faild");
@@ -993,13 +956,7 @@ class _VerifyServiceProviderState extends State<VerifyServiceProvider> {
 
                         if (response.statusCode == 201) {
                           print("Posted");
-                          BotToast.showText(
-                            text: "successfully Posted.",
-                            duration: Duration(seconds: 2),
-                            contentColor: Colors.white,
-                            textStyle: TextStyle(
-                                fontSize: 16.0, color: Color(0xFF006837)),
-                          );
+
                           Navigator.pushNamed(context, '/');
                         } else {
                           print("faild");
@@ -1027,13 +984,7 @@ class _VerifyServiceProviderState extends State<VerifyServiceProvider> {
 
                         if (response.statusCode == 201) {
                           print("Posted");
-                          BotToast.showText(
-                            text: "successfully Posted.",
-                            duration: Duration(seconds: 2),
-                            contentColor: Colors.white,
-                            textStyle: TextStyle(
-                                fontSize: 16.0, color: Color(0xFF006837)),
-                          );
+
                           Navigator.pushNamed(context, '/');
                         } else {
                           print("faild");
@@ -1061,13 +1012,7 @@ class _VerifyServiceProviderState extends State<VerifyServiceProvider> {
 
                         if (response.statusCode == 201) {
                           print("Posted");
-                          BotToast.showText(
-                            text: "successfully Posted.",
-                            duration: Duration(seconds: 2),
-                            contentColor: Colors.white,
-                            textStyle: TextStyle(
-                                fontSize: 16.0, color: Color(0xFF006837)),
-                          );
+
                           Navigator.pushNamed(context, '/');
                         } else {
                           print("faild");
@@ -1098,13 +1043,7 @@ class _VerifyServiceProviderState extends State<VerifyServiceProvider> {
 
                         if (response.statusCode == 201) {
                           print("Posted");
-                          BotToast.showText(
-                            text: "successfully Posted.",
-                            duration: Duration(seconds: 2),
-                            contentColor: Colors.white,
-                            textStyle: TextStyle(
-                                fontSize: 16.0, color: Color(0xFF006837)),
-                          );
+
                           Navigator.pushNamed(context, '/');
                         } else {
                           print("faild");
@@ -1132,13 +1071,7 @@ class _VerifyServiceProviderState extends State<VerifyServiceProvider> {
 
                         if (response.statusCode == 201) {
                           print("Posted");
-                          BotToast.showText(
-                            text: "successfully Posted.",
-                            duration: Duration(seconds: 2),
-                            contentColor: Colors.white,
-                            textStyle: TextStyle(
-                                fontSize: 16.0, color: Color(0xFF006837)),
-                          );
+
                           Navigator.pushNamed(context, '/');
                         } else {
                           print("faild");
@@ -1186,7 +1119,6 @@ class _VerifyServiceProviderState extends State<VerifyServiceProvider> {
   Trailer() {
     return Container(
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           TextFormField(
             controller: _loadingcapacity,
@@ -1244,6 +1176,7 @@ class _VerifyServiceProviderState extends State<VerifyServiceProvider> {
         Row(
           children: [
             Radio(
+              activeColor: Theme.of(context).primaryColor,
               value: 'Disc Plough',
               groupValue: _currentTractorAttachmentsType,
               onChanged: (value) {
@@ -1254,6 +1187,7 @@ class _VerifyServiceProviderState extends State<VerifyServiceProvider> {
             ),
             Text('Disc Plough'),
             Radio(
+              activeColor: Theme.of(context).primaryColor,
               value: 'Disc Harrow',
               groupValue: _currentTractorAttachmentsType,
               onChanged: (value) {
@@ -1264,6 +1198,7 @@ class _VerifyServiceProviderState extends State<VerifyServiceProvider> {
             ),
             Text('Disc Harrow '),
             Radio(
+              activeColor: Theme.of(context).primaryColor,
               value: 'Planter',
               groupValue: _currentTractorAttachmentsType,
               onChanged: (value) {
@@ -1278,6 +1213,7 @@ class _VerifyServiceProviderState extends State<VerifyServiceProvider> {
         Row(
           children: [
             Radio(
+              activeColor: Theme.of(context).primaryColor,
               value: 'Sprayer',
               groupValue: _currentTractorAttachmentsType,
               onChanged: (value) {
@@ -1288,6 +1224,7 @@ class _VerifyServiceProviderState extends State<VerifyServiceProvider> {
             ),
             Text('Sprayer'),
             Radio(
+              activeColor: Theme.of(context).primaryColor,
               value: 'Baler',
               groupValue: _currentTractorAttachmentsType,
               onChanged: (value) {
@@ -1298,6 +1235,7 @@ class _VerifyServiceProviderState extends State<VerifyServiceProvider> {
             ),
             Text('Baler'),
             Radio(
+              activeColor: Theme.of(context).primaryColor,
               value: 'Trailer',
               groupValue: _currentTractorAttachmentsType,
               onChanged: (value) {
@@ -1309,6 +1247,7 @@ class _VerifyServiceProviderState extends State<VerifyServiceProvider> {
             Text('Trailer'),
             Radio(
               value: 'Other',
+              activeColor: Theme.of(context).primaryColor,
               groupValue: _currentTractorAttachmentsType,
               onChanged: (value) {
                 setState(() {
@@ -1323,5 +1262,70 @@ class _VerifyServiceProviderState extends State<VerifyServiceProvider> {
     );
   }
 }
-// 
-// VerifyServiceProvider
+
+class newmachineInput extends StatelessWidget {
+  const newmachineInput({
+    super.key,
+    required this.context,
+    required this.keybordtype,
+    required this.labletext,
+    required this.icon,
+    required TextEditingController manufacturer,
+    required this.widthl,
+  }) : _manufacturer = manufacturer;
+
+  final BuildContext context;
+  final TextInputType keybordtype;
+  final String labletext;
+  final IconData icon;
+  final double widthl;
+  final TextEditingController _manufacturer;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: MediaQuery.of(context).size.width * widthl,
+      height: MediaQuery.of(context).size.height * 0.08,
+      child: TextFormField(
+        controller: _manufacturer,
+        keyboardType: keybordtype,
+        obscureText: false,
+        validator: (value) {
+          if (value == null || value.isEmpty) {
+            return "Can't be Empity.";
+          }
+          return null;
+        },
+        style: const TextStyle(
+          fontSize: 17,
+          color: Colors.black,
+        ),
+        decoration: InputDecoration(
+          labelText: labletext,
+          // hintText: "manufacturer",
+          labelStyle: const TextStyle(
+            fontSize: 17,
+            color: Colors.grey,
+          ),
+          prefixIcon: Icon(
+            icon,
+            color: const Color(0xFF006837),
+          ),
+          border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(15),
+              borderSide: const BorderSide(
+                width: 1,
+                color: Color(0xFF006837),
+              )),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(15),
+            borderSide: const BorderSide(
+              width: 1,
+              color: Color(0xFF006837),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}

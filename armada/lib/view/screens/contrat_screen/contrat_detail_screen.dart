@@ -1,17 +1,14 @@
 import 'dart:convert';
 
-import 'package:armada/models/contracts.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import '../../../models/conversation.dart';
-import '../../../models/machine.dart';
-import '../../../models/user.dart';
-import '../../../networkhandler.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:bot_toast/bot_toast.dart';
 
-import '../../../provider/drop_down_provider.dart';
-import '../../../provider/usermodel_provider.dart';
+import '../../../models/model.dart';
+import '../../../networkhandler.dart';
 import '../../../services/socket_service.dart';
-import '../message_screen/chat_screen.dart';
+import '../../../utils/helper_widget.dart';
+import '../screens.dart';
 
 class ContractDetailPage extends StatefulWidget {
   const ContractDetailPage({
@@ -27,30 +24,28 @@ class ContractDetailPage extends StatefulWidget {
 class _ContractDetailPageState extends State<ContractDetailPage> {
   NetworkHandler networkHandler = NetworkHandler();
   final socketService = SocketService();
-  List<Contact> contacts = [];
+  List<UserModel> contacts = [];
   List<dynamic> newMessageCounts = [];
   MachineM? machine;
-  User? user;
+  UserModel? user;
   bool fetched = false;
-  // List<MachineM> machinery = [];
-// var responseJson = json.decode(response);
-//     machine = Machine.fromJson(responseJson);
+
   @override
   void initState() {
     super.initState();
     socketService.initSocket(widget.contractlist.userId);
-    socketService.socket.on('contact', (data) {
+    socketService.socket!.on('contact', (data) {
       try {
-        print('contactsocket');
         List<dynamic> decodedData = json.decode(data);
 
         // Create a list of Contact objects from the JSON data
-        List<Contact> newContacts =
-            decodedData.map((jsonData) => Contact.fromJson(jsonData)).toList();
+        List<UserModel> newContacts = decodedData
+            .map((jsonData) => UserModel.fromJson(jsonData))
+            .toList();
 
         // Add only the new contacts to the list of existing contacts
         for (final newContact in newContacts) {
-          if (!contacts.any((contact) => contact.userid == newContact.userid)) {
+          if (!contacts.any((contact) => contact.useid == newContact.useid)) {
             setState(() {
               contacts.add(newContact);
             });
@@ -60,16 +55,10 @@ class _ContractDetailPageState extends State<ContractDetailPage> {
         print('Error decoding JSON: $e');
       }
     });
-    socketService.socket.on('new_message_count', (data) {
+    socketService.socket!.on('new_message_count', (data) {
       try {
-        print('socket');
         setState(() {
           final contactId = data['contactId'];
-          // final count = data['newMessageCount'];
-          print('count');
-          // Find the index of the contact in the contacts list
-          // final contactIndex =
-          //     contacts.indexWhere((contact) => contact.userid == contactId);
 
           var contactToUpdate = newMessageCounts.firstWhere(
               (contact) => contact["contactId"] == contactId,
@@ -78,80 +67,47 @@ class _ContractDetailPageState extends State<ContractDetailPage> {
           if (contactToUpdate != null) {
             contactToUpdate["newMessageCount"]++;
           }
-// Increment the new message count for this contact by 1
-          // if (contactIndex >= 0) {
-          //   setState(() {
-          //     newMessageCounts[contactIndex]['newMessageCount'] += count;
-          //   });
-          // }
         });
       } catch (e) {
         print('Error updating new message count: $e');
       }
     });
     fachemachine(widget.contractlist.machineId);
-    // facheuser(widget.contractlist.ownerId);
   }
 
-  // void facheuser(String useID) async {
-  //   // try {
-  //   var response = await networkHandler.get("/api/user/${useID}");
-  //   print(response);
-  //   Map<String, dynamic> userData = json.decode(response.body);
-  //   print(userData);
-
-  //   setState(() {
-  //     user = User.fromJson(userData);
-  //     fetched = true;
-  //   });
-  // }
+  UserModel usermode = const UserModel(
+      firstname: '',
+      password: '',
+      lastname: '',
+      phone: '',
+      useid: '',
+      image: '');
 
   void fachemachine(String machinid) async {
-    // try {
-    var response = await networkHandler.get("/api/machinery/${machinid}");
-    print(response);
+    var response = await networkHandler.get("/api/machinery/$machinid");
+
     Map<String, dynamic> machineData = json.decode(response.body);
-    print(machineData);
 
     setState(() {
-      machine = MachineM.fromJson(machineData);
-      fetched = true;
+      if (mounted) {
+        machine = MachineM.fromJson(machineData["machinery"]);
+        fetched = true;
+      }
     });
+
+    const storage = FlutterSecureStorage();
+    String? userJson = await storage.read(key: 'userm');
+
     // List<dynamic> responseData = json.decode(response.body);
-
-    // List<dynamic> filteredData =
-    //     responseData.where((data) => data['_id'] == machinid).toList();
-    // print("fach");
-
-    // print(filteredData);
-    // print("fached");
-    // print(response.body);
-    // print(machinery);
-    // } catch (e) {
-    //   print(e);
-    // }
-    // List<dynamic> responseData = json.decode(response.body);
-// const machineData = response.data[0];
-
-    // print("fached");
-    // print(response.body);
-    // print(machinery);
-    // setState(() {
-    //   machinery = filteredData.map((data) => MachineM.fromJson(data)).toList();
-    // });
-    // Map<String, dynamic> output = json.decode(response.body);
-    // // dynamic filteredData =
-    // //     responseData.where((data) => data['_id'] == machinid);
-
-    // setState(() {
-    //   machine = output as MachineM;
-    // });
+    setState(() {
+      usermode = UserModel.fromJson(json.decode(userJson!));
+    });
   }
 
   @override
   void dispose() {
-    socketService.socket.off('new_message_count');
-    socketService.socket.off('contact');
+    socketService.socket!.off('new_message_count');
+    socketService.socket!.off('contact');
     socketService.closeConnection();
     super.dispose();
   }
@@ -165,31 +121,82 @@ class _ContractDetailPageState extends State<ContractDetailPage> {
         actions: [
           IconButton(
             onPressed: () {
-              Provider.of<DropDownProvider>(context, listen: false)
-                          .selectedAccount ==
-                      'Farmer'
-                  ? Navigator.pushNamed(context, '/contractedit')
+              widget.contractlist.ownerId != usermode.useid
+                  ? Navigator.push(context, MaterialPageRoute(
+                      builder: (context) {
+                        return EditContract(
+                            contractsModel: widget.contractlist);
+                      },
+                    ))
                   : null;
             },
-            icon: Provider.of<DropDownProvider>(context, listen: false)
-                        .selectedAccount ==
-                    'Service Provider'
-                ? Icon(Icons.share)
-                : Icon(Icons.edit),
+            icon: fetched
+                ? widget.contractlist.ownerId == usermode.useid
+                    ? const Icon(Icons.share)
+                    : const Icon(Icons.edit)
+                : Icon(
+                    Icons.donut_large_rounded,
+                    color: Theme.of(context).primaryColor,
+                  ),
           ),
           IconButton(
             onPressed: () {
-              Provider.of<DropDownProvider>(context, listen: false)
-                          .selectedAccount ==
-                      'Farmer'
-                  ? Navigator.pushNamed(context, '/')
+              widget.contractlist.ownerId != usermode.useid
+                  ? showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          // backgroundColor: Colors.white,
+                          title: const Text('Confirm Delete'),
+                          content: const Text(
+                              'Are you sure you want to delete this Farm?'),
+                          actions: <Widget>[
+                            ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                  elevation: 0,
+                                  backgroundColor:
+                                      Theme.of(context).primaryColor),
+                              child: const Text('Cancel'),
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                            ),
+                            ElevatedButton(
+                              child: const Text('Delete'),
+                              onPressed: () async {
+                                var response = await networkHandler.delete(
+                                    "/api/contracts/${widget.contractlist.contractId}");
+
+                                if (response.statusCode == 200) {
+                                  Navigator.pushNamed(context, '/contrat_page');
+
+                                  BotToast.showText(
+                                    text: "Contract Deleted",
+                                    duration: const Duration(seconds: 2),
+                                    contentColor: Colors.white,
+                                    textStyle: const TextStyle(
+                                        fontSize: 16.0,
+                                        color: Color(0xFF006837)),
+                                  );
+                                } else {
+                                  print("Faild" + response.body.toString());
+                                }
+                              },
+                            ),
+                          ],
+                        );
+                      },
+                    )
                   : null;
             },
-            icon: Provider.of<DropDownProvider>(context, listen: false)
-                        .selectedAccount ==
-                    'Service Provider'
-                ? Icon(Icons.info)
-                : Icon(Icons.delete),
+            icon: fetched
+                ? widget.contractlist.ownerId == usermode.useid
+                    ? const Icon(Icons.info)
+                    : const Icon(Icons.delete)
+                : Icon(
+                    Icons.replay_outlined,
+                    color: Theme.of(context).primaryColor,
+                  ),
           ),
         ],
       ),
@@ -202,20 +209,19 @@ class _ContractDetailPageState extends State<ContractDetailPage> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      CircleAvatar(
+                      const CircleAvatar(
                         radius: 30,
                         backgroundImage:
                             AssetImage('assets/images/tracter1.png'),
                       ),
-                      SizedBox(width: 16),
+                      addHorizontalSpace(16),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            SizedBox(height: 8),
+                            addVerticalSpace(8),
                             Text(
-                              'Owner: ${machine!.manufacturer}',
-                              style: TextStyle(fontSize: 18),
+                              'Owner: ${machine?.manufacturer}',
                             ),
                           ],
                         ),
@@ -235,26 +241,22 @@ class _ContractDetailPageState extends State<ContractDetailPage> {
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(20),
                             ),
+                            width: MediaQuery.of(context).size.width * 0.85,
                             child: Image.network(
                                 "https://armada-server.glitch.me/api/machinery/image/${machine!.imageFile}",
                                 height:
                                     MediaQuery.of(context).size.height * 0.25),
-                            width: MediaQuery.of(context).size.width * 0.85,
                           ),
                         ),
-                        SizedBox(height: 40),
+                        addVerticalSpace(40),
                         Text(
                           'Contract Start Date: ${widget.contractlist.rent_start_time}',
-                          style: TextStyle(fontSize: 18),
                         ),
-                        SizedBox(height: 4),
+                        addVerticalSpace(4),
                         Text(
                           'Contract End Date: ${widget.contractlist.rent_end_time}',
-                          style: TextStyle(fontSize: 18),
                         ),
-                        Provider.of<DropDownProvider>(context, listen: false)
-                                    .selectedAccount ==
-                                'Service Provider'
+                        widget.contractlist.ownerId == usermode.useid
                             ? Expanded(
                                 child: Row(
                                   mainAxisAlignment:
@@ -262,7 +264,41 @@ class _ContractDetailPageState extends State<ContractDetailPage> {
                                   children: [
                                     SizedBox(
                                       width: MediaQuery.of(context).size.width *
-                                          0.45,
+                                          0.25,
+                                      child: ElevatedButton(
+                                        onPressed: () async {
+                                          Map<String, String> updateData = {
+                                            "status": "rejected",
+                                          };
+                                          var updateResponse =
+                                              await networkHandler.put(
+                                                  "/api/contracts/${widget.contractlist.contractId}",
+                                                  updateData);
+                                          if (updateResponse.statusCode ==
+                                                  200 ||
+                                              updateResponse.statusCode ==
+                                                  201) {
+                                            print("contract status updated");
+                                          }
+
+                                          Navigator.pushNamed(
+                                              context, '/contrat_page');
+                                        },
+                                        style: ButtonStyle(
+                                          backgroundColor:
+                                              MaterialStateProperty.all(
+                                            const Color(0xFF006837),
+                                          ),
+                                        ),
+                                        child: const Text(
+                                          'Reject',
+                                          style: TextStyle(fontSize: 18),
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      width: MediaQuery.of(context).size.width *
+                                          0.25,
                                       child: ElevatedButton(
                                         onPressed: () async {
                                           Map<String, String> updateData = {
@@ -285,47 +321,39 @@ class _ContractDetailPageState extends State<ContractDetailPage> {
                                         style: ButtonStyle(
                                           backgroundColor:
                                               MaterialStateProperty.all(
-                                            Color(0xFF006837),
+                                            const Color(0xFF006837),
                                           ),
                                         ),
                                         child: const Text(
-                                          'Confirm Contract',
+                                          'Confirm',
                                           style: TextStyle(fontSize: 18),
                                         ),
                                       ),
                                     ),
                                     SizedBox(
                                       width: MediaQuery.of(context).size.width *
-                                          0.45,
+                                          0.4,
                                       child: ElevatedButton(
                                         onPressed: () {
-                                          UserMProvider userProvider =
-                                              Provider.of<UserMProvider>(
-                                                  context,
-                                                  listen: false);
-                                          // final userProvider = Provider.of<UserMProvider>(context);
-                                          final userModel =
-                                              userProvider.userModel;
-
-                                          print(userModel!.useid);
-                                          print(widget.contractlist.userId);
-                                          Navigator.of(context).push(
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      ChatPage(
-                                                        sender: userModel.useid,
-                                                        receiver: widget
-                                                            .contractlist
-                                                            .userId,
-                                                        name: "You",
-                                                        socketService:
-                                                            socketService,
-                                                      )));
+                                          // Start Message
+                                          // Navigator.of(context).push(
+                                          //     MaterialPageRoute(
+                                          //         builder: (context) =>
+                                          //             ChatPage(
+                                          //               sender: usermode.useid,
+                                          //               receiver: widget
+                                          //                   .contractlist
+                                          //                   .userId,
+                                          //               name:
+                                          //                   usermode.firstname,
+                                          //               socketService:
+                                          //                   socketService,
+                                          //             )));
                                         },
                                         style: ButtonStyle(
                                           backgroundColor:
                                               MaterialStateProperty.all(
-                                            Color(0xFF006837),
+                                            const Color(0xFF006837),
                                           ),
                                         ),
                                         child: const Text(
@@ -344,7 +372,8 @@ class _ContractDetailPageState extends State<ContractDetailPage> {
                 ),
               ],
             )
-          : Center(child: CircularProgressIndicator(color: Color(0xFF006837))),
+          : const Center(
+              child: CircularProgressIndicator(color: Color(0xFF006837))),
     );
   }
 }
