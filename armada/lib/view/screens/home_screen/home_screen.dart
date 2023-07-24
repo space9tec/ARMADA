@@ -4,12 +4,14 @@ import 'package:armada/utils/helper_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../models/machine.dart';
+import '../../../models/usermodel.dart';
 import '../../../networkhandler.dart';
 import '../../../provider/drop_down_provider.dart';
 import '../../widgets/widgets.dart';
 import '../screens.dart';
 import 'guest_screen.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import '../../../models/farm.dart';
 
 class HomeScreen extends StatefulWidget {
   static const String routeName = '/';
@@ -30,6 +32,15 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   NetworkHandler networkHandler = NetworkHandler();
   List<MachineM> machine = [];
+  List<FarmM> farm = [];
+
+  UserModel usermode = UserModel(
+      firstname: '',
+      password: '',
+      lastname: '',
+      phone: '',
+      useid: '',
+      image: '');
   void initState() {
     _pageController = PageController(viewportFraction: 0.8);
 
@@ -40,10 +51,40 @@ class _HomeScreenState extends State<HomeScreen> {
   void fetchData() async {
     var response = await networkHandler.get("/api/machinery/");
 
+    String? userJson = await storage.read(key: 'userm');
+
+    if (userJson != null) {
+      // Convert JSON to UserModel
+      usermode = UserModel.fromJson(json.decode(userJson));
+
+      // Use the storedUser object as needed in your application
+      print('Stored user: ${usermode.firstname} ${usermode.lastname}');
+    }
     setState(() {
       machine = (json.decode(response.body) as List)
           .map((data) => MachineM.fromJson(data))
           .toList();
+    });
+//farm
+    var responsefarm = await networkHandler.get("/api/farm/");
+
+    // setState(() {
+    //   farm = (json.decode(response.body) as List)
+    //       .map((data) => FarmM.fromJson(data))
+    //       .toList();
+    // });
+    // String? ownerid = await storage.read(key: "userid");
+    String? user = await storage.read(key: 'userm');
+    UserModel usermodel = UserModel.fromJson(json.decode(user!));
+
+    List<dynamic> responseDatam = json.decode(responsefarm.body);
+
+    List<dynamic> filteredData = responseDatam
+        .where((data) => data['owner_id'] == usermodel.useid)
+        .toList();
+
+    setState(() {
+      farm = filteredData.map((data) => FarmM.fromJson(data)).toList();
     });
   }
 
@@ -67,7 +108,7 @@ class _HomeScreenState extends State<HomeScreen> {
         return ServiceProviderHomeScreen();
       case 'Farmer':
         return DefaultTabController(
-          length: 3,
+          length: farm.length + 1,
           child: Scaffold(
             appBar: AppBar(
               elevation: 0,
@@ -141,17 +182,21 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       ),
                     ),
-                    const TabBar(
+                    TabBar(
                       tabs: [
                         Tab(text: 'All'),
-                        Tab(text: 'Location 1'),
-                        Tab(text: 'Location 2'),
+                        // Tab(text: usermode.firstname),
+                        ...farm
+                            .map((farm) => Tab(text: farm.farmname))
+                            .toList(),
+                        // Tab(text: 'Location 2'),
                       ],
+                      // isScrollable: true,
                       indicatorColor: Colors.white,
                       indicatorSize: TabBarIndicatorSize.tab,
                       indicatorWeight: 3,
                       labelColor: Colors.white,
-                      labelStyle: TextStyle(
+                      labelStyle: const TextStyle(
                           fontSize: 15.0, fontWeight: FontWeight.bold),
                     ),
                   ],
@@ -222,8 +267,8 @@ class _HomeScreenState extends State<HomeScreen> {
                         ],
                       ),
                     ),
-                    const Center(child: Text("Insert Your farm location")),
-                    const Center(child: Text("Insert Your farm location")),
+                    ...farm.map((farm) => buildFarmWidget(farm)).toList(),
+                    // const Center(child: Text("Insert Your farm location")),
                   ],
                 ),
               ),
@@ -236,6 +281,15 @@ class _HomeScreenState extends State<HomeScreen> {
         return const Guest();
     }
   }
+}
+
+Widget buildFarmWidget(FarmM farm) {
+  // Replace with your implementation for each farm tab
+  return Container(
+    child: Center(
+      child: Text('Farm Widget for ${farm.croptype}'),
+    ),
+  );
 }
 
 List<Widget> indicators(imagesLength, currentIndex) {

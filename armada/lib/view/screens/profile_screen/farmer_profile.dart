@@ -4,6 +4,7 @@ import 'package:armada/networkhandler.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../../../models/user.dart';
+import '../../../models/usermodel.dart';
 import '../../widgets/widgets.dart';
 
 class FarmerProfile extends StatefulWidget {
@@ -31,23 +32,36 @@ class _FarmerProfileState extends State<FarmerProfile> {
   User? user;
   bool fetched = false;
 
-  @override
+  UserModel usermode = UserModel(
+      firstname: '',
+      password: '',
+      lastname: '',
+      phone: '',
+      useid: '',
+      image: '');
+
   void initState() {
     super.initState();
     fetchData();
   }
 
+  // final storage = new FlutterSecureStorage();
+
   void fetchData() async {
-    String? userid = await storage.read(key: "userid");
+    String? userJson = await storage.read(key: 'userm');
 
-    var response = await networkHandler.get("/api/user/${userid}");
-    print(response.body.toString());
-    Map<String, dynamic> userData = json.decode(response.body);
+    if (userJson != null) {
+      // Convert JSON to UserModel
+      setState(() {
+        usermode = UserModel.fromJson(json.decode(userJson));
+        fetched = true;
+      });
 
-    setState(() {
-      user = User.fromJson(userData);
-      fetched = true;
-    });
+      // Use the storedUser object as needed in your application
+      print('Stored user: ${usermode.firstname} ${usermode.lastname}');
+    } else {
+      print("empity");
+    }
   }
 
   @override
@@ -79,19 +93,19 @@ class _FarmerProfileState extends State<FarmerProfile> {
                 //   onClicked: () async {},
                 // ),
                 const SizedBox(height: 24),
-                buildName(user!),
+                buildName(usermode),
                 const SizedBox(height: 24),
                 const SizedBox(height: 24),
                 NumbersWidget(),
                 const SizedBox(height: 48),
-                buildAbout(user!),
+                buildAbout(usermode),
               ],
             )
           : CircularProgressIndicator.adaptive(),
     );
   }
 
-  Widget buildName(User user) => Column(
+  Widget buildName(UserModel user) => Column(
         children: [
           Text(
             user.firstname,
@@ -105,7 +119,7 @@ class _FarmerProfileState extends State<FarmerProfile> {
         ],
       );
 
-  Widget buildAbout(User user) => Container(
+  Widget buildAbout(UserModel user) => Container(
         padding: const EdgeInsets.symmetric(horizontal: 48),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

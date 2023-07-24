@@ -257,187 +257,196 @@ class _AddMachineState extends State<AddMachine> {
                   onPressed: () async {
                     _selectedStatus = value.selectedAccount;
                     String? userid = await storage.read(key: "userid");
+                    if (imageFile != null) {
+                      if (_formKey.currentState!.validate()) {
+                        if (machintype == "Tractor") {
+                          Map<String, String> data = {
+                            "model": _model.text,
+                            "manufacturer": _manufacturer.text,
+                            "type": _currentCarType,
+                            "owner_id": userid!,
+                            "status": _selectedStatus!,
+                            "year": _year.text,
+                            "region": _region.text,
+                            "hour_meter": _hourmeter.text,
+                            "horsepower": _horsepower.text,
+                          };
 
-                    if (_formKey.currentState!.validate()) {
-                      if (machintype == "Tractor") {
-                        Map<String, String> data = {
-                          "model": _model.text,
-                          "manufacturer": _manufacturer.text,
-                          "type": _currentCarType,
-                          "owner_id": userid!,
-                          "status": _selectedStatus!,
-                          "year": _year.text,
-                          "region": _region.text,
-                          "hour_meter": _hourmeter.text,
-                          "horsepower": _horsepower.text,
-                        };
+                          var response = await networkHandler.post(
+                              "/api/machinery/", data, "machineData",
+                              imageFile: imageFile!);
 
-                        var response = await networkHandler.post(
-                            "/api/machinery/", data, "machineData",
-                            imageFile: imageFile!);
+                          if (response.statusCode == 201) {
+                            print("Posted");
+                            BotToast.showText(
+                              text: "successfully Posted.",
+                              duration: Duration(seconds: 2),
+                              contentColor: Colors.white,
+                              textStyle: TextStyle(
+                                  fontSize: 16.0, color: Color(0xFF006837)),
+                            );
+                            Navigator.pushNamed(context, '/machie_screen');
+                          } else {
+                            print("faild");
+                            print(response.body.toString());
 
-                        if (response.statusCode == 201) {
-                          print("Posted");
-                          BotToast.showText(
-                            text: "successfully Posted.",
-                            duration: Duration(seconds: 2),
-                            contentColor: Colors.white,
-                            textStyle: TextStyle(
-                                fontSize: 16.0, color: Color(0xFF006837)),
-                          );
-                          Navigator.pushNamed(context, '/');
-                        } else {
-                          print("faild");
-                          print(response.body.toString());
+                            setState(() {
+                              // validate = false;
+                              // errorText = output;
+                            });
+                          }
+                        } else if (machintype == "Combine Harvester") {
+                          Map<String, String> data = {
+                            "model": _model.text,
+                            "manufacturer": _manufacturer.text,
+                            "type": _currentCarType,
+                            "owner_id": userid!,
+                            "status": _selectedStatus!,
+                            "year": _year.text,
+                            "region": _region.text,
+                            "grain_tank_capacity": _graintank.text,
+                            "grain_types": _graintypes.text,
+                          };
 
-                          setState(() {
-                            // validate = false;
-                            // errorText = output;
-                          });
-                        }
-                      } else if (machintype == "Combine Harvester") {
-                        Map<String, String> data = {
-                          "model": _model.text,
-                          "manufacturer": _manufacturer.text,
-                          "type": _currentCarType,
-                          "owner_id": userid!,
-                          "status": _selectedStatus!,
-                          "year": _year.text,
-                          "region": _region.text,
-                          "grain_tank_capacity": _graintank.text,
-                          "grain_types": _graintypes.text,
-                        };
+                          var response = await networkHandler.post(
+                              "/api/machinery/", data, "machineData",
+                              imageFile: imageFile!);
 
-                        var response = await networkHandler.post(
-                            "/api/machinery/", data, "machineData",
-                            imageFile: imageFile!);
+                          if (response.statusCode == 201) {
+                            print("Posted");
+                            BotToast.showText(
+                              text: "successfully Posted.",
+                              duration: Duration(seconds: 2),
+                              contentColor: Colors.white,
+                              textStyle: TextStyle(
+                                  fontSize: 16.0, color: Color(0xFF006837)),
+                            );
+                            Navigator.pushNamed(context, '/machie_screen');
+                          } else {
+                            print("faild");
+                            print(response.body.toString());
 
-                        if (response.statusCode == 201) {
-                          print("Posted");
-                          BotToast.showText(
-                            text: "successfully Posted.",
-                            duration: Duration(seconds: 2),
-                            contentColor: Colors.white,
-                            textStyle: TextStyle(
-                                fontSize: 16.0, color: Color(0xFF006837)),
-                          );
-                          Navigator.pushNamed(context, '/');
-                        } else {
-                          print("faild");
-                          print(response.body.toString());
+                            setState(() {
+                              // validate = false;
+                              // errorText = output;
+                            });
+                          }
+                        } else if (machintype == "Thresher") {
+                          Map<String, String> data = {
+                            "model": _model.text,
+                            "manufacturer": _manufacturer.text,
+                            "type": _currentCarType,
+                            "owner_id": userid!,
+                            "status": _selectedStatus!,
+                            "year": _year.text,
+                            "region": _region.text,
+                            "working_capacity": _workingcapacity.text,
+                            "required_power": _requiredpower.text,
+                          };
 
-                          setState(() {
-                            // validate = false;
-                            // errorText = output;
-                          });
-                        }
-                      } else if (machintype == "Thresher") {
-                        Map<String, String> data = {
-                          "model": _model.text,
-                          "manufacturer": _manufacturer.text,
-                          "type": _currentCarType,
-                          "owner_id": userid!,
-                          "status": _selectedStatus!,
-                          "year": _year.text,
-                          "region": _region.text,
-                          "working_capacity": _workingcapacity.text,
-                          "required_power": _requiredpower.text,
-                        };
+                          var response = await networkHandler.post(
+                              "/api/machinery/", data, "machineData",
+                              imageFile: imageFile!);
 
-                        var response = await networkHandler.post(
-                            "/api/machinery/", data, "machineData",
-                            imageFile: imageFile!);
+                          if (response.statusCode == 201) {
+                            print("Posted");
+                            BotToast.showText(
+                              text: "successfully Posted.",
+                              duration: Duration(seconds: 2),
+                              contentColor: Colors.white,
+                              textStyle: TextStyle(
+                                  fontSize: 16.0, color: Color(0xFF006837)),
+                            );
+                            Navigator.pushNamed(context, '/machie_screen');
+                          } else {
+                            print("faild");
+                            print(response.body.toString());
 
-                        if (response.statusCode == 201) {
-                          print("Posted");
-                          BotToast.showText(
-                            text: "successfully Posted.",
-                            duration: Duration(seconds: 2),
-                            contentColor: Colors.white,
-                            textStyle: TextStyle(
-                                fontSize: 16.0, color: Color(0xFF006837)),
-                          );
-                          Navigator.pushNamed(context, '/');
-                        } else {
-                          print("faild");
-                          print(response.body.toString());
+                            setState(() {
+                              // validate = false;
+                              // errorText = output;
+                            });
+                          }
+                        } else if (machintype == "Other") {
+                          Map<String, String> data = {
+                            "model": _model.text,
+                            "manufacturer": _manufacturer.text,
+                            "type": _currentCarType,
+                            "owner_id": userid!,
+                            "status": _selectedStatus!,
+                            "region": _region.text,
+                            "additional_info": _additionalinformation.text,
+                          };
 
-                          setState(() {
-                            // validate = false;
-                            // errorText = output;
-                          });
-                        }
-                      } else if (machintype == "Other") {
-                        Map<String, String> data = {
-                          "model": _model.text,
-                          "manufacturer": _manufacturer.text,
-                          "type": _currentCarType,
-                          "owner_id": userid!,
-                          "status": _selectedStatus!,
-                          "region": _region.text,
-                          "additional_info": _additionalinformation.text,
-                        };
+                          var response = await networkHandler.post(
+                              "/api/machinery/", data, "machineData",
+                              imageFile: imageFile!);
 
-                        var response = await networkHandler.post(
-                            "/api/machinery/", data, "machineData",
-                            imageFile: imageFile!);
+                          if (response.statusCode == 201) {
+                            print("Posted");
+                            BotToast.showText(
+                              text: "successfully Posted.",
+                              duration: Duration(seconds: 2),
+                              contentColor: Colors.white,
+                              textStyle: TextStyle(
+                                  fontSize: 16.0, color: Color(0xFF006837)),
+                            );
+                            Navigator.pushNamed(context, '/machie_screen');
+                          } else {
+                            print("faild");
+                            print(response.body.toString());
 
-                        if (response.statusCode == 201) {
-                          print("Posted");
-                          BotToast.showText(
-                            text: "successfully Posted.",
-                            duration: Duration(seconds: 2),
-                            contentColor: Colors.white,
-                            textStyle: TextStyle(
-                                fontSize: 16.0, color: Color(0xFF006837)),
-                          );
-                          Navigator.pushNamed(context, '/');
-                        } else {
-                          print("faild");
-                          print(response.body.toString());
+                            setState(() {
+                              // validate = false;
+                              // errorText = output;
+                            });
+                          }
+                        } else if (machintype == "Tractor") {
+                          Map<String, String> data = {
+                            "model": _model.text,
+                            "manufacturer": _manufacturer.text,
+                            "type": _currentCarType,
+                            "owner_id": userid!,
+                            "status": _selectedStatus!,
+                            "year": _year.text,
+                            "region": _region.text,
+                            "hour_meter": _hourmeter.text,
+                            "horsepower": _horsepower.text,
+                          };
 
-                          setState(() {
-                            // validate = false;
-                            // errorText = output;
-                          });
-                        }
-                      } else if (machintype == "Tractor") {
-                        Map<String, String> data = {
-                          "model": _model.text,
-                          "manufacturer": _manufacturer.text,
-                          "type": _currentCarType,
-                          "owner_id": userid!,
-                          "status": _selectedStatus!,
-                          "year": _year.text,
-                          "region": _region.text,
-                          "hour_meter": _hourmeter.text,
-                          "horsepower": _horsepower.text,
-                        };
+                          var response = await networkHandler.post(
+                              "/api/machinery/", data, "machineData",
+                              imageFile: imageFile!);
 
-                        var response = await networkHandler.post(
-                            "/api/machinery/", data, "machineData",
-                            imageFile: imageFile!);
+                          if (response.statusCode == 201) {
+                            print("Posted");
+                            BotToast.showText(
+                              text: "successfully Posted.",
+                              duration: Duration(seconds: 2),
+                              contentColor: Colors.white,
+                              textStyle: TextStyle(
+                                  fontSize: 16.0, color: Color(0xFF006837)),
+                            );
+                            Navigator.pushNamed(context, '/machie_screen');
+                          } else {
+                            print("faild");
+                            print(response.body.toString());
 
-                        if (response.statusCode == 201) {
-                          print("Posted");
-                          BotToast.showText(
-                            text: "successfully Posted.",
-                            duration: Duration(seconds: 2),
-                            contentColor: Colors.white,
-                            textStyle: TextStyle(
-                                fontSize: 16.0, color: Color(0xFF006837)),
-                          );
-                          Navigator.pushNamed(context, '/');
-                        } else {
-                          print("faild");
-                          print(response.body.toString());
-
-                          setState(() {
-                            // validate = false;
-                            // errorText = output;
-                          });
+                            setState(() {
+                              // validate = false;
+                              // errorText = output;
+                            });
+                          }
                         }
                       }
+                    } else {
+                      BotToast.showText(
+                        text: "inseart Image.",
+                        duration: Duration(seconds: 2),
+                        contentColor: Colors.white,
+                        textStyle:
+                            TextStyle(fontSize: 16.0, color: Color(0xFF006837)),
+                      );
                     }
                   },
                   style: ElevatedButton.styleFrom(

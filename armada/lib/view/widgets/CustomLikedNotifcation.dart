@@ -53,7 +53,7 @@ class CustomLikedNotifcation extends StatelessWidget {
               const SizedBox(
                 height: 10,
               ),
-              Text("Liked your recipe  .  h1",
+              Text("Liked your machine  .  h1",
                   style: Theme.of(context).textTheme.bodyMedium)
             ],
           ),

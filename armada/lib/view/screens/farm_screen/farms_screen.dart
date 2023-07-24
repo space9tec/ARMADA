@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import '../../../models/farm.dart';
+import '../../../models/usermodel.dart';
 import '../../widgets/widgets.dart';
 import 'package:armada/networkhandler.dart';
 import 'farmDetail_screen.dart';
@@ -41,12 +42,15 @@ class _FarmScreenState extends State<FarmScreen> {
     //       .map((data) => FarmM.fromJson(data))
     //       .toList();
     // });
-    String? ownerid = await storage.read(key: "userid");
+    // String? ownerid = await storage.read(key: "userid");
+    String? userJson = await storage.read(key: 'userm');
+    UserModel usermode = UserModel.fromJson(json.decode(userJson!));
 
     List<dynamic> responseData = json.decode(response.body);
 
-    List<dynamic> filteredData =
-        responseData.where((data) => data['owner_id'] == ownerid).toList();
+    List<dynamic> filteredData = responseData
+        .where((data) => data['owner_id'] == usermode.useid)
+        .toList();
 
     setState(() {
       farm = filteredData.map((data) => FarmM.fromJson(data)).toList();
@@ -130,7 +134,7 @@ class _FarmScreenState extends State<FarmScreen> {
                           ),
                           const SizedBox(height: 5),
                           Text(
-                            'Farm Size: ${farms.farmsize} - Location: ${farms.latitud}\' ${farms.longtude}',
+                            'Farm Size: ${farms.farmsize} - Location:\' ${farms.longtude}',
                             style: TextStyle(
                               fontSize: 16,
                               color: Colors.grey[600],

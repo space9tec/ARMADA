@@ -1,4 +1,5 @@
 class ContractsModel {
+  final String contractId;
   final String userId;
   final String ownerId;
   final String machineId;
@@ -9,6 +10,7 @@ class ContractsModel {
   final String status;
 
   ContractsModel({
+    required this.contractId,
     required this.userId,
     required this.ownerId,
     required this.machineId,
@@ -21,6 +23,7 @@ class ContractsModel {
 
   factory ContractsModel.fromJson(Map<String, dynamic> json) {
     return ContractsModel(
+        contractId: json['_id'],
         userId: json['user_id'],
         ownerId: json['owner_id'],
         machineId: json['machine_id'],

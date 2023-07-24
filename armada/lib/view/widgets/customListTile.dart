@@ -42,7 +42,7 @@ class _CustomListTileState extends State<CustomListTile> {
               break;
             case 2:
               value.setCurrentDrawer(2);
-              Navigator.pushNamed(context, '/');
+              Navigator.pushNamed(context, '/aboutscreen');
               break;
           }
         },
@@ -56,25 +56,18 @@ class _CustomListTileState extends State<CustomListTile> {
                   bottom: BorderSide(
                       style: BorderStyle.solid,
                       width: 1,
-                      color: Theme.of(context).primaryColor)),
-              color: (value.getCurrentDrawer == widget.isSelected)
-                  ? Theme.of(context).primaryColor
-                  : Colors.transparent,
+                      color: Colors.black12)),
+              color: Colors.transparent,
             ),
             child: Row(
               children: [
-                Icon(widget.icon,
-                    color: value.getCurrentDrawer == widget.isSelected
-                        ? Colors.white
-                        : Theme.of(context).primaryColor),
-                SizedBox(width: 5),
+                Icon(widget.icon, color: Colors.grey),
+                SizedBox(width: 15),
                 Text(
                   widget.title,
                   style: TextStyle(
-                    color: (value.getCurrentDrawer == widget.isSelected)
-                        ? Colors.white
-                        : Theme.of(context).primaryColor,
-                    fontSize: 20,
+                    color: Theme.of(context).primaryColor,
+                    fontSize: 17,
                   ),
                 )
               ],
@@ -136,18 +129,18 @@ class _BCustomListTileState extends State<BCustomListTile> {
                   bottom: BorderSide(
                       style: BorderStyle.solid,
                       width: 1,
-                      color: Theme.of(context).primaryColor)),
+                      color: Colors.black12)),
               color: Colors.transparent,
             ),
             child: Row(
               children: [
-                Icon(widget.icon, color: Theme.of(context).primaryColor),
-                SizedBox(width: 5),
+                Icon(widget.icon, color: Colors.grey),
+                SizedBox(width: 15),
                 Text(
                   widget.title,
                   style: TextStyle(
                     color: Theme.of(context).primaryColor,
-                    fontSize: 20,
+                    fontSize: 17,
                   ),
                 )
               ],
@@ -181,5 +174,151 @@ class _BCustomListTileState extends State<BCustomListTile> {
     } else {
       print("Already logged out");
     }
+  }
+}
+
+class gCustomListTile extends StatefulWidget {
+  final String title;
+  final IconData icon;
+
+  final int ind;
+
+  gCustomListTile({
+    super.key,
+    required this.title,
+    required this.icon,
+    required this.ind,
+  });
+
+  @override
+  State<gCustomListTile> createState() => _gCustomListTileState();
+}
+
+class _gCustomListTileState extends State<gCustomListTile> {
+  NetworkHandler networkHandler = NetworkHandler();
+
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<DrawerNotifire>(
+      builder: (context, value, child) => InkWell(
+        onTap: () {
+          switch (widget.ind) {
+            case 0:
+              value.setCurrentDrawer(1);
+              Navigator.pushNamed(context, '/guest');
+              break;
+            case 1:
+              value.setCurrentDrawer(2);
+              Navigator.pushNamed(context, '/login');
+              break;
+            case 2:
+              value.setCurrentDrawer(3);
+              Navigator.pushNamed(context, '/aboutscreen');
+              break;
+          }
+        },
+        child: Padding(
+          padding: const EdgeInsets.only(left: 12.0, right: 12, top: 0),
+          child: Container(
+            padding: EdgeInsets.all(15),
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              border: Border(
+                  bottom: BorderSide(
+                      style: BorderStyle.solid,
+                      width: 1,
+                      color: Colors.black12)),
+              color: Colors.transparent,
+            ),
+            child: Row(
+              children: [
+                Icon(widget.icon, color: Colors.grey),
+                SizedBox(width: 15),
+                Text(
+                  widget.title,
+                  style: TextStyle(
+                    color: Theme.of(context).primaryColor,
+                    fontSize: 17,
+                  ),
+                )
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class BgCustomListTile extends StatefulWidget {
+  final String title;
+  final IconData icon;
+
+  final int ind;
+
+  BgCustomListTile({
+    super.key,
+    required this.title,
+    required this.icon,
+    required this.ind,
+  });
+
+  @override
+  State<BgCustomListTile> createState() => _BgCustomListTileState();
+}
+
+class _BgCustomListTileState extends State<BgCustomListTile> {
+  NetworkHandler networkHandler = NetworkHandler();
+
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<DrawerNotifire>(
+      builder: (context, value, child) => InkWell(
+        onTap: () {
+          switch (widget.ind) {
+            case 0:
+              value.setCurrentDrawer(4);
+              Navigator.pushNamed(context, '/service_provider_setting');
+              break;
+            case 1:
+              value.setCurrentDrawer(5);
+              Navigator.pushNamed(context, '/help');
+              break;
+            case 2:
+              value.setCurrentDrawer(6);
+              Navigator.pushNamed(context, '/contactus');
+              break;
+          }
+        },
+        child: Padding(
+          padding: const EdgeInsets.only(left: 12.0, right: 12, top: 0),
+          child: Container(
+            padding: EdgeInsets.all(15),
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              border: Border(
+                  bottom: BorderSide(
+                      style: BorderStyle.solid,
+                      width: 1,
+                      color: Colors.black12)),
+              color: Colors.transparent,
+            ),
+            child: Row(
+              children: [
+                Icon(widget.icon, color: Colors.grey),
+                SizedBox(width: 15),
+                Text(
+                  widget.title,
+                  style: TextStyle(
+                    color: Theme.of(context).primaryColor,
+                    fontSize: 17,
+                  ),
+                )
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }

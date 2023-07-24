@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart';
 
 import '../../../models/contracts.dart';
@@ -18,6 +19,7 @@ class ContractList extends StatefulWidget {
 
 class _ContractListState extends State<ContractList> {
   NetworkHandler networkHandler = NetworkHandler();
+  final storage = new FlutterSecureStorage();
 
   List<ContractsModel> contract = [];
   // List<Machine> contract = [];
@@ -31,11 +33,16 @@ class _ContractListState extends State<ContractList> {
   }
 
   void fetchData() async {
-    var response = await networkHandler.get("/api/contracts/");
+    String? tok = await storage.read(key: "userid");
+
+    var response = await networkHandler.get("/api/contracts/${tok}");
+    print(response.body);
     List<dynamic> responseData = json.decode(response.body);
 
     List<dynamic> filteredData = responseData
-        .where((data) => data['status'] == widget.contractstatus)
+        .where((data) =>
+            data['status'] == widget.contractstatus &&
+            (data['user_id'] == tok || data['owner_id'] == tok))
         .toList();
 
     // var responsem = await networkHandler.get("/api/machinery/");
