@@ -31,7 +31,7 @@ class _SignUpState extends State<SignUp> {
   final TextEditingController _passwordcontroller = TextEditingController();
   final TextEditingController _firstNamecontroller = TextEditingController();
   final TextEditingController _lastNamecontroller = TextEditingController();
-  String? _selectedAccountType;
+
   final TextEditingController _confirmPasswordcontroller =
       TextEditingController();
   bool value = false;
@@ -43,8 +43,6 @@ class _SignUpState extends State<SignUp> {
   NetworkHandler networkHandler = NetworkHandler();
   bool validate = false;
   String? errorText;
-
-  // bool _passwordsMatch = true;
 
   String? _validateConfirmPassword(String value) {
     if (value.isEmpty) {
@@ -250,7 +248,7 @@ class _SignUpState extends State<SignUp> {
                     child: InkWell(
                       onTap: () async {
                         await checkUser();
-                        _selectedAccountType = value.selectedAccount;
+                        // _selectedAccountType = value.selectedAccount;
                         // if (_passwordsMatch) {
                         if (formKey.currentState!.validate() && validate) {
                           Map<String, String> data = {
@@ -258,7 +256,7 @@ class _SignUpState extends State<SignUp> {
                             "last_name": _lastNamecontroller.text,
                             "phone": _numberController.text,
                             "password": _passwordcontroller.text,
-                            "role": "Farmer",
+                            // "role": "Farmer",
                           };
                           var response = await networkHandler.post(
                               "/api/auth/register", data, "userData",

@@ -11,6 +11,18 @@ class ItemCard extends StatefulWidget {
 }
 
 class _ItemCardState extends State<ItemCard> {
+  late CustomTheme customTheme;
+  // late TextTheme textTheme;
+
+  @override
+  void initState() {
+    super.initState();
+    // fetchData();
+    customTheme = CustomTheme();
+
+    // TODO: implement initState
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -35,11 +47,11 @@ class _ItemCardState extends State<ItemCard> {
                 children: [
                   Text(
                     widget.name,
-                    style: textTheme().displayMedium,
+                    // style: textTheme.displayMedium,
                   ),
                   Text(
                     widget.price,
-                    style: textTheme().displaySmall,
+                    // style: textTheme.displaySmall,
                   )
                 ],
               ),

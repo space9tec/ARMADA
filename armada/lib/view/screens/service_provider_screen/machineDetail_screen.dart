@@ -7,12 +7,31 @@ import 'package:provider/provider.dart';
 
 import '../../../models/machine.dart';
 import '../../../provider/item_provider.dart';
+import 'edit_machine_screen.dart';
 
-class machineDetail extends StatelessWidget {
+class machineDetail extends StatefulWidget {
   const machineDetail(
       {super.key, required this.machinlist, required this.networkHandler});
   final MachineM machinlist;
   final NetworkHandler networkHandler;
+
+  @override
+  State<machineDetail> createState() => _machineDetailState();
+}
+
+class _machineDetailState extends State<machineDetail> {
+  late CustomTheme customTheme;
+  // late TextTheme textTheme;
+
+  @override
+  void initState() {
+    super.initState();
+    // fetchData();
+    customTheme = CustomTheme();
+
+    // TODO: implement initState
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -22,7 +41,15 @@ class machineDetail extends StatelessWidget {
         actions: [
           IconButton(
             onPressed: () {
-              Navigator.pushNamed(context, '/edit_farm');
+              // Navigator.pushNamed(context, '/edit_farm');
+              Navigator.push(context, MaterialPageRoute(
+                builder: (context) {
+                  return EditMacine(
+                    machinesingle: widget.machinlist,
+                    networkHandler: widget.networkHandler,
+                  );
+                },
+              ));
             },
             icon: const Icon(Icons.edit_sharp),
           ),
@@ -55,12 +82,12 @@ class machineDetail extends StatelessWidget {
                             child: Text('Delete'),
                             onPressed: () async {
                               // Perform the delete operation here
-                              Map<String, String> data = {
-                                // "phone": machinlist.machineId,
-                                "id": machinlist.machineId,
-                              };
-                              var response = await networkHandler.delete(
-                                  "/api/machinery/${machinlist.machineId}");
+                              // Map<String, String> data = {
+                              //   // "phone": machinlist.machineId,
+                              //   "id": machinlist.machineId,
+                              // };
+                              var response = await widget.networkHandler.delete(
+                                  "/api/machinery/${widget.machinlist.machineId}");
 
                               if (response.statusCode == 200) {
                                 Navigator.pushNamed(context, '/machie_screen');
@@ -140,18 +167,18 @@ class machineDetail extends StatelessWidget {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    "Farm name: ${machinlist.manufacturer}",
-                                    style: textTheme().displayMedium,
+                                    "Farm name: ${widget.machinlist.manufacturer}",
+                                    // style: textTheme.displayMedium,
                                   ),
                                   addVerticalSpace(10),
                                   Text(
-                                    "Size: ${machinlist.model}",
-                                    style: textTheme().displayMedium,
+                                    "Size: ${widget.machinlist.model}",
+                                    // style: textTheme.displayMedium,
                                   ),
                                   addVerticalSpace(10),
                                   Text(
-                                    "Crop type : ${machinlist.year}",
-                                    style: textTheme().displayMedium,
+                                    "Crop type : ${widget.machinlist.year}",
+                                    // style: textTheme.displayMedium,
                                   ),
                                   addVerticalSpace(10),
                                   addVerticalSpace(10),

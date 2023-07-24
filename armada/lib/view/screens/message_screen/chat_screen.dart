@@ -1,12 +1,9 @@
 import 'dart:convert';
 
-// import 'package:chararmada/model/message.dart';
-// import 'package:flutter/material.dart';
-// import 'networkhandler.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
-import '../../../models/message.dart';
+import '../../../models/model.dart';
 import '../../../networkhandler.dart';
 import '../../../services/socket_service.dart';
 
@@ -16,7 +13,7 @@ class ChatPage extends StatefulWidget {
   final String sender;
   final SocketService socketService;
 
-  ChatPage({
+  const ChatPage({
     Key? key,
     required this.receiver,
     required this.sender,
@@ -25,10 +22,10 @@ class ChatPage extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _ChatPageState createState() => _ChatPageState();
+  ChatPageState createState() => ChatPageState();
 }
 
-class _ChatPageState extends State<ChatPage> {
+class ChatPageState extends State<ChatPage> {
   final TextEditingController _messageController = TextEditingController();
   List<Message> messages = [];
   final ScrollController _controller = ScrollController();
@@ -42,14 +39,14 @@ class _ChatPageState extends State<ChatPage> {
     fetchData().then((_) {
       // Initialize socket and listen for incoming message events
       widget.socketService.initSocket(widget.sender);
-      widget.socketService.socket.on('message', (data) {
+      widget.socketService.socket!.on('message', (data) {
         if (mounted) {
           setState(() {
             addMessage(data);
             SchedulerBinding.instance
                 .addPostFrameCallback((_) => _controller.animateTo(
                       _controller.position.maxScrollExtent,
-                      duration: Duration(milliseconds: 300),
+                      duration: const Duration(milliseconds: 300),
                       curve: Curves.easeOut,
                     ));
           });
@@ -66,7 +63,7 @@ class _ChatPageState extends State<ChatPage> {
 
   @override
   void dispose() {
-    widget.socketService.socket.off('message');
+    widget.socketService.socket!.off('message');
     widget.socketService.closeConnection();
     super.dispose();
   }
@@ -78,10 +75,13 @@ class _ChatPageState extends State<ChatPage> {
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         print(data);
+        print("from call");
         setState(() {
           messages = List<Message>.from(
               data['messages'].map((message) => Message.fromJson(message)));
         });
+        print("from call2");
+        print(messages);
         // Log the fetched data
         print(data);
       } else {
@@ -107,6 +107,7 @@ class _ChatPageState extends State<ChatPage> {
               itemCount: messages.length,
               itemBuilder: (BuildContext context, int index) {
                 final message = messages[index];
+                // print(messages);
                 bool isMe = message.sender == widget.sender;
                 // Only show messages that were sent/received by the current user
                 if (isMe || message.sender == widget.receiver) {
@@ -114,11 +115,13 @@ class _ChatPageState extends State<ChatPage> {
                     alignment:
                         isMe ? Alignment.centerRight : Alignment.centerLeft,
                     child: Container(
-                      padding: EdgeInsets.all(8),
-                      margin: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                      padding: const EdgeInsets.all(8),
+                      margin: const EdgeInsets.symmetric(
+                          vertical: 4, horizontal: 8),
                       decoration: BoxDecoration(
                         color: isMe
-                            ? Color.fromARGB(255, 48, 180, 77).withOpacity(0.4)
+                            ? const Color.fromARGB(255, 48, 180, 77)
+                                .withOpacity(0.4)
                             : Colors.grey.withOpacity(0.4),
                         borderRadius: BorderRadius.circular(16),
                       ),
@@ -139,11 +142,12 @@ class _ChatPageState extends State<ChatPage> {
                 Expanded(
                   child: TextField(
                     controller: _messageController,
-                    decoration: InputDecoration(hintText: 'Type a message'),
+                    decoration:
+                        const InputDecoration(hintText: 'Type a message'),
                   ),
                 ),
                 IconButton(
-                  icon: Icon(Icons.send),
+                  icon: const Icon(Icons.send),
                   onPressed: _sendMessage,
                 )
               ],
@@ -155,6 +159,7 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   void _sendMessage() async {
+    print(messages);
     String message = _messageController.text.trim();
     if (message.isNotEmpty) {
       try {
@@ -172,8 +177,10 @@ class _ChatPageState extends State<ChatPage> {
           _messageController.clear();
           SchedulerBinding.instance.addPostFrameCallback((_) =>
               _controller.animateTo(_controller.position.maxScrollExtent,
-                  duration: Duration(milliseconds: 300),
+                  duration: const Duration(milliseconds: 300),
                   curve: Curves.easeOut));
+          print(messages);
+          // widget.socketService.socket!.emit('message', data['message']);
         } else {
           print(response.body);
           throw Exception('Failed to send message');

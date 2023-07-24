@@ -8,14 +8,6 @@ Widget accountSelector(BuildContext context) {
     child: Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        SizedBox(
-          width: MediaQuery.of(context).size.width * 0.20,
-          // padding: EdgeInsets.only(right: 28.0),
-          child: Text(
-            "Account",
-            style: Theme.of(context).textTheme.titleMedium,
-          ),
-        ),
         Consumer<DropDownProvider>(
           builder: (context, value, child) => Container(
             width: MediaQuery.of(context).size.width * 0.50,

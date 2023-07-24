@@ -1,17 +1,18 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart';
+import 'package:intl/intl.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
-import '../../../models/contracts.dart';
-import '../../../models/machine.dart';
+import '../../../models/model.dart';
 import '../../../networkhandler.dart';
+import '../../widgets/widgets.dart';
 import '../screens.dart';
 
 class ContractList extends StatefulWidget {
-  String contractstatus;
-  ContractList(this.contractstatus, {super.key});
+  final String contractstatus;
+  const ContractList(this.contractstatus, {super.key});
 
   @override
   State<ContractList> createState() => _ContractListState();
@@ -19,75 +20,84 @@ class ContractList extends StatefulWidget {
 
 class _ContractListState extends State<ContractList> {
   NetworkHandler networkHandler = NetworkHandler();
-  final storage = new FlutterSecureStorage();
+  final storage = const FlutterSecureStorage();
 
   List<ContractsModel> contract = [];
-  // List<Machine> contract = [];
   MachineM? machine;
 
   @override
   void initState() {
     super.initState();
     fetchData();
-    // fetchMachine();
   }
 
   void fetchData() async {
-    String? tok = await storage.read(key: "userid");
+    List<dynamic> filteredData = [];
 
-    var response = await networkHandler.get("/api/contracts/${tok}");
-    print(response.body);
+    String? userJson = await storage.read(key: 'userm');
+    UserModel usermode = UserModel.fromJson(json.decode(userJson!));
+
+    var response = await networkHandler.get("/api/contracts/${usermode.useid}");
+
     List<dynamic> responseData = json.decode(response.body);
 
-    List<dynamic> filteredData = responseData
-        .where((data) =>
-            data['status'] == widget.contractstatus &&
-            (data['user_id'] == tok || data['owner_id'] == tok))
-        .toList();
+    if (widget.contractstatus == "received") {
+      if (mounted) {
+        setState(() {
+          filteredData = responseData
+              .where((data) => (data['owner_id'] == usermode.useid))
+              .toList();
+        });
+      }
+    } else if (widget.contractstatus == "sent") {
+      if (mounted) {
+        setState(() {
+          filteredData = responseData
+              .where((data) => (data['user_id'] == usermode.useid))
+              .toList();
+        });
+      }
+    }
 
-    // var responsem = await networkHandler.get("/api/machinery/");
-    //   print(response);
-    // Map<String, dynamic> machineData = json.decode(responsem.body);
-    setState(() {
-      contract =
-          filteredData.map((data) => ContractsModel.fromJson(data)).toList();
-      // machine = MachineM.fromJson(machineData);
-    });
+    if (mounted) {
+      setState(() {
+        contract =
+            filteredData.map((data) => ContractsModel.fromJson(data)).toList();
+      });
+    }
   }
-  //  void fachemachine() async {
-  //   // try {
-  //   var response = await networkHandler.get("/api/machinery/");
-  //   print(response);
-  //   Map<String, dynamic> machineData = json.decode(response.body);
-  //   print(machineData);
 
-  //   setState(() {
-  //     machine = MachineM.fromJson(machineData);
-  //     fetched = true;
-  //   });
-
-  // }
+  @override
+  void dispose() {
+    contract.clear();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      itemCount: contract.length,
-      itemBuilder: (context, index) {
-        final contracts = contract[index];
-        return FutureBuilder(
-          future: _getMachineData(contracts.machineId),
-          builder: (BuildContext context, AsyncSnapshot<Response> snapshot) {
-            if (snapshot.connectionState == ConnectionState.done &&
-                snapshot.hasData) {
-              Map<String, dynamic> machineData =
-                  json.decode(snapshot.data!.body);
-              MachineM machine = MachineM.fromJson(machineData);
-              return _buildContractCard(contracts, machine, context);
-            }
-            return Container(); // or any other loading indicator
-          },
-        );
-      },
+    return GridView.count(
+      crossAxisCount: 2,
+      childAspectRatio: 1 / 1,
+      children: List.generate(
+        contract.length,
+        (index) {
+          final contracts = contract[index];
+          return FutureBuilder(
+            future: _getMachineData(contracts.machineId),
+            builder: (BuildContext context, AsyncSnapshot<Response> snapshot) {
+              if (snapshot.connectionState == ConnectionState.done &&
+                  snapshot.hasData) {
+                Map<String, dynamic> machineData =
+                    json.decode(snapshot.data!.body);
+                MachineM machine = MachineM.fromJson(machineData["machinery"]);
+
+                return _buildContractCard(contracts, machine, context);
+              }
+              return Container();
+            },
+          );
+        },
+      ),
     );
   }
 
@@ -100,7 +110,6 @@ class _ContractListState extends State<ContractList> {
       ContractsModel contracts, MachineM machine, BuildContext context) {
     return InkWell(
       onTap: () {
-        // Navigator.pushNamed(context, '/contrat_detail');
         Navigator.push(
           context,
           MaterialPageRoute(
@@ -111,7 +120,7 @@ class _ContractListState extends State<ContractList> {
         );
       },
       child: SizedBox(
-        height: MediaQuery.of(context).size.height * 0.23,
+        height: MediaQuery.of(context).size.height * 0.13,
         child: Card(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
@@ -134,13 +143,15 @@ class _ContractListState extends State<ContractList> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text("Start date: ${contracts.rent_start_time}",
+                        Text(
+                            "Start date: ${DateFormat('dd MMMM yyyy').format(DateTime.parse(contracts.rent_start_time))}",
                             style: const TextStyle(
-                                fontSize: 20.0, fontWeight: FontWeight.bold)),
+                                fontSize: 10.0, fontWeight: FontWeight.bold)),
                         const SizedBox(height: 8.0),
-                        Text("End date: ${contracts.rent_end_time}",
+                        Text(
+                            "End date: ${DateFormat('dd MMMM yyyy').format(DateTime.parse(contracts.rent_end_time))}",
                             style: const TextStyle(
-                                fontSize: 20.0, fontWeight: FontWeight.bold)),
+                                fontSize: 10.0, fontWeight: FontWeight.bold)),
                         const SizedBox(height: 8.0),
                         Text(contracts.status),
                       ],
@@ -170,16 +181,41 @@ class ContractPage extends StatefulWidget {
   }
 
   @override
-  _ContractPageState createState() => _ContractPageState();
+  ContractPageState createState() => ContractPageState();
 }
 
-class _ContractPageState extends State<ContractPage>
+class ContractPageState extends State<ContractPage>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
+  NetworkHandler networkHandler = NetworkHandler();
+  final storage = const FlutterSecureStorage();
+
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 3, vsync: this);
+    _tabController = TabController(length: 2, vsync: this);
+    fetchuserid();
+  }
+
+  UserModel usermode = const UserModel(
+      firstname: '',
+      password: '',
+      lastname: '',
+      phone: '',
+      useid: '',
+      image: '');
+
+  void fetchuserid() async {
+    String? userJson = await storage.read(key: 'userm');
+
+    if (userJson != null) {
+      // Convert JSON to UserModel
+      setState(() {
+        usermode = UserModel.fromJson(json.decode(userJson));
+      });
+    } else {
+      print("empity");
+    }
   }
 
   @override
@@ -199,27 +235,26 @@ class _ContractPageState extends State<ContractPage>
         bottom: TabBar(
           controller: _tabController,
           tabs: const [
-            Tab(text: 'Pending'),
-            Tab(text: 'Accepted'),
-            Tab(text: 'Rejected'),
+            Tab(text: 'Sent'),
+            Tab(text: 'Received'),
           ],
-          indicatorColor: Colors.white,
+          // indicatorColor: Colors.white,
           indicatorSize: TabBarIndicatorSize.tab,
           indicatorWeight: 3,
           labelColor: Colors.white,
-          labelStyle: TextStyle(fontSize: 15.0, fontWeight: FontWeight.bold),
+          labelStyle:
+              const TextStyle(fontSize: 15.0, fontWeight: FontWeight.bold),
         ),
       ),
-      // body: Column(
-
       body: TabBarView(
         controller: _tabController,
-        children: [
-          ContractList("In Progress"),
-          ContractList("Accepted"),
-          ContractList("Rejected")
+        children: const [
+          ContractList("sent"),
+          ContractList("received"),
         ],
       ),
+      drawer: navigationDrawer(),
+      bottomNavigationBar: bottomAppbar(context),
     );
   }
 }

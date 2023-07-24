@@ -1,33 +1,32 @@
 import 'dart:async';
 import 'dart:convert';
 
-// import 'package:chararmada/model/user.dart';
-// import 'package:chararmada/socket_service.dart';
-// import 'model/contact.dart';
-// import 'networkhandler.dart';
-// import 'singlmessagepage.dart';
-import 'package:armada/view/screens/message_screen/chat_screen.dart';
 import 'package:flutter/material.dart';
+// import 'package:socket_io_client/socket_io_client.dart' as IO;
 
-import '../../../models/conversation.dart';
-import '../../../models/user.dart';
+import '../../../models/model.dart';
 import '../../../networkhandler.dart';
 import '../../../services/socket_service.dart';
+import '../../widgets/widgets.dart';
+import '../screens.dart';
 
 class UserListPage extends StatefulWidget {
   const UserListPage({Key? key, required this.userl}) : super(key: key);
 
-  final User userl;
+  final UserModel userl;
 
   @override
   State<UserListPage> createState() => _UserListPageState();
 }
 
 class _UserListPageState extends State<UserListPage> {
-  NetworkHandler networkHandler = NetworkHandler();
+  // String UserId=;
 
+  NetworkHandler networkHandler = NetworkHandler();
   final socketService = SocketService();
-  List<Contact> contacts = [];
+  // late IO.Socket? socket;
+
+  List<UserModel> contacts = [];
   List<dynamic> newMessageCounts = [];
 
   bool _dataFetched = false;
@@ -36,22 +35,23 @@ class _UserListPageState extends State<UserListPage> {
     if (_dataFetched) {
       return; // data has already been fetched, no need to call the API again
     }
-
     try {
       var response = await networkHandler
           .get("/api/message/fetch-users/${widget.userl.useid}");
 
       if (response.statusCode == 200) {
         var data = json.decode(response.body);
-        print(data);
         if (data != null &&
             data['contacts'] != null &&
             data['newMessageCounts'] != null) {
           setState(() {
-            print(data);
+            // print(data['contacts']);
+            print("se");
+            print(widget.userl.useid);
+
             contacts = List.from(data['contacts'])
                 .map((contactJson) =>
-                    Contact.fromJson(json.decode(json.encode(contactJson))))
+                    UserModel.fromJson(json.decode(json.encode(contactJson))))
                 .toList();
             newMessageCounts = List.from(data['newMessageCounts'])
                 .map((countJson) => json.decode(json.encode(countJson)))
@@ -63,54 +63,63 @@ class _UserListPageState extends State<UserListPage> {
 
         _dataFetched = true;
       } else {
-        print("API call failed with status code: ${response.statusCode}");
+        print("API calll failed with status code: ${response.statusCode}");
       }
     } catch (e) {
-      print("Error fetching users: $e");
+      print("Error fetchingn users: $e");
     }
   }
 
   @override
   void initState() {
-    super.initState();
+    // socket =
+    //     IO.io('https://armada-server.glitch.me?userId=${widget.userl.useid}');
 
+    // socket = IO.io('https://armada-server.glitch.me', <String, dynamic>{
+    //   'transports': ['websocket'],
+    //   'autoConnect': false,
+    //   'query': {'userId': widget.userl.useid},
+    // });
+
+    // print(socket!.query);
     socketService.initSocket(widget.userl.useid);
+    // print(socket!.query);
 
-    // Initialize the SocketService instance when the widget is created
-//     socketService.initSocket(widget.userl.userid);
+    // socket!.connect();
+    print("socket");
+    print(widget.userl.useid);
 
     // Listen for the 'contact' event and add the new contact to the contact list
-    socketService.socket.on('contact', (data) {
-      try {
-        print('contactsocket');
-        List<dynamic> decodedData = json.decode(data);
+    try {
+      socketService.socket!.on('contact', (data) {
+        try {
+          print('contactsocket');
+          List<dynamic> decodedData = json.decode(data);
 
-        // Create a list of Contact objects from the JSON data
-        List<Contact> newContacts =
-            decodedData.map((jsonData) => Contact.fromJson(jsonData)).toList();
+          // Create a list of Contact objects from the JSON data
+          List<UserModel> newContacts = decodedData
+              .map((jsonData) => UserModel.fromJson(jsonData))
+              .toList();
 
-        // Add only the new contacts to the list of existing contacts
-        for (final newContact in newContacts) {
-          if (!contacts.any((contact) => contact.userid == newContact.userid)) {
-            setState(() {
-              contacts.add(newContact);
-            });
+          // Add only the new contacts to the list of existing contacts
+          for (final newContact in newContacts) {
+            if (!contacts.any((contact) => contact.useid == newContact.useid)) {
+              setState(() {
+                contacts.add(newContact);
+              });
+            }
           }
+        } catch (e) {
+          print('Error decoding JSON: $e');
         }
-      } catch (e) {
-        print('Error decoding JSON: $e');
-      }
-    });
-    socketService.socket.on('new_message_count', (data) {
+      });
+    } catch (e) {
+      print("not working $e");
+    }
+    socketService.socket!.on('new_message_count', (data) {
       try {
-        print('socket');
         setState(() {
           final contactId = data['contactId'];
-          // final count = data['newMessageCount'];
-          print('count');
-          // Find the index of the contact in the contacts list
-          // final contactIndex =
-          //     contacts.indexWhere((contact) => contact.userid == contactId);
 
           var contactToUpdate = newMessageCounts.firstWhere(
               (contact) => contact["contactId"] == contactId,
@@ -119,24 +128,26 @@ class _UserListPageState extends State<UserListPage> {
           if (contactToUpdate != null) {
             contactToUpdate["newMessageCount"]++;
           }
-// Increment the new message count for this contact by 1
-          // if (contactIndex >= 0) {
-          //   setState(() {
-          //     newMessageCounts[contactIndex]['newMessageCount'] += count;
-          //   });
-          // }
         });
       } catch (e) {
         print('Error updating new message count: $e');
       }
     });
+    super.initState();
   }
 
   @override
   void dispose() {
-    socketService.socket.off('new_message_count');
-    socketService.socket.off('contact');
+    // socket?.off('new_message_count');
+    // socket?.off('contact');
+    // socket!.destroy();
+
+    socketService.socket?.disconnect();
+    socketService.socket?.dispose();
     socketService.closeConnection();
+
+    // socket!.clearListeners(); // Clear all event listeners
+    // socket = null;
     super.dispose();
   }
 
@@ -146,12 +157,13 @@ class _UserListPageState extends State<UserListPage> {
       appBar: AppBar(
         elevation: 0,
         backgroundColor: Theme.of(context).primaryColor,
+        // leading: InkWell(onTap: resetSocket, child: Icon(Icons.ac_unit)),
       ),
       body: FutureBuilder<void>(
         future: fetchData(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           }
           if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
@@ -162,8 +174,11 @@ class _UserListPageState extends State<UserListPage> {
               final contact = contacts[index];
               final count = newMessageCounts[index]['newMessageCount'];
               return ListTile(
-                leading: CircleAvatar(backgroundColor: Colors.black26),
-                title: Text(contact.username),
+                leading: CircleAvatar(
+                    backgroundColor: Colors.black26,
+                    backgroundImage: NetworkImage(
+                        "https://armada-server.glitch.me/api/auth/Image/${contact.image}")),
+                title: Text(contact.firstname),
                 trailing:
                     count > 0 && contacts.length == newMessageCounts.length
                         ? CircleAvatar(
@@ -171,7 +186,7 @@ class _UserListPageState extends State<UserListPage> {
                             radius: 12,
                             child: Text(
                               '${newMessageCounts[index]['newMessageCount']}',
-                              style: TextStyle(
+                              style: const TextStyle(
                                 color: Colors.white,
                                 fontSize: 12,
                                 fontWeight: FontWeight.bold,
@@ -185,20 +200,25 @@ class _UserListPageState extends State<UserListPage> {
           );
         },
       ),
+      drawer: navigationDrawer(),
+      bottomNavigationBar: bottomAppbar(context),
     );
   }
 
-  void _navigateToChatPage(BuildContext context, Contact contact, int index) {
+  void _navigateToChatPage(BuildContext context, UserModel contact, int index) {
     setState(() {
       newMessageCounts[index]['newMessageCount'] = 0;
     });
 
-    Navigator.of(context).push(MaterialPageRoute(
+    Navigator.of(context).push(
+      MaterialPageRoute(
         builder: (context) => ChatPage(
-              sender: widget.userl.useid,
-              receiver: contact.userid,
-              name: contact.username,
-              socketService: socketService,
-            )));
+          sender: widget.userl.useid,
+          receiver: contact.useid,
+          name: contact.firstname,
+          socketService: socketService,
+        ),
+      ),
+    );
   }
 }

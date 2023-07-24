@@ -22,6 +22,16 @@ class farmDetail extends StatefulWidget {
 
 class _farmDetailState extends State<farmDetail> {
   @override
+  void initState() {
+    super.initState();
+    // theme = CustomTheme.getTheme(isDarkMode);
+    customTheme = CustomTheme();
+    // textTheme = customTheme.textTheme();
+  }
+
+  late CustomTheme customTheme;
+  // late TextTheme textTheme;
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -79,9 +89,9 @@ class _farmDetailState extends State<farmDetail> {
                             child: Text('Delete'),
                             onPressed: () async {
                               // Perform the delete operation here
-                              Map<String, String> data = {
-                                "_id": widget.farmlist.farmid,
-                              };
+                              // Map<String, String> data = {
+                              //   "_id": widget.farmlist.farmid,
+                              // };
                               // var response = await networkHandler.postt(
                               //     "/api/farm/delete", data);
                               var response = await widget.networkHandler.delete(
@@ -165,17 +175,17 @@ class _farmDetailState extends State<farmDetail> {
                                 children: [
                                   Text(
                                     "Farm name: ${widget.farmlist.farmname}",
-                                    style: textTheme().displayMedium,
+                                    // style: textTheme.displayMedium,
                                   ),
                                   addVerticalSpace(10),
                                   Text(
                                     "Size: ${widget.farmlist.farmsize}",
-                                    style: textTheme().displayMedium,
+                                    // style: textTheme.displayMedium,
                                   ),
                                   addVerticalSpace(10),
                                   Text(
                                     "Crop type : ${widget.farmlist.croptype}",
-                                    style: textTheme().displayMedium,
+                                    // style: textTheme.displayMedium,
                                   ),
                                   addVerticalSpace(10),
                                   addVerticalSpace(10),

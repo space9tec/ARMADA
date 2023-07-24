@@ -102,6 +102,8 @@ class _FarmerProfileState extends State<FarmerProfile> {
               ],
             )
           : CircularProgressIndicator.adaptive(),
+      drawer: navigationDrawer(),
+      bottomNavigationBar: bottomAppbar(context),
     );
   }
 

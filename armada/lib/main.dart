@@ -1,31 +1,38 @@
-import 'package:armada/provider/location_drop_down.dart';
-import 'package:armada/view/screens/on_boarding/walk_through.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
 import 'package:shared_preferences/shared_preferences.dart';
-import 'configuration/routing.dart';
-import 'configuration/theme_manager.dart';
-import 'provider/authenticate.dart';
-import 'provider/drop_down_provider.dart';
-import 'provider/drower_provider.dart';
-import 'provider/item_provider.dart';
-import 'provider/machine_status_provider.dart';
-import 'provider/user_provider.dart';
-import 'provider/usermodel_provider.dart';
-import 'view/screens/home_screen/guest_screen.dart';
 import 'package:bot_toast/bot_toast.dart';
+
+import 'configuration/routing_manager.dart';
+import 'configuration/theme_manager.dart';
+
+import 'provider/provider.dart';
+import 'utils/auth_guard.dart';
+import 'view/screens/screens.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   final pref = await SharedPreferences.getInstance();
-  final showHomw = pref.getBool("showHome") ?? false;
-  runApp(MyApp(showHomw: showHomw));
+  final showHome = pref.getBool("showHome") ?? false;
+
+  final themeProvider = ThemeProvider();
+  await themeProvider.loadThemeMode();
+
+  runApp(
+    ChangeNotifierProvider(
+      create: (_) => themeProvider,
+      child: MyApp(showHomw: showHome),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
   final bool showHomw;
+
   const MyApp({super.key, required this.showHomw});
+
   // This widget is the root of our application.
   @override
   Widget build(BuildContext context) {
@@ -38,16 +45,20 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => MachineStatusProvider()),
         ChangeNotifierProvider(create: (_) => UserProvider()),
         ChangeNotifierProvider(create: (_) => UserMProvider()),
-        ChangeNotifierProvider(create: (_) => Authenticate()),
       ],
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: 'Armada',
-        theme: customtheme(),
-        builder: BotToastInit(),
-        navigatorObservers: [BotToastNavigatorObserver()],
-        onGenerateRoute: ROUTE.onGenerateRouth,
-        initialRoute: showHomw ? Guest.routeName : OnboardingPage.routeName,
+      child: Consumer<ThemeProvider>(
+        builder: (context, themeProvider, _) {
+          return MaterialApp(
+            debugShowCheckedModeBanner: false,
+            title: 'Armada',
+            theme: CustomTheme().getTheme(themeProvider.currentThemeMode),
+            builder: BotToastInit(),
+            navigatorObservers: [BotToastNavigatorObserver()],
+            onGenerateRoute: ROUTESM.onGenerateRouth,
+            initialRoute:
+                showHomw ? AuthGuard.routeName : OnboardingPage.routeName,
+          );
+        },
       ),
     );
   }

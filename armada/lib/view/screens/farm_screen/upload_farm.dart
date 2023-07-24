@@ -23,7 +23,7 @@ class UploadFarm extends StatefulWidget {
     );
   }
 
-  UploadFarm({Key? key}) : super(key: key);
+  const UploadFarm({Key? key}) : super(key: key);
 
   @override
   State<UploadFarm> createState() => _UploadFarmState();
@@ -34,12 +34,46 @@ class _UploadFarmState extends State<UploadFarm> {
 
   final TextEditingController _farmSize = TextEditingController();
   final TextEditingController _farmName = TextEditingController();
-  final TextEditingController _location = TextEditingController();
-  final TextEditingController _croptype = TextEditingController();
-  final TextEditingController _soiltype = TextEditingController();
-  final TextEditingController _polygonlocation = TextEditingController();
   NetworkHandler networkHandler = NetworkHandler();
   final storage = const FlutterSecureStorage();
+
+  final _region = [
+    'Tigray',
+    'Afar',
+    "Amhara",
+    "Oromia",
+    "Somali",
+    "SNNPR",
+    "Gambela",
+    "Benishangul",
+    "Harari"
+  ];
+  String _selectedregion = "Tigray";
+
+  final _soiltype = [
+    "Vertisols",
+    "Nitosols",
+    "Luvisols",
+    "Cambisols",
+    "Regosols",
+    "Leptosols",
+    "Gleysols",
+    "Other"
+  ];
+  String _selectedsoiltype = "Vertisols";
+
+  final _cropgrown = [
+    "Teff",
+    "Wheat",
+    "Corn",
+    "Barley",
+    "Oilseeds",
+    "Coffee",
+    "Cotton",
+    "Sugarcane",
+    "Bananas"
+  ];
+  String _selectedcropgrown = "Teff";
 
   bool validate = false;
   String? errorText;
@@ -48,11 +82,9 @@ class _UploadFarmState extends State<UploadFarm> {
   final ImagePicker picker = ImagePicker();
 
   final image = Image.asset(
-    // fit: BoxFit.scaleDown,
     height: 50,
     "assets/images/tracter1.png",
   );
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -113,14 +145,42 @@ class _UploadFarmState extends State<UploadFarm> {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            InputTextFarmLocation(
-                                context,
-                                "Region.",
-                                "Location",
-                                false,
-                                Icons.person_3_sharp,
-                                TextInputType.text,
-                                _location),
+                            SizedBox(
+                              width: MediaQuery.of(context).size.width * 0.4,
+                              child: DropdownButtonFormField(
+                                value: _selectedregion,
+                                items: _region
+                                    .map((e) => DropdownMenuItem(
+                                          child: Text(e),
+                                          value: e,
+                                        ))
+                                    .toList(),
+                                onChanged: (val) {
+                                  setState(() {
+                                    _selectedregion = val as String;
+                                  });
+                                },
+                                icon: Icon(Icons.arrow_drop_down_circle),
+                                dropdownColor: Colors.white,
+                                decoration: InputDecoration(
+                                  labelText: "Region",
+                                  labelStyle: TextStyle(color: Colors.grey),
+                                  border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(15),
+                                      borderSide: const BorderSide(
+                                        width: 1,
+                                        color: Color(0xFF006837),
+                                      )),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(15),
+                                    borderSide: const BorderSide(
+                                      width: 1,
+                                      color: Color(0xFF006837),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            )
                           ],
                         ),
                       ],
@@ -133,54 +193,98 @@ class _UploadFarmState extends State<UploadFarm> {
                     const SizedBox(
                       height: 30,
                     ),
-                    InputText(context, "", "Crop type", false,
-                        Icons.person_3_sharp, TextInputType.name, _croptype),
-                    const SizedBox(
-                      height: 20,
-                    ),
                     Row(
                       children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            InputTextSoilType(context, "", "Soil type",
-                                TextInputType.text, _soiltype),
-                          ],
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width * 0.4,
+                          child: DropdownButtonFormField(
+                            value: _selectedcropgrown,
+                            items: _cropgrown
+                                .map((e) => DropdownMenuItem(
+                                      child: Text(e),
+                                      value: e,
+                                    ))
+                                .toList(),
+                            onChanged: (val) {
+                              setState(() {
+                                _selectedcropgrown = val as String;
+                              });
+                            },
+                            icon: Icon(Icons.arrow_drop_down_circle),
+                            dropdownColor: Colors.white,
+                            decoration: InputDecoration(
+                              labelText: "Crop Grown",
+                              labelStyle: TextStyle(color: Colors.grey),
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(15),
+                                  borderSide: const BorderSide(
+                                    width: 1,
+                                    color: Color(0xFF006837),
+                                  )),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(15),
+                                borderSide: const BorderSide(
+                                  width: 1,
+                                  color: Color(0xFF006837),
+                                ),
+                              ),
+                            ),
+                          ),
                         ),
                         const SizedBox(
                           width: 20,
                         ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            InputTextFarmLocation(
-                                context,
-                                "",
-                                "Polygon location",
-                                false,
-                                Icons.landscape_rounded,
-                                TextInputType.number,
-                                _polygonlocation),
-                          ],
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width * 0.4,
+                          child: DropdownButtonFormField(
+                            value: _selectedsoiltype,
+                            items: _soiltype
+                                .map((e) => DropdownMenuItem(
+                                      child: Text(e),
+                                      value: e,
+                                    ))
+                                .toList(),
+                            onChanged: (val) {
+                              setState(() {
+                                _selectedsoiltype = val as String;
+                              });
+                            },
+                            icon: Icon(Icons.arrow_drop_down_circle),
+                            dropdownColor: Colors.white,
+                            decoration: InputDecoration(
+                              labelText: "Soil Type",
+                              labelStyle: TextStyle(color: Colors.grey),
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(15),
+                                  borderSide: const BorderSide(
+                                    width: 1,
+                                    color: Color(0xFF006837),
+                                  )),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(15),
+                                borderSide: const BorderSide(
+                                  width: 1,
+                                  color: Color(0xFF006837),
+                                ),
+                              ),
+                            ),
+                          ),
                         ),
                       ],
                     ),
+                    // InputText(context, "", "Crop type", false, Icons.grass,
+                    //     TextInputType.name, _croptype),
+
                     const SizedBox(
-                      height: 35,
+                      height: 105,
                     ),
                   ],
                 ),
                 InkWell(
                   onTap: () async {
-                    // String? userid = await storage.read(key: "userid");
-                    // print(userid);
-                    // UserModel usermode = UserModel(
-                    //     firstname: '',
-                    //     password: '',
-                    //     lastname: '',
-                    //     phone: '',
-                    //     useid: '',
-                    //     image: '');
+                    // DropDownProvider provider =
+                    //     Provider.of<DropDownProvider>(context, listen: false);
+
                     String? userJson = await storage.read(key: 'userm');
                     UserModel usermode =
                         UserModel.fromJson(json.decode(userJson!));
@@ -189,10 +293,9 @@ class _UploadFarmState extends State<UploadFarm> {
                       Map<String, String> data = {
                         "farm_size": _farmSize.text,
                         "farm_name": _farmName.text,
-                        "region": _location.text,
-                        "crops_grown": _croptype.text,
-                        "soil_type": _soiltype.text,
-                        // "longitude": _polygonlocation.text,
+                        "region": _selectedregion,
+                        "crops_grown": _selectedcropgrown,
+                        "soil_type": _selectedsoiltype,
                         "owner_id": usermode.useid,
                       };
                       print(data);
@@ -211,7 +314,6 @@ class _UploadFarmState extends State<UploadFarm> {
                         );
                         Navigator.pushNamed(context, '/farm_screen');
                       } else {
-                        // String output = json.decode(response.toString());
                         print(response.body.toString());
                         setState(() {
                           validate = false;
@@ -221,15 +323,15 @@ class _UploadFarmState extends State<UploadFarm> {
                     }
                   },
                   child: Container(
-                    width: MediaQuery.of(context).size.width - 150,
-                    height: 55,
+                    width: MediaQuery.of(context).size.width * 0.65,
+                    height: MediaQuery.of(context).size.height * 0.06,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(15),
                       color: Theme.of(context).primaryColor,
                     ),
                     child: const Center(
                       child: Text(
-                        "Post",
+                        "Add",
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 20,
@@ -262,7 +364,7 @@ class _UploadFarmState extends State<UploadFarm> {
         radius: const Radius.circular(10),
         child: SizedBox(
           width: double.infinity,
-          height: MediaQuery.of(context).size.height * 0.17, //141
+          height: MediaQuery.of(context).size.height * 0.18, //141
           child: Padding(
             padding: const EdgeInsets.all(20),
             child: imageFile == null
@@ -318,9 +420,8 @@ class _UploadFarmState extends State<UploadFarm> {
     return Container(
       height: MediaQuery.of(context).size.height * 0.13,
       width: MediaQuery.of(context).size.width,
-      margin: const EdgeInsets.symmetric(
-        horizontal: 20,
-        vertical: 20,
+      margin: const EdgeInsets.only(
+        top: 20,
       ),
       child: Column(children: [
         const Text(
@@ -352,6 +453,10 @@ class _UploadFarmState extends State<UploadFarm> {
               icon: const Icon(Icons.image),
               label: const Text("Gallery"),
               style: ElevatedButton.styleFrom(
+                // shape: RoundedRectangleBorder(
+                //   borderRadius: BorderRadius.circular(3),
+                // ),
+                // minimumSize: Size.fromHeight(80),
                 elevation: 0,
                 backgroundColor:
                     Theme.of(context).primaryColor, // Change button color here

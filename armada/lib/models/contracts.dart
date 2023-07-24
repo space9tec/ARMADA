@@ -29,8 +29,8 @@ class ContractsModel {
         machineId: json['machine_id'],
         rent_start_time: json['rent_start_time'].toString(),
         rent_end_time: json['rent_end_time'].toString(),
-        created_at: json['created_at'],
-        updated_at: json['updated_at'],
+        created_at: json['createdAt'],
+        updated_at: json['updatedAt'],
         status: json['status']);
   }
 }
