@@ -9,6 +9,7 @@ import '../../../networkhandler.dart';
 import '../../../provider/provider.dart';
 import '../../../utils/helper_widget.dart';
 import '../../widgets/widgets.dart';
+import '../screens.dart';
 
 enum InternetConnectionStatus { connected, disconnected }
 
@@ -33,14 +34,18 @@ class _GuestState extends State<Guest> {
   List<MachineM> machine = [];
   List<MachineM> displayedMachines = [];
   List<MachineM> filteredMachines = [];
+
   bool isSearching = false;
   int activePage = 0;
   bool filt = false;
+  int selectedIndex = 0;
 
   InternetConnectionStatus _connectionStatus =
       InternetConnectionStatus.connected;
   final TextEditingController _searchController = TextEditingController();
   late PageController _pageController;
+
+  bool loading = false;
 
   List<String> images = [
     "assets/images/tracter1.png",
@@ -60,6 +65,7 @@ class _GuestState extends State<Guest> {
     "Benishangul",
     "Harari"
   ];
+
   String _selectedregion = "select";
 
   final _machinetype = [
@@ -84,6 +90,14 @@ class _GuestState extends State<Guest> {
   ];
   String _selectedattachmenttype = "select";
 
+  final _statusttype = [
+    "select",
+    'Available',
+    'In Maintenance',
+    "Booked",
+  ];
+  String _selectedstatustype = "select";
+
   @override
   void initState() {
     super.initState();
@@ -92,15 +106,26 @@ class _GuestState extends State<Guest> {
     fetchData();
   }
 
-  Future<void> checkInternetConnection() async {
-    final isConnected = await InternetConnectionChecker().hasConnection;
+  void onTabTapped(int index) {
     setState(() {
-      _connectionStatus = isConnected
-          ? InternetConnectionStatus.connected
-          : InternetConnectionStatus.disconnected;
+      selectedIndex = index;
     });
   }
 
+  // CheckInternetConnection
+  Future<void> checkInternetConnection() async {
+    final isConnected = await InternetConnectionChecker().hasConnection;
+
+    if (mounted) {
+      setState(() {
+        _connectionStatus = isConnected
+            ? InternetConnectionStatus.connected
+            : InternetConnectionStatus.disconnected;
+      });
+    }
+  }
+
+  // Fetch
   void fetchData() async {
     try {
       var response = await networkHandler.get("/api/machinery/");
@@ -109,12 +134,15 @@ class _GuestState extends State<Guest> {
         machine = (json.decode(response.body) as List)
             .map((data) => MachineM.fromJson(data))
             .toList();
+
+        loading = true;
       });
     } catch (e) {
       return;
     }
   }
 
+  // Search
   void _performSearch(String searchQuery) {
     setState(() {
       if (searchQuery.isEmpty) {
@@ -130,6 +158,7 @@ class _GuestState extends State<Guest> {
     });
   }
 
+  // Filter
   void _applyFilters() {
     setState(() {
       filteredMachines = machine.where((machine) {
@@ -139,8 +168,9 @@ class _GuestState extends State<Guest> {
             machine.type == _selectedmachinetype;
         bool attachmentMatches = _selectedattachmenttype == "select" ||
             machine.attachmenttype == _selectedattachmenttype;
-
-        return regionMatches && typeMatches && attachmentMatches;
+        bool statustype = _selectedstatustype == "select" ||
+            machine.status == _selectedattachmenttype;
+        return regionMatches && typeMatches && attachmentMatches && statustype;
       }).toList();
       filt = true;
     });
@@ -159,9 +189,10 @@ class _GuestState extends State<Guest> {
       return Scaffold(
         appBar: AppBar(
           elevation: 0,
+          backgroundColor: Theme.of(context).primaryColor,
           bottom: PreferredSize(
             preferredSize:
-                Size.fromHeight(MediaQuery.of(context).size.width * 0.15),
+                Size.fromHeight(MediaQuery.of(context).size.width * 0.17),
             child: Column(
               children: [
                 const Text(
@@ -226,24 +257,23 @@ class _GuestState extends State<Guest> {
                               )
                             : GestureDetector(
                                 onTap: () {
-                                  setState(() {
-                                    showModalBottomSheet(
-                                        shape: const RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.vertical(
-                                            top: Radius.circular(25),
-                                          ),
+                                  showModalBottomSheet(
+                                      shape: const RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.vertical(
+                                          top: Radius.circular(25),
                                         ),
-                                        clipBehavior:
-                                            Clip.antiAliasWithSaveLayer,
-                                        context: context,
-                                        builder: (context) =>
-                                            _custombottomSheetFilter(context));
-                                  });
+                                      ),
+                                      clipBehavior: Clip.antiAliasWithSaveLayer,
+                                      context: context,
+                                      builder: (context) =>
+                                          _custombottomSheetFilter(context));
                                 },
                                 child: Container(
                                   margin: const EdgeInsets.all(7),
-                                  height: 30,
-                                  width: 30,
+                                  height:
+                                      MediaQuery.of(context).size.height * 0.09,
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.1,
                                   decoration: BoxDecoration(
                                     color:
                                         const Color.fromARGB(255, 0, 117, 63),
@@ -251,7 +281,8 @@ class _GuestState extends State<Guest> {
                                   ),
                                   child: const Center(
                                       child: Icon(
-                                    Icons.filter_list_sharp,
+                                    Icons.filter_alt,
+                                    size: 30,
                                     color: Colors.white,
                                   )),
                                 ),
@@ -345,19 +376,32 @@ class _GuestState extends State<Guest> {
                           ),
                         ),
                         addVerticalSpace(25),
-                        _connectionStatus == InternetConnectionStatus.connected
-                            ? GridView.count(
-                                physics: const ClampingScrollPhysics(),
-                                crossAxisCount: 2,
-                                childAspectRatio: 1 / 1.5,
-                                shrinkWrap: true,
-                                children:
-                                    List.generate(machine.length, (index) {
-                                  final machines = machine[index];
-                                  return CustomProductItemWidget(machines);
-                                }),
-                              )
-                            : const Text("No Internet Conection"),
+                        loading
+                            ? _connectionStatus ==
+                                    InternetConnectionStatus.connected
+                                ? GridView.count(
+                                    physics: const ClampingScrollPhysics(),
+                                    crossAxisCount: 2,
+                                    childAspectRatio: 1 / 1.3,
+                                    shrinkWrap: true,
+                                    children:
+                                        List.generate(machine.length, (index) {
+                                      final machines = machine[index];
+                                      return CustomProductItemWidget(machines);
+                                    }),
+                                  )
+                                : const Text("No Internet Conection")
+                            : Center(
+                                child: GridView.count(
+                                    shrinkWrap: true,
+                                    physics:
+                                        const NeverScrollableScrollPhysics(),
+                                    crossAxisCount: 2,
+                                    childAspectRatio: 1 / 1.4,
+                                    children: List.generate(6, (index) {
+                                      return const PreloadWidget();
+                                    })),
+                              ),
                       ],
                     ),
             ),
@@ -369,14 +413,12 @@ class _GuestState extends State<Guest> {
                     isSearching = false;
                   });
                 },
-                // child: Positioned.fill(
                 child: BackdropFilter(
                   filter: ImageFilter.blur(sigmaX: 3, sigmaY: 3),
                   child: Container(
                     color: Colors.transparent,
                   ),
                 ),
-                // ),
               ),
             if (isSearching)
               Positioned(
@@ -392,7 +434,57 @@ class _GuestState extends State<Guest> {
           ],
         ),
         drawer: const GustNavigationDrawer(),
-        bottomNavigationBar: gustbottomAppbar(context),
+        bottomNavigationBar: BottomAppBar(
+          color: Theme.of(context).bottomAppBarTheme.color,
+          child: SizedBox(
+            height: MediaQuery.of(context).size.height * 0.08,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                GestureDetector(
+                  onTap: () {
+                    onTabTapped(0);
+                    Navigator.pushNamed(context, '/guest');
+                  },
+                  child: Container(
+                    decoration: const BoxDecoration(border: Border()),
+                    width: MediaQuery.of(context).size.width * 0.5,
+                    child: const Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.home, color: Colors.white),
+                        Text('Home',
+                            style:
+                                TextStyle(fontSize: 12, color: Colors.white)),
+                      ],
+                    ),
+                  ),
+                ),
+                GestureDetector(
+                  onTap: () {
+                    onTabTapped(1);
+                    Navigator.pushNamed(context, '/login');
+                  },
+                  child: Container(
+                    decoration: const BoxDecoration(border: Border()),
+                    width: MediaQuery.of(context).size.width * 0.5,
+                    child: const Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.account_box, color: Colors.white),
+                        Text('Login',
+                            style:
+                                TextStyle(fontSize: 12, color: Colors.white)),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
         // ),
       );
     });
@@ -428,9 +520,33 @@ class _GuestState extends State<Guest> {
                   child: ListView.builder(
                     itemCount: displayedMachines.length,
                     itemBuilder: (context, index) {
-                      return ListTile(
-                        title: Text(displayedMachines[index].manufacturer),
-                        subtitle: Text(displayedMachines[index].type),
+                      return InkWell(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: ((context) => ItemPage(
+                                    machine: displayedMachines[index])),
+                              ));
+                        },
+                        child: ListTile(
+                          title: Text(displayedMachines[index].manufacturer),
+                          subtitle: Text(displayedMachines[index].type),
+                          trailing: Text(displayedMachines[index].status),
+                          leading: Container(
+                            height: MediaQuery.of(context).size.height * 0.07,
+                            width: MediaQuery.of(context).size.width * 0.14,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10)),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(10),
+                              child: Image.network(
+                                "https://armada-server.glitch.me/api/machinery/image/${displayedMachines[index].imageFile}",
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                          ),
+                        ),
                       );
                     },
                   ),
@@ -448,11 +564,14 @@ class _GuestState extends State<Guest> {
   }
 
   _custombottomSheetFilter(BuildContext context) {
+    final rangeValuesProvider = Provider.of<RangeValuesProvider>(context);
+    final rangeValues = rangeValuesProvider.currentRangeValues;
     return Container(
-      padding: const EdgeInsets.only(left: 20, bottom: 20, right: 20),
-      height: MediaQuery.of(context).size.height * 0.6,
+      padding: const EdgeInsets.only(left: 15, bottom: 20, right: 15),
+      height: MediaQuery.of(context).size.height * 0.8,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           SizedBox(
             height: MediaQuery.of(context).size.height * 0.1,
@@ -466,117 +585,233 @@ class _GuestState extends State<Guest> {
                           },
                           icon: const Icon(Icons.cancel))),
                   const Text("Filter"),
-                  const Text("Clear All")
+                  InkWell(
+                      onTap: () {
+                        setState(() {
+                          _selectedregion = "select";
+                          _selectedstatustype = "select";
+                          _selectedattachmenttype = "select";
+                          _selectedmachinetype = "select";
+                        });
+                      },
+                      child: const Text("Clear All"))
                 ]),
           ),
-          SizedBox(
-            width: MediaQuery.of(context).size.width * 0.8,
-            child: DropdownButtonFormField(
-              value: _selectedregion,
-              items: _regions
-                  .map((e) => DropdownMenuItem(
-                        value: e,
-                        child: Text(e),
-                      ))
-                  .toList(),
-              onChanged: (val) {
-                setState(() {
-                  _selectedregion = val as String;
-                });
-              },
-              icon: const Icon(Icons.arrow_drop_down_circle),
-              dropdownColor: Colors.white,
-              decoration: InputDecoration(
-                labelText: "Region",
-                labelStyle: const TextStyle(color: Colors.grey),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(15),
-                  borderSide: const BorderSide(
-                    width: 1,
-                    color: Color(0xFF006837),
-                  ),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(15),
-                  borderSide: const BorderSide(
-                    width: 1,
-                    color: Color(0xFF006837),
-                  ),
-                ),
-              ),
-            ),
-          ),
-          SizedBox(
-            width: MediaQuery.of(context).size.width * 0.6,
-            child: DropdownButtonFormField(
-              value: _selectedmachinetype,
-              items: _machinetype
-                  .map(
-                    (e) => DropdownMenuItem(
-                      value: e,
-                      child: Text(e),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            // crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(
+                width: MediaQuery.of(context).size.width * 0.37,
+                child: DropdownButtonFormField(
+                  value: _selectedregion,
+                  items: _regions
+                      .map((e) => DropdownMenuItem(
+                            value: e,
+                            child: Text(e),
+                          ))
+                      .toList(),
+                  onChanged: (val) {
+                    setState(() {
+                      _selectedregion = val as String;
+                    });
+                  },
+                  icon: const Icon(Icons.arrow_drop_down_circle),
+                  dropdownColor: Colors.white,
+                  decoration: InputDecoration(
+                    labelText: "Region",
+                    labelStyle: const TextStyle(color: Colors.grey),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(15),
+                      borderSide: const BorderSide(
+                        width: 1,
+                        color: Color(0xFF006837),
+                      ),
                     ),
-                  )
-                  .toList(),
-              onChanged: (val) {
-                setState(() {
-                  _selectedmachinetype = val as String;
-                });
-              },
-              icon: const Icon(Icons.arrow_drop_down_circle),
-              dropdownColor: Colors.white,
-              decoration: InputDecoration(
-                labelText: "Machine type",
-                labelStyle: const TextStyle(color: Colors.grey),
-                border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(15),
-                    borderSide: const BorderSide(
-                      width: 1,
-                      color: Color(0xFF006837),
-                    )),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(15),
-                  borderSide: const BorderSide(
-                    width: 1,
-                    color: Color(0xFF006837),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(15),
+                      borderSide: const BorderSide(
+                        width: 1,
+                        color: Color(0xFF006837),
+                      ),
+                    ),
                   ),
                 ),
               ),
-            ),
+              addHorizontalSpace(35),
+              SizedBox(
+                width: MediaQuery.of(context).size.width * 0.43,
+                height: MediaQuery.of(context).size.height * 0.07,
+                child: DropdownButtonFormField(
+                  value: _selectedstatustype,
+                  items: _statusttype
+                      .map((e) => DropdownMenuItem(
+                            value: e,
+                            child: Text(e),
+                          ))
+                      .toList(),
+                  onChanged: (val) {
+                    setState(() {
+                      _selectedstatustype = val as String;
+                    });
+                  },
+                  icon: const Icon(Icons.arrow_drop_down_circle),
+                  // dropdownColor: Colors.white,
+                  decoration: InputDecoration(
+                    labelText: "Status",
+                    labelStyle: const TextStyle(color: Colors.grey),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(15),
+                      borderSide: const BorderSide(
+                        width: 1,
+                        color: Color(0xFF006837),
+                      ),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(15),
+                      borderSide: const BorderSide(
+                        width: 1,
+                        color: Color(0xFF006837),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              addVerticalSpace(10),
+            ],
           ),
-          SizedBox(
-            width: MediaQuery.of(context).size.width * 0.6,
-            child: DropdownButtonFormField(
-              value: _selectedattachmenttype,
-              items: _attachmenttype
-                  .map((e) => DropdownMenuItem(
-                        value: e,
-                        child: Text(e),
-                      ))
-                  .toList(),
-              onChanged: (val) {
-                setState(() {
-                  _selectedattachmenttype = val as String;
-                });
-              },
-              icon: const Icon(Icons.arrow_drop_down_circle),
-              dropdownColor: Colors.white,
-              decoration: InputDecoration(
-                labelText: "Attachment Type",
-                labelStyle: const TextStyle(color: Colors.grey),
-                border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(15),
-                    borderSide: const BorderSide(
-                      width: 1,
-                      color: Color(0xFF006837),
-                    )),
-                focusedBorder: OutlineInputBorder(
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              SizedBox(
+                width: MediaQuery.of(context).size.width * 0.38,
+                height: MediaQuery.of(context).size.height * 0.07,
+                child: DropdownButtonFormField(
+                  value: _selectedattachmenttype,
+                  items: _attachmenttype
+                      .map((e) => DropdownMenuItem(
+                            value: e,
+                            child: Text(e),
+                          ))
+                      .toList(),
+                  onChanged: (val) {
+                    setState(() {
+                      _selectedattachmenttype = val as String;
+                    });
+                  },
+                  icon: const Icon(Icons.arrow_drop_down_circle),
+                  // dropdownColor: Colors.white,
+                  decoration: InputDecoration(
+                    labelText: "Attachment Type",
+                    labelStyle: const TextStyle(color: Colors.grey),
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15),
+                        borderSide: const BorderSide(
+                          width: 1,
+                          color: Color(0xFF006837),
+                        )),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(15),
+                      borderSide: const BorderSide(
+                        width: 1,
+                        color: Color(0xFF006837),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              Stack(
+                children: [
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.51,
+                    height: MediaQuery.of(context).size.height * 0.07,
+                    child: IgnorePointer(
+                      ignoring: false,
+                      child: DropdownButtonFormField(
+                        value: _selectedmachinetype,
+                        items: _machinetype
+                            .map(
+                              (e) => DropdownMenuItem(
+                                value: e,
+                                child: Text(e),
+                              ),
+                            )
+                            .toList(),
+                        onChanged: (val) {
+                          setState(() {
+                            _selectedmachinetype = val as String;
+                          });
+                        },
+                        icon: const Icon(Icons.arrow_drop_down_circle),
+                        // dropdownColor: Colors.white,
+                        decoration: InputDecoration(
+                          labelText: "Machine type",
+                          labelStyle: const TextStyle(color: Colors.grey),
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(15),
+                              borderSide: const BorderSide(
+                                width: 1,
+                                color: Color(0xFF006837),
+                              )),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(15),
+                            borderSide: const BorderSide(
+                              width: 1,
+                              color: Color(0xFF006837),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+          InputDecorator(
+            decoration: InputDecoration(
+              labelText: "Horse power",
+              labelStyle: const TextStyle(color: Colors.grey),
+              border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(15),
                   borderSide: const BorderSide(
                     width: 1,
                     color: Color(0xFF006837),
-                  ),
+                  )),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(15),
+                borderSide: const BorderSide(
+                  width: 1,
+                  color: Color(0xFF006837),
                 ),
+              ),
+            ),
+            child: SizedBox(
+              width: MediaQuery.of(context).size.width * 0.8,
+              height: MediaQuery.of(context).size.height * 0.07,
+              child: Row(
+                children: [
+                  const Text("400"),
+                  Expanded(
+                    child: RangeSlider(
+                      values: rangeValues,
+                      min: 400,
+                      max: 3500,
+                      activeColor: Colors.black,
+                      labels: RangeLabels(
+                        rangeValues.start.toString(),
+                        rangeValues.end.toString(),
+                      ),
+                      divisions:
+                          100, // Number of divisions between min and max values
+
+                      onChanged: (RangeValues values) {
+                        rangeValuesProvider.setCurrentRangeValues(values);
+                      },
+                    ),
+                  ),
+                  const Text("3500"),
+                ],
               ),
             ),
           ),
@@ -602,9 +837,80 @@ class _GuestState extends State<Guest> {
               ),
             ),
           ),
-          // ),
         ],
       ),
+    );
+  }
+}
+
+class Skelton extends StatelessWidget {
+  final double? height, width;
+  const Skelton({key, this.height, this.width}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: height,
+      width: width,
+      padding: const EdgeInsets.all(8),
+      decoration: BoxDecoration(
+        color: Colors.black.withOpacity(0.04),
+        borderRadius: const BorderRadius.all(Radius.circular(16)),
+      ),
+    );
+  }
+}
+
+class PreloadWidget extends StatelessWidget {
+  const PreloadWidget({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.all(5),
+      width: MediaQuery.of(context).size.width * 0.3,
+      height: MediaQuery.of(context).size.width * 0.27,
+      child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
+        InkWell(
+          onTap: () {},
+          child: const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+            child: Row(
+              children: [
+                Skelton(width: 20, height: 20),
+                SizedBox(
+                  width: 10,
+                ),
+                Skelton(width: 80),
+              ],
+            ),
+          ),
+        ),
+        Skelton(
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.height * 0.2),
+        const SizedBox(
+          height: 15,
+        ),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Skelton(width: MediaQuery.of(context).size.width * 0.4),
+          ],
+        ),
+        const SizedBox(
+          height: 5,
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Skelton(width: MediaQuery.of(context).size.width * 0.15),
+            Skelton(width: MediaQuery.of(context).size.width * 0.25),
+          ],
+        ),
+      ]),
     );
   }
 }

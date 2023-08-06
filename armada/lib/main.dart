@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:bot_toast/bot_toast.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'configuration/routing_manager.dart';
 import 'configuration/theme_manager.dart';
@@ -45,6 +46,9 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => MachineStatusProvider()),
         ChangeNotifierProvider(create: (_) => UserProvider()),
         ChangeNotifierProvider(create: (_) => UserMProvider()),
+        ChangeNotifierProvider(create: (_) => RangeValuesProvider()),
+        ChangeNotifierProvider(create: (_) => DatePickerProvider()),
+        ChangeNotifierProvider(create: (_) => BottomNavigation()),
       ],
       child: Consumer<ThemeProvider>(
         builder: (context, themeProvider, _) {
@@ -52,7 +56,7 @@ class MyApp extends StatelessWidget {
             debugShowCheckedModeBanner: false,
             title: 'Armada',
             theme: CustomTheme().getTheme(themeProvider.currentThemeMode),
-            builder: BotToastInit(),
+            builder: EasyLoading.init(builder: BotToastInit()),
             navigatorObservers: [BotToastNavigatorObserver()],
             onGenerateRoute: ROUTESM.onGenerateRouth,
             initialRoute:

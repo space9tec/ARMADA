@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:armada/networkhandler.dart';
+import 'package:armada/utils/helper_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../../../models/user.dart';
@@ -72,6 +73,7 @@ class _FarmerProfileState extends State<FarmerProfile> {
       appBar: AppBar(
         elevation: 0,
         backgroundColor: Theme.of(context).primaryColor,
+        title: Text("Profile"),
         actions: [
           IconButton(
             onPressed: () {
@@ -86,7 +88,7 @@ class _FarmerProfileState extends State<FarmerProfile> {
               physics: const BouncingScrollPhysics(),
               children: [
                 const SizedBox(
-                  height: 20,
+                  height: 5,
                 ),
                 // ProfileWidget(
                 //   imagePath: user.imagePath,
@@ -108,15 +110,51 @@ class _FarmerProfileState extends State<FarmerProfile> {
   }
 
   Widget buildName(UserModel user) => Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            user.firstname,
-            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            user.phone.toString(),
-            style: const TextStyle(color: Colors.grey),
+          Padding(
+            padding: const EdgeInsets.only(left: 28.0),
+            child: Container(
+              height: 200,
+              width: 200,
+              decoration: BoxDecoration(
+                  border: Border.all(color: Colors.black.withOpacity(0.02)),
+                  color: Colors.black.withOpacity(0.04),
+                  borderRadius: BorderRadius.circular(12)),
+              child: Padding(
+                padding: const EdgeInsets.only(left: 18.0),
+                child: Column(
+                  // mainAxisAlignment: ,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    addVerticalSpace(10),
+                    CircleAvatar(
+                      maxRadius: 35,
+                      child: ClipOval(
+                        child: Image(
+                          image: NetworkImage(
+                              "https://armada-server.glitch.me/api/auth/Image/${user.image}"),
+                        ),
+                      ),
+                    ),
+                    addVerticalSpace(20),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 8.0),
+                      child: Text(
+                        user.firstname,
+                        style: const TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 24),
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      user.phone.toString(),
+                      style: const TextStyle(color: Colors.grey),
+                    )
+                  ],
+                ),
+              ),
+            ),
           )
         ],
       );

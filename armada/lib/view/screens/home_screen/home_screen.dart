@@ -2,12 +2,15 @@ import 'dart:convert';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 import '../../../models/model.dart';
 import '../../../networkhandler.dart';
 import '../../../utils/helper_widget.dart';
 import '../../widgets/widgets.dart';
+import '../../../provider/provider.dart';
+import '../screens.dart';
 
 class HomeScreen extends StatefulWidget {
   static const String routeName = '/home';
@@ -42,6 +45,10 @@ class _HomeScreenState extends State<HomeScreen> {
   bool circulat = false;
   bool isSearching = false;
   bool loading = false;
+
+  double minValue = 400;
+  double maxValue = 3400;
+  RangeValues rangevalue = const RangeValues(400, 3400);
 
   List<String> images = [
     "assets/images/tracter1.png",
@@ -92,6 +99,14 @@ class _HomeScreenState extends State<HomeScreen> {
   ];
   String _selectedattachmenttype = "select";
 
+  final _statusttype = [
+    "select",
+    'Available',
+    'In Maintenance',
+    "Booked",
+  ];
+  String _selectedstatustype = "select";
+
   @override
   void initState() {
     _pageController = PageController(viewportFraction: 0.8);
@@ -108,15 +123,15 @@ class _HomeScreenState extends State<HomeScreen> {
       // Convert JSON to UserModel
       usermode = UserModel.fromJson(json.decode(userJson));
     }
-    setState(() {
-      if (mounted) {
+    if (mounted) {
+      setState(() {
         machine = (json.decode(response.body) as List)
             .map((data) => MachineM.fromJson(data))
             .toList();
 
         loading = true;
-      }
-    });
+      });
+    }
 
     var responsefarm = await networkHandler.get("/api/farm/");
 
@@ -125,10 +140,11 @@ class _HomeScreenState extends State<HomeScreen> {
     List<dynamic> filteredData = responseDatam
         .where((data) => data['owner_id'] == usermode.useid)
         .toList();
-
-    setState(() {
-      farm = filteredData.map((data) => FarmM.fromJson(data)).toList();
-    });
+    if (mounted) {
+      setState(() {
+        farm = filteredData.map((data) => FarmM.fromJson(data)).toList();
+      });
+    }
   }
 
   void _performSearch(String searchQuery) {
@@ -336,6 +352,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     : TabBarView(
                         children: [
                           SingleChildScrollView(
+                            physics: const BouncingScrollPhysics(
+                                decelerationRate: ScrollDecelerationRate.fast),
                             child: Column(
                               children: [
                                 Container(
@@ -403,7 +421,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                             crossAxisCount: 2,
                                             childAspectRatio: 1 / 1.4,
                                             children: List.generate(6, (index) {
-                                              return preloadWidget();
+                                              return const _PreloadWidget();
                                             })),
                                       ),
                               ],
@@ -483,9 +501,33 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: ListView.builder(
                     itemCount: displayedMachines.length,
                     itemBuilder: (context, index) {
-                      return ListTile(
-                        title: Text(displayedMachines[index].manufacturer),
-                        subtitle: Text(displayedMachines[index].type),
+                      return InkWell(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: ((context) => ItemPage(
+                                    machine: displayedMachines[index])),
+                              ));
+                        },
+                        child: ListTile(
+                          title: Text(displayedMachines[index].manufacturer),
+                          subtitle: Text(displayedMachines[index].type),
+                          trailing: Text(displayedMachines[index].status),
+                          leading: Container(
+                            height: MediaQuery.of(context).size.height * 0.07,
+                            width: MediaQuery.of(context).size.width * 0.14,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10)),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(10),
+                              child: Image.network(
+                                "https://armada-server.glitch.me/api/machinery/image/${displayedMachines[index].imageFile}",
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                          ),
+                        ),
                       );
                     },
                   ),
@@ -503,10 +545,11 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   _custombottomSheetFilter(BuildContext context) {
+    final rangeValuesProvider = Provider.of<RangeValuesProvider>(context);
+    final rangeValues = rangeValuesProvider.currentRangeValues;
     return Container(
       padding: const EdgeInsets.only(left: 20, bottom: 20, right: 20),
       height: MediaQuery.of(context).size.height * 0.6,
-      // color: Colors.white,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
@@ -525,120 +568,237 @@ class _HomeScreenState extends State<HomeScreen> {
                   const Text("Clear All")
                 ]),
           ),
-          SizedBox(
-            width: MediaQuery.of(context).size.width * 0.8,
-            child: DropdownButtonFormField(
-              value: _selectedregion,
-              items: _regions
-                  .map((e) => DropdownMenuItem(
-                        value: e,
-                        child: Text(e),
-                      ))
-                  .toList(),
-              onChanged: (val) {
-                setState(() {
-                  _selectedregion = val as String;
-                });
-              },
-              icon: const Icon(Icons.arrow_drop_down_circle),
-              dropdownColor: Colors.white,
-              decoration: InputDecoration(
-                labelText: "Region",
-                labelStyle: const TextStyle(color: Colors.grey),
-                border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(15),
-                    borderSide: const BorderSide(
-                      width: 1,
-                      color: Color(0xFF006837),
-                    )),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(15),
-                  borderSide: const BorderSide(
-                    width: 1,
-                    color: Color(0xFF006837),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(
+                width: MediaQuery.of(context).size.width * 0.37,
+                child: DropdownButtonFormField(
+                  value: _selectedregion,
+                  items: _regions
+                      .map((e) => DropdownMenuItem(
+                            value: e,
+                            child: Text(e),
+                          ))
+                      .toList(),
+                  onChanged: (val) {
+                    setState(() {
+                      _selectedregion = val as String;
+                    });
+                  },
+                  icon: const Icon(Icons.arrow_drop_down_circle),
+                  decoration: InputDecoration(
+                    labelText: "Region",
+                    labelStyle: const TextStyle(color: Colors.grey),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(15),
+                      borderSide: const BorderSide(
+                        width: 1,
+                        color: Color(0xFF006837),
+                      ),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(15),
+                      borderSide: const BorderSide(
+                        width: 1,
+                        color: Color(0xFF006837),
+                      ),
+                    ),
                   ),
                 ),
               ),
-            ),
+              const SizedBox(
+                width: 35,
+              ),
+              SizedBox(
+                width: MediaQuery.of(context).size.width * 0.43,
+                height: MediaQuery.of(context).size.height * 0.07,
+                child: DropdownButtonFormField(
+                  value: _selectedstatustype,
+                  items: _statusttype
+                      .map((e) => DropdownMenuItem(
+                            value: e,
+                            child: Text(e),
+                          ))
+                      .toList(),
+                  onChanged: (val) {
+                    setState(() {
+                      _selectedstatustype = val as String;
+                    });
+                  },
+                  icon: const Icon(Icons.arrow_drop_down_circle),
+                  decoration: InputDecoration(
+                    labelText: "Status",
+                    labelStyle: const TextStyle(color: Colors.grey),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(15),
+                      borderSide: const BorderSide(
+                        width: 1,
+                        color: Color(0xFF006837),
+                      ),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(15),
+                      borderSide: const BorderSide(
+                        width: 1,
+                        color: Color(0xFF006837),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+            ],
           ),
-          SizedBox(
-            width: MediaQuery.of(context).size.width * 0.6,
-            child: DropdownButtonFormField(
-              value: _selectedmachinetype,
-              items: _machinetype
-                  .map((e) => DropdownMenuItem(
-                        value: e,
-                        child: Text(e),
-                      ))
-                  .toList(),
-              onChanged: (val) {
-                setState(() {
-                  _selectedmachinetype = val as String;
-                });
-              },
-              icon: const Icon(Icons.arrow_drop_down_circle),
-              dropdownColor: Colors.white,
-              decoration: InputDecoration(
-                labelText: "Machine type",
-                labelStyle: const TextStyle(color: Colors.grey),
-                border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(15),
-                    borderSide: const BorderSide(
-                      width: 1,
-                      color: Color(0xFF006837),
-                    )),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(15),
-                  borderSide: const BorderSide(
-                    width: 1,
-                    color: Color(0xFF006837),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              SizedBox(
+                width: MediaQuery.of(context).size.width * 0.38,
+                height: MediaQuery.of(context).size.height * 0.07,
+                child: DropdownButtonFormField(
+                  value: _selectedattachmenttype,
+                  items: _attachmenttype
+                      .map((e) => DropdownMenuItem(
+                            value: e,
+                            child: Text(e),
+                          ))
+                      .toList(),
+                  onChanged: (val) {
+                    setState(() {
+                      _selectedattachmenttype = val as String;
+                    });
+                  },
+                  icon: const Icon(Icons.arrow_drop_down_circle),
+                  decoration: InputDecoration(
+                    labelText: "Attachment Type",
+                    labelStyle: const TextStyle(color: Colors.grey),
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15),
+                        borderSide: const BorderSide(
+                          width: 1,
+                          color: Color(0xFF006837),
+                        )),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(15),
+                      borderSide: const BorderSide(
+                        width: 1,
+                        color: Color(0xFF006837),
+                      ),
+                    ),
                   ),
                 ),
               ),
-            ),
+              Stack(
+                children: [
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.51,
+                    height: MediaQuery.of(context).size.height * 0.07,
+                    child: IgnorePointer(
+                      ignoring: false,
+                      child: DropdownButtonFormField(
+                        value: _selectedmachinetype,
+                        items: _machinetype
+                            .map(
+                              (e) => DropdownMenuItem(
+                                value: e,
+                                child: Text(e),
+                              ),
+                            )
+                            .toList(),
+                        onChanged: (val) {
+                          setState(() {
+                            _selectedmachinetype = val as String;
+                          });
+                        },
+                        icon: const Icon(Icons.arrow_drop_down_circle),
+                        decoration: InputDecoration(
+                          labelText: "Machine type",
+                          labelStyle: const TextStyle(color: Colors.grey),
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(15),
+                              borderSide: const BorderSide(
+                                width: 1,
+                                color: Color(0xFF006837),
+                              )),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(15),
+                            borderSide: const BorderSide(
+                              width: 1,
+                              color: Color(0xFF006837),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  AnimatedOpacity(
+                    opacity: 0,
+                    duration: const Duration(milliseconds: 200),
+                    child: _buildDisabledMessage(),
+                  ),
+                ],
+              ),
+            ],
           ),
-          SizedBox(
-            width: MediaQuery.of(context).size.width * 0.6,
-            child: DropdownButtonFormField(
-              value: _selectedattachmenttype,
-              items: _attachmenttype
-                  .map((e) => DropdownMenuItem(
-                        value: e,
-                        child: Text(e),
-                      ))
-                  .toList(),
-              onChanged: (val) {
-                setState(() {
-                  _selectedattachmenttype = val as String;
-                });
-              },
-              icon: const Icon(Icons.arrow_drop_down_circle),
-              dropdownColor: Colors.white,
-              decoration: InputDecoration(
-                labelText: "Attachment Type",
-                labelStyle: const TextStyle(color: Colors.grey),
-                border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(15),
-                    borderSide: const BorderSide(
-                      width: 1,
-                      color: Color(0xFF006837),
-                    )),
-                focusedBorder: OutlineInputBorder(
+          InputDecorator(
+            decoration: InputDecoration(
+              labelText: "Horse power",
+              labelStyle: const TextStyle(color: Colors.grey),
+              border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(15),
                   borderSide: const BorderSide(
                     width: 1,
                     color: Color(0xFF006837),
-                  ),
+                  )),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(15),
+                borderSide: const BorderSide(
+                  width: 1,
+                  color: Color(0xFF006837),
                 ),
               ),
             ),
+            child: SizedBox(
+                width: MediaQuery.of(context).size.width * 0.8,
+                height: MediaQuery.of(context).size.height * 0.07,
+                child: Row(
+                  children: [
+                    const Text("400"),
+                    Expanded(
+                      child: RangeSlider(
+                        values: rangeValues,
+                        min: 400,
+                        max: 3500,
+                        activeColor: Colors.black,
+                        labels: RangeLabels(
+                          rangeValues.start.toString(),
+                          rangeValues.end.toString(),
+                        ),
+                        divisions:
+                            100, // Number of divisions between min and max values
+
+                        onChanged: (RangeValues values) {
+                          rangeValuesProvider.setCurrentRangeValues(values);
+                        },
+                      ),
+                    ),
+                    const Text("3500"),
+                  ],
+                )),
+          ),
+          const SizedBox(
+            height: 10,
           ),
           InkWell(
             onTap: _applyFilters,
             child: SizedBox(
               child: Container(
                 width: MediaQuery.of(context).size.width * 0.63,
-                height: 55,
+                height: MediaQuery.of(context).size.height * 0.06,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(15),
                   color: Theme.of(context).primaryColor,
@@ -661,6 +821,16 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
+Widget _buildDisabledMessage() {
+  return Container(
+    alignment: Alignment.center,
+    child: const Text(
+      'Dropdown is disabled',
+      style: TextStyle(color: Colors.grey),
+    ),
+  );
+}
+
 class Skelton extends StatelessWidget {
   final double? height, width;
   const Skelton({key, this.height, this.width}) : super(key: key);
@@ -679,33 +849,16 @@ class Skelton extends StatelessWidget {
   }
 }
 
-class preloadWidget extends StatelessWidget {
-  const preloadWidget({
-    super.key,
-  });
+class _PreloadWidget extends StatelessWidget {
+  const _PreloadWidget();
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.all(5),
+      margin: const EdgeInsets.all(5),
       width: MediaQuery.of(context).size.width * 0.3,
       height: MediaQuery.of(context).size.width * 0.27,
       child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
-        InkWell(
-          onTap: () {},
-          child: const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-            child: Row(
-              children: [
-                Skelton(width: 20, height: 20),
-                SizedBox(
-                  width: 10,
-                ),
-                Skelton(width: 80),
-              ],
-            ),
-          ),
-        ),
         Skelton(
             width: MediaQuery.of(context).size.width,
             height: MediaQuery.of(context).size.height * 0.2),
@@ -716,6 +869,18 @@ class preloadWidget extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Skelton(width: MediaQuery.of(context).size.width * 0.4),
+          ],
+        ),
+        const SizedBox(
+          height: 5,
+        ),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Skelton(width: MediaQuery.of(context).size.width * 0.15),
+            addHorizontalSpace(5),
+            Skelton(width: MediaQuery.of(context).size.width * 0.2),
           ],
         ),
         const SizedBox(

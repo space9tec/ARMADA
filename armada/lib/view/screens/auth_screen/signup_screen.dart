@@ -1,10 +1,11 @@
-import 'package:armada/networkhandler.dart';
-import 'package:armada/provider/drop_down_provider.dart';
-import 'package:armada/utils/helper_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:armada/view/widgets/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+
+import '../../../networkhandler.dart';
+import '../../../provider/provider.dart';
+import '../../../utils/helper_widget.dart';
+import '../../widgets/widgets.dart';
 
 class SignUp extends StatefulWidget {
   static const String routeName = '/signup';
@@ -69,7 +70,7 @@ class _SignUpState extends State<SignUp> {
                   child: Text("Create Account.",
                       style: Theme.of(context).textTheme.displayLarge),
                 ),
-                addVerticalSpace(MediaQuery.of(context).size.width * 0.20),
+                addVerticalSpace(MediaQuery.of(context).size.width * 0.15),
                 InputText(
                     context,
                     "First Name",
@@ -78,7 +79,6 @@ class _SignUpState extends State<SignUp> {
                     Icons.person_3_sharp,
                     TextInputType.name,
                     _firstNamecontroller),
-                addVerticalSpace(15.0),
                 InputText(
                     context,
                     "Last Name",
@@ -87,7 +87,6 @@ class _SignUpState extends State<SignUp> {
                     Icons.person_3_sharp,
                     TextInputType.name,
                     _lastNamecontroller),
-                addVerticalSpace(15.0),
                 InputTextNumber(
                     context,
                     "Phone",
@@ -97,17 +96,13 @@ class _SignUpState extends State<SignUp> {
                     _numberController,
                     errorText,
                     validate),
-                addVerticalSpace(15.0),
                 SizedBox(
                   width: MediaQuery.of(context).size.width * 0.71,
-                  height: MediaQuery.of(context).size.height * 0.08,
+                  height: MediaQuery.of(context).size.height * 0.1,
                   child: TextFormField(
                     controller: _passwordcontroller,
                     keyboardType: TextInputType.text,
                     obscureText: isHidden,
-                    // onChanged: (_) {
-                    //   _checkPasswordsMatch();
-                    // },
                     validator: (value) {
                       if (value == null || value.length < 4) {
                         return "More than 4 character needed";
@@ -157,17 +152,13 @@ class _SignUpState extends State<SignUp> {
                     ),
                   ),
                 ),
-                addVerticalSpace(15.0),
                 SizedBox(
                   width: MediaQuery.of(context).size.width * 0.71,
-                  height: MediaQuery.of(context).size.height * 0.08,
+                  height: MediaQuery.of(context).size.height * 0.1,
                   child: TextFormField(
                     controller: _confirmPasswordcontroller,
                     keyboardType: TextInputType.text,
                     obscureText: isHiddenConfirm,
-                    // onChanged: (_) {
-                    //   _checkPasswordsMatch();
-                    // },
                     validator: (value) {
                       if (value == null || value.length < 4) {
                         return "More than 4 character needed";
@@ -220,8 +211,6 @@ class _SignUpState extends State<SignUp> {
                   ),
                 ),
                 addVerticalSpace(15.0),
-                // accountSelector(context),
-                addVerticalSpace(10.0),
                 Row(
                   children: [
                     Padding(
@@ -281,7 +270,7 @@ class _SignUpState extends State<SignUp> {
                       },
                       child: Container(
                         width: MediaQuery.of(context).size.width * 0.65,
-                        height: 55,
+                        height: MediaQuery.of(context).size.height * 0.07,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(15),
                           color: Theme.of(context).primaryColor,
@@ -311,7 +300,10 @@ class _SignUpState extends State<SignUp> {
                   },
                   child: Text(
                     "Login",
-                    style: Theme.of(context).textTheme.displaySmall,
+                    style: TextStyle(
+                        color: Theme.of(context).primaryColor,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold),
                   ),
                 ),
               ],

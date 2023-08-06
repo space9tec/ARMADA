@@ -1,12 +1,13 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:armada/networkhandler.dart';
-import 'package:armada/utils/helper_widget.dart';
-import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:bot_toast/bot_toast.dart';
+
+import '../../../networkhandler.dart';
+import '../../../utils/helper_widget.dart';
 
 class Verify extends StatefulWidget {
   static const String routeName = '/verify';

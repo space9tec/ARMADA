@@ -20,8 +20,8 @@ class _AboutPageState extends State<AboutPage> {
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
+        title: const Text("About"),
         backgroundColor: Theme.of(context).primaryColor,
-        actions: [],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),

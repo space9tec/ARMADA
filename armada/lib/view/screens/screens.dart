@@ -12,6 +12,7 @@ export 'farm_screen/add_farm_screen.dart';
 export 'farm_screen/farm_profile_screen.dart';
 export 'farm_screen/farms_screen.dart';
 export 'farm_screen/upload_farm.dart';
+export 'farm_screen/farmDetail_screen.dart';
 
 export 'home_screen/home_screen.dart';
 
@@ -28,8 +29,11 @@ export 'profile_screen/edit_farmer_profile.dart';
 export 'profile_screen/farmer_profile.dart';
 export 'profile_screen/serviceProvider_profile.dart';
 
+export 'property_screen/property_screen.dart';
+
 export 'service_provider_screen/add.dart';
 export 'service_provider_screen/machine_screen.dart';
 export 'service_provider_screen/service_provider_profile.dart';
+export 'service_provider_screen/machineDetail_screen.dart';
 
 export 'setting_screen/service_provider_settring.dart';

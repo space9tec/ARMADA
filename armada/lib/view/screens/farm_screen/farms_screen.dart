@@ -1,11 +1,12 @@
 import 'dart:convert';
+
 import 'package:flutter/material.dart';
-import '../../../models/farm.dart';
-import '../../../models/usermodel.dart';
-import '../../widgets/widgets.dart';
-import 'package:armada/networkhandler.dart';
-import 'farmDetail_screen.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+
+import '../../../models/model.dart';
+import '../../../networkhandler.dart';
+import '../../widgets/widgets.dart';
+import '../screens.dart';
 
 class FarmScreen extends StatefulWidget {
   static const String routeName = '/farm_screen';
@@ -25,9 +26,11 @@ class FarmScreen extends StatefulWidget {
 
 class _FarmScreenState extends State<FarmScreen> {
   NetworkHandler networkHandler = NetworkHandler();
-  final storage = new FlutterSecureStorage();
+  final storage = const FlutterSecureStorage();
 
   List<FarmM> farm = [];
+  bool fatched = false;
+
   @override
   void initState() {
     super.initState();
@@ -37,12 +40,6 @@ class _FarmScreenState extends State<FarmScreen> {
   void fetchData() async {
     var response = await networkHandler.get("/api/farm/");
 
-    // setState(() {
-    //   farm = (json.decode(response.body) as List)
-    //       .map((data) => FarmM.fromJson(data))
-    //       .toList();
-    // });
-    // String? ownerid = await storage.read(key: "userid");
     String? userJson = await storage.read(key: 'userm');
     UserModel usermode = UserModel.fromJson(json.decode(userJson!));
 
@@ -51,10 +48,12 @@ class _FarmScreenState extends State<FarmScreen> {
     List<dynamic> filteredData = responseData
         .where((data) => data['owner_id'] == usermode.useid)
         .toList();
-
-    setState(() {
-      farm = filteredData.map((data) => FarmM.fromJson(data)).toList();
-    });
+    if (mounted) {
+      setState(() {
+        farm = filteredData.map((data) => FarmM.fromJson(data)).toList();
+        fatched = true;
+      });
+    }
   }
 
   @override
@@ -62,6 +61,7 @@ class _FarmScreenState extends State<FarmScreen> {
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
+        title: const Text("Farm"),
         backgroundColor: Theme.of(context).primaryColor,
         actions: [
           IconButton(
@@ -72,106 +72,174 @@ class _FarmScreenState extends State<FarmScreen> {
           ),
         ],
       ),
-      body: ListView.builder(
-        itemCount: farm.length,
-        itemBuilder: (BuildContext context, int index) {
-          final farms = farm[index];
-          return InkWell(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: ((context) => farmDetail(
-                        farmlist: farms,
-                        networkHandler: networkHandler,
-                      )),
-                ),
-              );
-            },
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: Colors.white,
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.grey.withOpacity(0.5),
-                      spreadRadius: 2,
-                      blurRadius: 5,
-                      offset: const Offset(0, 3),
-                    )
-                  ],
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      height: 150,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(10),
-                          topRight: Radius.circular(10),
-                        ),
-                        image: DecorationImage(
-                          image: NetworkImage(
-                              "https://armada-server.glitch.me/api/farm/image/${farms.imagename}"),
-                          fit: BoxFit.cover,
-                        ),
+      body: fatched
+          ? ListView.builder(
+              itemCount: farm.length,
+              itemBuilder: (BuildContext context, int index) {
+                final farms = farm[index];
+                return InkWell(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: ((context) => farmDetail(
+                              farmlist: farms,
+                              networkHandler: networkHandler,
+                            )),
                       ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
+                    );
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(
+                          color: Colors.grey.withOpacity(0.5),
+                        ),
+                        color: Colors.black.withOpacity(0.04),
+                      ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            "Farm Name ${farms.farmname}",
-                            style: const TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
+                          Container(
+                            height: MediaQuery.of(context).size.height * 0.2,
+                            decoration: BoxDecoration(
+                              borderRadius: const BorderRadius.only(
+                                topLeft: Radius.circular(10),
+                                topRight: Radius.circular(10),
+                              ),
+                              image: DecorationImage(
+                                image: NetworkImage(
+                                    "https://armada-server.glitch.me/api/farm/image/${farms.imagename}"),
+                                fit: BoxFit.cover,
+                              ),
                             ),
                           ),
-                          const SizedBox(height: 5),
-                          Text(
-                            'Farm Size: ${farms.farmsize} - Location:\' ${farms.longtude}',
-                            style: TextStyle(
-                              fontSize: 16,
-                              color: Colors.grey[600],
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "Farm Name: ${farms.farmname}",
+                                  style: const TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                const SizedBox(height: 5),
+                                Text(
+                                  'Farm Size: ${farms.farmsize} - Location:\' ${farms.longtude}',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    color: Colors.grey[600],
+                                  ),
+                                ),
+                              ],
                             ),
+                          ),
+                          const SizedBox(
+                            height: 10,
                           ),
                         ],
                       ),
                     ),
-                    const Padding(
-                      padding: EdgeInsets.all(8.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          Icon(
-                            Icons.thumb_up_sharp,
-                            color: Colors.green,
-                          ),
-                          Icon(Icons.star, color: Colors.yellow),
-                        ],
-                      ),
-                    )
-                  ],
-                ),
-              ),
-            ),
-          );
-        },
-      ),
+                  ),
+                );
+              },
+            )
+          : const _PreloadWidget(),
       floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            Navigator.pushNamed(context, '/upload_farm');
-          },
-          backgroundColor: Theme.of(context).primaryColor,
-          child: const Icon(Icons.add)),
+        onPressed: () {
+          Navigator.pushNamed(context, '/upload_farm');
+        },
+        backgroundColor: Theme.of(context).primaryColor,
+        child: const Icon(Icons.add),
+      ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       drawer: navigationDrawer(),
       bottomNavigationBar: bottomAppbar(context),
+    );
+  }
+}
+
+class _Skelton extends StatelessWidget {
+  final double? height, width;
+  const _Skelton({key, this.height, this.width}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: height,
+      width: width,
+      padding: const EdgeInsets.all(8),
+      decoration: BoxDecoration(
+        color: Colors.black.withOpacity(0.04),
+        borderRadius: const BorderRadius.all(Radius.circular(16)),
+      ),
+    );
+  }
+}
+
+class _PreloadWidget extends StatelessWidget {
+  const _PreloadWidget();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.all(5),
+      width: MediaQuery.of(context).size.width,
+      height: MediaQuery.of(context).size.height * 0.3,
+      child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
+        InkWell(
+          onTap: () {},
+          child: Column(
+            children: [
+              Row(
+                children: [
+                  _Skelton(
+                    width: MediaQuery.of(context).size.width * 0.97,
+                    height: MediaQuery.of(context).size.height * 0.19,
+                  ),
+                ],
+              ),
+              const SizedBox(
+                height: 5,
+              ),
+              Row(
+                children: [
+                  _Skelton(
+                    width: MediaQuery.of(context).size.width * 0.2,
+                  ),
+                  const SizedBox(
+                    width: 5,
+                  ),
+                  _Skelton(
+                    width: MediaQuery.of(context).size.width * 0.2,
+                  ),
+                ],
+              ),
+              const SizedBox(
+                height: 5,
+              ),
+              Row(
+                children: [
+                  _Skelton(
+                    width: MediaQuery.of(context).size.width * 0.4,
+                  ),
+                  const SizedBox(
+                    width: 20,
+                  ),
+                  _Skelton(
+                    width: MediaQuery.of(context).size.width * 0.2,
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ]),
     );
   }
 }

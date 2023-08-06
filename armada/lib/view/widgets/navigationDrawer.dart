@@ -48,99 +48,82 @@ class _navigationDrawerState extends State<navigationDrawer> {
 
   @override
   Widget build(BuildContext context) {
-    // final userProvider = Provider.of<UserProvider>(context);
     return Drawer(
-      child: Container(
-        height: double.infinity,
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: [
-            Column(
-              children: [
-                UserAccountsDrawerHeader(
-                  // onDetailsPressed: () {},
-                  // otherAccountsPictures: const [],
-                  accountName: usermode.firstname != ""
-                      ? GestureDetector(
-                          onTap: () {},
-                          child: Padding(
-                            padding: EdgeInsets.only(left: 12.0),
-                            child: Text(
-                                "${usermode.firstname} ${usermode.lastname}"),
-                          ),
-                        )
-                      : GestureDetector(
-                          onTap: () {
-                            Navigator.pushNamed(context, '/login');
-                          },
-                          child: const Padding(
-                            padding: EdgeInsets.only(left: 12.0),
-                            child: Text('Login'),
-                          )),
-                  accountEmail: usermode.firstname == ""
-                      ? GestureDetector(
-                          onTap: () {
-                            Navigator.pushNamed(context, '/signup');
-                          },
-                          child: const Padding(
-                            padding: EdgeInsets.only(left: 12.0),
-                            child: Text('SignUp'),
-                          ),
-                        )
-                      : null,
-                  currentAccountPicture: usermode.image != ""
-                      ? CircleAvatar(
-                          child: ClipOval(
-                              child: Image(
-                                  image: NetworkImage(
-                                      "https://armada-server.glitch.me/api/auth/Image/${usermode.image}"))),
-                        )
-                      : null,
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).primaryColor,
-                  ),
-                ),
-                SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.43,
-                  child: ListView.builder(
-                    itemBuilder: (context, index) {
-                      return CustomListTile(
-                          ind: index,
-                          title: DrawerItem[index].title,
-                          isSelected: index,
-                          icon: DrawerItem[index].icon);
-                    },
-                    itemCount: DrawerItem.length,
-                  ),
-                ),
-                // const Divider(
-                //   color: Color.fromARGB(255, 156, 155, 155),
-                // ),
-                SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.3,
-                  child: Align(
-                    alignment: Alignment.bottomCenter,
-                    child: ListView.builder(
-                      itemBuilder: (context, index) {
-                        return BCustomListTile(
-                          title: BDrawerItem[index].title,
-                          icon: BDrawerItem[index].icon,
-                          ind: index,
-                        );
-                      },
-                      itemCount: BDrawerItem.length,
+      child: Column(
+        children: [
+          UserAccountsDrawerHeader(
+            accountName: usermode.firstname != ""
+                ? GestureDetector(
+                    onTap: () {},
+                    child: Padding(
+                      padding: EdgeInsets.only(left: 12.0),
+                      child: Text("${usermode.firstname} ${usermode.lastname}"),
                     ),
-                  ),
-                ),
-                // SizedBox(
-                //   height: MediaQuery.of(context).size.height * 0.3,
-                //   child:
-                // ),
-                // Drawer
-              ],
-            )
-          ],
-        ),
+                  )
+                : GestureDetector(
+                    onTap: () {
+                      Navigator.pushNamed(context, '/login');
+                    },
+                    child: const Padding(
+                      padding: EdgeInsets.only(left: 12.0),
+                      child: Text('Login'),
+                    )),
+            accountEmail: usermode.firstname == ""
+                ? GestureDetector(
+                    onTap: () {
+                      Navigator.pushNamed(context, '/signup');
+                    },
+                    child: const Padding(
+                      padding: EdgeInsets.only(left: 12.0),
+                      child: Text('SignUp'),
+                    ),
+                  )
+                : null,
+            currentAccountPicture: usermode.image != ""
+                ? CircleAvatar(
+                    child: ClipOval(
+                        child: Image(
+                            image: NetworkImage(
+                                "https://armada-server.glitch.me/api/auth/Image/${usermode.image}"))),
+                  )
+                : null,
+            decoration: BoxDecoration(
+              color: Theme.of(context).primaryColor,
+            ),
+          ),
+          Expanded(
+            child: ListView.builder(
+              physics: const BouncingScrollPhysics(
+                  decelerationRate: ScrollDecelerationRate.fast),
+              itemBuilder: (context, index) {
+                return CustomListTile(
+                    ind: index,
+                    title: DrawerItem[index].title,
+                    isSelected: index,
+                    icon: DrawerItem[index].icon);
+              },
+              itemCount: DrawerItem.length,
+            ),
+          ),
+          SizedBox(
+            height: MediaQuery.of(context).size.height * 0.3,
+            child: Align(
+              alignment: Alignment.bottomCenter,
+              child: ListView.builder(
+                physics: const BouncingScrollPhysics(
+                    decelerationRate: ScrollDecelerationRate.normal),
+                itemBuilder: (context, index) {
+                  return BCustomListTile(
+                    title: BDrawerItem[index].title,
+                    icon: BDrawerItem[index].icon,
+                    ind: index,
+                  );
+                },
+                itemCount: BDrawerItem.length,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

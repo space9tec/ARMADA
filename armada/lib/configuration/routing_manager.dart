@@ -65,6 +65,8 @@ class ROUTESM {
         return PrivecyPolicy.route();
       case DeleteAccount.routeName:
         return DeleteAccount.route();
+      case PropertyScreen.routeName:
+        return PropertyScreen.route();
       default:
         return _errorRoute();
     }

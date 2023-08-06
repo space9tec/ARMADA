@@ -16,7 +16,7 @@ class ContactUsPage extends StatelessWidget {
       appBar: AppBar(
         elevation: 0,
         backgroundColor: Theme.of(context).primaryColor,
-        actions: [],
+        title: const Text("Contact us"),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),

@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:bot_toast/bot_toast.dart';
+import 'package:intl/intl.dart';
 
 import '../../../models/model.dart';
 import '../../../networkhandler.dart';
@@ -21,6 +22,12 @@ class ContractDetailPage extends StatefulWidget {
   State<ContractDetailPage> createState() => _ContractDetailPageState();
 }
 
+String formatDate(DateTime date) {
+  final DateFormat formatter =
+      DateFormat('dd MMMM yyyy'); // Define your desired format here
+  return formatter.format(date);
+}
+
 class _ContractDetailPageState extends State<ContractDetailPage> {
   NetworkHandler networkHandler = NetworkHandler();
   final socketService = SocketService();
@@ -34,7 +41,7 @@ class _ContractDetailPageState extends State<ContractDetailPage> {
   void initState() {
     super.initState();
     socketService.initSocket(widget.contractlist.userId);
-    socketService.socket!.on('contact', (data) {
+    socketService.socket.on('contact', (data) {
       try {
         List<dynamic> decodedData = json.decode(data);
 
@@ -55,7 +62,7 @@ class _ContractDetailPageState extends State<ContractDetailPage> {
         print('Error decoding JSON: $e');
       }
     });
-    socketService.socket!.on('new_message_count', (data) {
+    socketService.socket.on('new_message_count', (data) {
       try {
         setState(() {
           final contactId = data['contactId'];
@@ -106,8 +113,8 @@ class _ContractDetailPageState extends State<ContractDetailPage> {
 
   @override
   void dispose() {
-    socketService.socket!.off('new_message_count');
-    socketService.socket!.off('contact');
+    socketService.socket.off('new_message_count');
+    socketService.socket.off('contact');
     socketService.closeConnection();
     super.dispose();
   }
@@ -205,175 +212,267 @@ class _ContractDetailPageState extends State<ContractDetailPage> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Container(
-                  padding: const EdgeInsets.all(16),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const CircleAvatar(
-                        radius: 30,
-                        backgroundImage:
-                            AssetImage('assets/images/tracter1.png'),
-                      ),
-                      addHorizontalSpace(16),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            addVerticalSpace(8),
-                            Text(
-                              'Owner: ${machine?.manufacturer}',
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
+                  height: MediaQuery.of(context).size.height * 0.35,
+                  width: double.infinity,
+                  padding: const EdgeInsets.only(bottom: 16),
+                  child: Image.network(
+                    "https://armada-server.glitch.me/api/machinery/image/${machine!.imageFile}",
+                    fit: BoxFit.cover,
+                    height: MediaQuery.of(context).size.height * 0.25,
                   ),
                 ),
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        SizedBox(
-                          width: MediaQuery.of(context).size.width * 0.85,
-                          child: Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            width: MediaQuery.of(context).size.width * 0.85,
-                            child: Image.network(
-                                "https://armada-server.glitch.me/api/machinery/image/${machine!.imageFile}",
-                                height:
-                                    MediaQuery.of(context).size.height * 0.25),
+                Padding(
+                  padding: const EdgeInsets.only(top: 8.0, left: 16),
+                  child: Column(
+                    // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          const CircleAvatar(
+                            radius: 30,
+                            backgroundImage:
+                                AssetImage('assets/images/tracter1.png'),
                           ),
-                        ),
-                        addVerticalSpace(40),
-                        Text(
-                          'Contract Start Date: ${widget.contractlist.rent_start_time}',
-                        ),
-                        addVerticalSpace(4),
-                        Text(
-                          'Contract End Date: ${widget.contractlist.rent_end_time}',
-                        ),
-                        widget.contractlist.ownerId == usermode.useid
-                            ? Expanded(
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceAround,
-                                  children: [
-                                    SizedBox(
-                                      width: MediaQuery.of(context).size.width *
-                                          0.25,
-                                      child: ElevatedButton(
-                                        onPressed: () async {
-                                          Map<String, String> updateData = {
-                                            "status": "rejected",
-                                          };
-                                          var updateResponse =
-                                              await networkHandler.put(
-                                                  "/api/contracts/${widget.contractlist.contractId}",
-                                                  updateData);
-                                          if (updateResponse.statusCode ==
-                                                  200 ||
-                                              updateResponse.statusCode ==
-                                                  201) {
-                                            print("contract status updated");
-                                          }
+                          addHorizontalSpace(16),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              addVerticalSpace(8),
+                              Text(
+                                '${machine?.manufacturer}',
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                      addVerticalSpace(30),
+                      Text(
+                        // contracts.rent_start_time))
+                        'Contract Start Date: ${formatDate(DateTime.parse(widget.contractlist.rent_start_time))}',
+                      ),
+                      addVerticalSpace(14),
+                      Text(
+                        'Contract End Date: ${formatDate(DateTime.parse(widget.contractlist.rent_end_time))}',
+                      ),
+                      addVerticalSpace(140),
+                      widget.contractlist.ownerId == usermode.useid
+                          ? Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                // SizedBox(
+                                //   width:
+                                //       MediaQuery.of(context).size.width * 0.4,
+                                //   height:
+                                //       MediaQuery.of(context).size.height * 0.07,
+                                //   child: ElevatedButton(
+                                //     onPressed: () async {
+                                //       Map<String, String> updateData = {
+                                //         "status": "rejected",
+                                //       };
+                                //       var updateResponse = await networkHandler.put(
+                                //           "/api/contracts/${widget.contractlist.contractId}",
+                                //           updateData);
+                                //       if (updateResponse.statusCode == 200 ||
+                                //           updateResponse.statusCode == 201) {
+                                //         print("contract status updated");
+                                //       }
 
-                                          Navigator.pushNamed(
-                                              context, '/contrat_page');
-                                        },
-                                        style: ButtonStyle(
-                                          backgroundColor:
-                                              MaterialStateProperty.all(
-                                            const Color(0xFF006837),
-                                          ),
-                                        ),
-                                        child: const Text(
-                                          'Reject',
-                                          style: TextStyle(fontSize: 18),
-                                        ),
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      width: MediaQuery.of(context).size.width *
-                                          0.25,
-                                      child: ElevatedButton(
-                                        onPressed: () async {
-                                          Map<String, String> updateData = {
-                                            "status": "accepted",
-                                          };
-                                          var updateResponse =
-                                              await networkHandler.put(
-                                                  "/api/contracts/${widget.contractlist.contractId}",
-                                                  updateData);
-                                          if (updateResponse.statusCode ==
-                                                  200 ||
-                                              updateResponse.statusCode ==
-                                                  201) {
-                                            print("contract status updated");
-                                          }
+                                //       Navigator.pushNamed(
+                                //           context, '/contrat_page');
+                                //     },
+                                //     style: ButtonStyle(
+                                //       backgroundColor:
+                                //           MaterialStateProperty.all(
+                                //         const Color(0xFF006837),
+                                //       ),
+                                //     ),
+                                //     child: const Text(
+                                //       'Reject',
+                                //       style: TextStyle(fontSize: 18),
+                                //     ),
+                                //   ),
+                                // ),
+                                // addHorizontalSpace(10),
+                                // SizedBox(
+                                //   width:
+                                //       MediaQuery.of(context).size.width * 0.4,
+                                //   height:
+                                //       MediaQuery.of(context).size.height * 0.07,
+                                //   child: ElevatedButton(
+                                //     onPressed: () async {
+                                //       Map<String, String> updateData = {
+                                //         "status": "accepted",
+                                //       };
+                                //       var updateResponse = await networkHandler.put(
+                                //           "/api/contracts/${widget.contractlist.contractId}",
+                                //           updateData);
+                                //       if (updateResponse.statusCode == 200 ||
+                                //           updateResponse.statusCode == 201) {
+                                //         print("contract status updated");
+                                //       }
 
-                                          Navigator.pushNamed(
-                                              context, '/contrat_page');
-                                        },
-                                        style: ButtonStyle(
-                                          backgroundColor:
-                                              MaterialStateProperty.all(
-                                            const Color(0xFF006837),
-                                          ),
-                                        ),
-                                        child: const Text(
-                                          'Confirm',
-                                          style: TextStyle(fontSize: 18),
-                                        ),
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      width: MediaQuery.of(context).size.width *
-                                          0.4,
-                                      child: ElevatedButton(
-                                        onPressed: () {
-                                          // Start Message
-                                          // Navigator.of(context).push(
-                                          //     MaterialPageRoute(
-                                          //         builder: (context) =>
-                                          //             ChatPage(
-                                          //               sender: usermode.useid,
-                                          //               receiver: widget
-                                          //                   .contractlist
-                                          //                   .userId,
-                                          //               name:
-                                          //                   usermode.firstname,
-                                          //               socketService:
-                                          //                   socketService,
-                                          //             )));
-                                        },
-                                        style: ButtonStyle(
-                                          backgroundColor:
-                                              MaterialStateProperty.all(
-                                            const Color(0xFF006837),
-                                          ),
-                                        ),
-                                        child: const Text(
-                                          'Start Message',
-                                          style: TextStyle(fontSize: 18),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              )
-                            : Container(),
-                      ],
-                    ),
+                                //       Navigator.pushNamed(
+                                //           context, '/contrat_page');
+                                //     },
+                                //     style: ButtonStyle(
+                                //       backgroundColor:
+                                //           MaterialStateProperty.all(
+                                //         const Color(0xFF006837),
+                                //       ),
+                                //     ),
+                                //     child: const Text(
+                                //       'Confirm',
+                                //       style: TextStyle(fontSize: 18),
+                                //     ),
+                                //   ),
+                                // ),
+                              ],
+                            )
+                          : Container(),
+                    ],
                   ),
                 ),
               ],
             )
           : const Center(
               child: CircularProgressIndicator(color: Color(0xFF006837))),
+      // bottomNavigationBar: BottomAppBar(
+      //   color: Theme.of(context).bottomAppBarTheme.color,
+      //   child: SizedBox(
+      //     height: MediaQuery.of(context).size.height * 0.08,
+      //     child: Row(
+      //       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      //       children: [
+      //         GestureDetector(
+      //           onTap: () {
+      //             Navigator.pushNamed(context, '/guest');
+      //           },
+      //           child: Container(
+      //             decoration: const BoxDecoration(border: Border()),
+      //             width: MediaQuery.of(context).size.width * 0.5,
+      //             child: const Column(
+      //               crossAxisAlignment: CrossAxisAlignment.center,
+      //               mainAxisAlignment: MainAxisAlignment.center,
+      //               children: [
+      //                 Icon(Icons.home, color: Colors.white),
+      //                 Text('Confirm',
+      //                     style: TextStyle(fontSize: 12, color: Colors.white)),
+      //               ],
+      //             ),
+      //           ),
+      //         ),
+      //         GestureDetector(
+      //           onTap: () {
+      //             Navigator.pushNamed(context, '/login');
+      //           },
+      //           child: Container(
+      //             decoration: const BoxDecoration(border: Border()),
+      //             width: MediaQuery.of(context).size.width * 0.5,
+      //             child: const Column(
+      //               crossAxisAlignment: CrossAxisAlignment.center,
+      //               mainAxisAlignment: MainAxisAlignment.center,
+      //               children: [
+      //                 Icon(Icons.account_box, color: Colors.white),
+      //                 Text('Reject',
+      //                     style: TextStyle(fontSize: 12, color: Colors.white)),
+      //               ],
+      //             ),
+      //           ),
+      //         ),
+      //       ],
+      //     ),
+      //   ),
+      // ),
+      bottomSheet: widget.contractlist.ownerId == usermode.useid
+          ? Row(
+              children: [
+                SizedBox(
+                  width: MediaQuery.of(context).size.width * 0.496,
+                  height: MediaQuery.of(context).size.height * 0.07,
+                  child: ElevatedButton(
+                    onPressed: () async {
+                      Map<String, String> updateData = {
+                        "status": "rejected",
+                      };
+                      var updateResponse = await networkHandler.put(
+                          "/api/contracts/${widget.contractlist.contractId}",
+                          updateData);
+                      if (updateResponse.statusCode == 200 ||
+                          updateResponse.statusCode == 201) {
+                        print("contract status updated");
+                      }
+
+                      Navigator.pushNamed(context, '/contrat_page');
+                    },
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all(
+                        const Color(0xFF006837),
+                      ),
+                    ),
+                    child: const Text(
+                      'Reject',
+                      style: TextStyle(fontSize: 18),
+                    ),
+                  ),
+                ),
+                addHorizontalSpace(2),
+                SizedBox(
+                  width: MediaQuery.of(context).size.width * 0.496,
+                  height: MediaQuery.of(context).size.height * 0.07,
+                  child: ElevatedButton(
+                    onPressed: () async {
+                      Map<String, String> updateData = {
+                        "status": "accepted",
+                      };
+                      var updateResponse = await networkHandler.put(
+                          "/api/contracts/${widget.contractlist.contractId}",
+                          updateData);
+                      if (updateResponse.statusCode == 200 ||
+                          updateResponse.statusCode == 201) {
+                        print("contract status updated");
+                      }
+
+                      Navigator.pushNamed(context, '/contrat_page');
+                    },
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all(
+                        const Color(0xFF006837),
+                      ),
+                    ),
+                    child: const Text(
+                      'Confirm',
+                      style: TextStyle(fontSize: 18),
+                    ),
+                  ),
+                ),
+              ],
+            )
+          : null,
+      floatingActionButton: widget.contractlist.ownerId == usermode.useid
+          ? Container(
+              height: 50,
+              width: 50,
+              decoration:
+                  BoxDecoration(border: Border.all(color: Colors.white)),
+              child: FloatingActionButton.extended(
+                // backgroundColor: Colors.grey,
+                onPressed: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => ChatPage(
+                            sender: usermode.useid,
+                            receiver: widget.contractlist.userId,
+                            name: usermode.firstname,
+                            socketService: socketService,
+                          )));
+                },
+                elevation: 0,
+                label: const Icon(Icons.send_rounded),
+              ),
+            )
+          : null,
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
   }
 }

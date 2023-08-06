@@ -2,8 +2,8 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
-import 'package:intl/intl.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:intl/intl.dart';
 
 import '../../../models/model.dart';
 import '../../../networkhandler.dart';
@@ -75,29 +75,27 @@ class _ContractListState extends State<ContractList> {
 
   @override
   Widget build(BuildContext context) {
-    return GridView.count(
-      crossAxisCount: 2,
-      childAspectRatio: 1 / 1,
-      children: List.generate(
-        contract.length,
-        (index) {
-          final contracts = contract[index];
-          return FutureBuilder(
-            future: _getMachineData(contracts.machineId),
-            builder: (BuildContext context, AsyncSnapshot<Response> snapshot) {
-              if (snapshot.connectionState == ConnectionState.done &&
-                  snapshot.hasData) {
-                Map<String, dynamic> machineData =
-                    json.decode(snapshot.data!.body);
-                MachineM machine = MachineM.fromJson(machineData["machinery"]);
+    return ListView.builder(
+      itemCount: contract.length,
+      itemBuilder: (BuildContext context, int index) {
+        final contracts = contract[index];
+        return FutureBuilder(
+          future: _getMachineData(contracts.machineId),
+          builder: (BuildContext context, AsyncSnapshot<Response> snapshot) {
+            if (snapshot.connectionState == ConnectionState.done &&
+                snapshot.hasData) {
+              Map<String, dynamic> machineData =
+                  json.decode(snapshot.data!.body);
+              MachineM machine = MachineM.fromJson(machineData["machinery"]);
 
-                return _buildContractCard(contracts, machine, context);
-              }
-              return Container();
-            },
-          );
-        },
-      ),
+              return _buildContractCard(contracts, machine, context);
+            } else if (snapshot.connectionState == ConnectionState.waiting) {
+              return PreloadWidget();
+            }
+            return PreloadWidget();
+          },
+        );
+      },
     );
   }
 
@@ -106,60 +104,140 @@ class _ContractListState extends State<ContractList> {
     return response;
   }
 
+  Color _getBorderColor(String status) {
+    switch (status) {
+      case "accepted":
+        return Color.fromARGB(
+            255, 222, 253, 223); // Set the border color for the accepted status
+      case "In Progress":
+        return const Color.fromARGB(
+            255, 253, 251, 229); // Set the border color for the pending status
+      case "rejected":
+        return const Color.fromARGB(
+            255, 250, 226, 224); // Set the border color for the rejected status
+      default:
+        return Colors.transparent; // Set a default border color if needed
+    }
+  }
+
+  String formatDate(DateTime date) {
+    final DateFormat formatter =
+        DateFormat('dd MMMM yyyy'); // Define your desired format here
+    return formatter.format(date);
+  }
+
   Widget _buildContractCard(
       ContractsModel contracts, MachineM machine, BuildContext context) {
-    return InkWell(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: ((context) => ContractDetailPage(
-                  contractlist: contracts,
-                )),
-          ),
-        );
-      },
-      child: SizedBox(
-        height: MediaQuery.of(context).size.height * 0.13,
-        child: Card(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
-            side: const BorderSide(color: Color(0xFF006837), width: 1),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              ListTile(
-                leading: CircleAvatar(
-                    backgroundImage: NetworkImage(
-                        "https://armada-server.glitch.me/api/machinery/image/${machine.imageFile}")),
-                title: Text(machine.manufacturer),
-                subtitle: Text("${machine.year}"),
-              ),
-              Row(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                            "Start date: ${DateFormat('dd MMMM yyyy').format(DateTime.parse(contracts.rent_start_time))}",
-                            style: const TextStyle(
-                                fontSize: 10.0, fontWeight: FontWeight.bold)),
-                        const SizedBox(height: 8.0),
-                        Text(
-                            "End date: ${DateFormat('dd MMMM yyyy').format(DateTime.parse(contracts.rent_end_time))}",
-                            style: const TextStyle(
-                                fontSize: 10.0, fontWeight: FontWeight.bold)),
-                        const SizedBox(height: 8.0),
-                        Text(contracts.status),
-                      ],
-                    ),
+    return SizedBox(
+      width: MediaQuery.of(context).size.width * 0.8,
+      child: InkWell(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: ((context) => ItemPage(
+                    contractsModel: contracts,
+                    machine: machine,
+                  )),
+            ),
+          );
+        },
+        child: SizedBox(
+          height: MediaQuery.of(context).size.height * 0.13,
+          // width: MediaQuery.of(context).size.width * 0.8,
+          child: Card(
+            color: _getBorderColor(contracts.status),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+              side: BorderSide(
+                  color: _getBorderColor(contracts.status), width: 1),
+            ),
+            child: Row(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(left: 8.0),
+                  child: Container(
+                    height: MediaQuery.of(context).size.height * 0.095,
+                    width: MediaQuery.of(context).size.width * 0.25,
+                    decoration: BoxDecoration(
+                        border:
+                            Border.all(color: Colors.black.withOpacity(0.02)),
+                        color: Colors.black.withOpacity(0.04),
+                        borderRadius: BorderRadius.circular(12)),
+                    child: ClipRRect(
+                        borderRadius: BorderRadius.circular(12),
+                        child: Image.network(
+                          fit: BoxFit.cover,
+                          "https://armada-server.glitch.me/api/machinery/image/${machine.imageFile}",
+                        )),
                   ),
-                ],
-              ),
-            ],
+                ),
+                Stack(
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.all(10.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(machine.type),
+                          // Text(machine.model),
+                          Padding(
+                            padding: EdgeInsets.only(left: 0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                Text("Duration"),
+                                Container(
+                                  height: 30,
+                                  width: 250,
+                                  decoration: BoxDecoration(
+                                      border: Border.all(
+                                          color:
+                                              Colors.black.withOpacity(0.02)),
+                                      color: Colors.black.withOpacity(0.04),
+                                      borderRadius: BorderRadius.circular(12)),
+                                  child: Row(children: [
+                                    Icon(Icons.access_time_rounded),
+                                    Padding(
+                                      padding: EdgeInsets.only(left: 10),
+                                      child: Text(
+                                          // String formattedDate = formatDate(myDate);
+                                          "${formatDate(DateTime.parse(contracts.rent_start_time))} - ${formatDate(DateTime.parse(contracts.rent_end_time))}"),
+                                    )
+                                  ]),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Positioned(
+                      top: 5,
+                      right: 10,
+                      child: Container(
+                        height: 30,
+                        child: Text(contracts.status),
+                      ),
+                    )
+                  ],
+                ),
+              ],
+            ),
+            // child: Column(
+            //   crossAxisAlignment: CrossAxisAlignment.start,
+            //   children: [
+            //     ListTile(
+            //       leading: CircleAvatar(
+            //           backgroundImage: NetworkImage(
+            //               "https://armada-server.glitch.me/api/machinery/image/${machine.imageFile}")),
+            //       title: Text(machine.manufacturer),
+            //       subtitle: Text("${contracts.status}"),
+            //     ),
+            //   ],
+            // ),
           ),
         ),
       ),
@@ -224,6 +302,7 @@ class ContractPageState extends State<ContractPage>
       appBar: AppBar(
         elevation: 0,
         backgroundColor: Theme.of(context).primaryColor,
+        title: Text("Contracts"),
         actions: [
           IconButton(
             onPressed: () {
@@ -240,7 +319,7 @@ class ContractPageState extends State<ContractPage>
           ],
           // indicatorColor: Colors.white,
           indicatorSize: TabBarIndicatorSize.tab,
-          indicatorWeight: 3,
+          indicatorWeight: 3, indicatorColor: Colors.white,
           labelColor: Colors.white,
           labelStyle:
               const TextStyle(fontSize: 15.0, fontWeight: FontWeight.bold),
@@ -249,12 +328,88 @@ class ContractPageState extends State<ContractPage>
       body: TabBarView(
         controller: _tabController,
         children: const [
-          ContractList("sent"),
-          ContractList("received"),
+          Padding(
+            padding: EdgeInsets.all(8.0),
+            child: ContractList("sent"),
+          ),
+          Padding(
+            padding: EdgeInsets.all(8.0),
+            child: ContractList("received"),
+          ),
         ],
       ),
       drawer: navigationDrawer(),
       bottomNavigationBar: bottomAppbar(context),
+    );
+  }
+}
+
+class _Skelton extends StatelessWidget {
+  final double? height, width;
+  const _Skelton({key, this.height, this.width}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: height,
+      width: width,
+      padding: const EdgeInsets.all(8),
+      decoration: BoxDecoration(
+        color: Colors.black.withOpacity(0.04),
+        borderRadius: const BorderRadius.all(Radius.circular(16)),
+      ),
+    );
+  }
+}
+
+class PreloadWidget extends StatelessWidget {
+  const PreloadWidget({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.all(5),
+      // width: MediaQuery.of(context).size.width * 0.3,
+      height: MediaQuery.of(context).size.height * 0.13,
+      child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
+        InkWell(
+          onTap: () {},
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+            child: Row(
+              children: [
+                _Skelton(
+                  width: MediaQuery.of(context).size.width * 0.25,
+                  height: MediaQuery.of(context).size.height * 0.095,
+                ),
+                SizedBox(
+                  width: 10,
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Skelton(width: 50),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Skelton(width: 40),
+                    SizedBox(
+                      height: 5,
+                    ),
+                    Skelton(
+                      width: 180,
+                      height: 25,
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      ]),
     );
   }
 }
