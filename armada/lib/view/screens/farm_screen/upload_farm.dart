@@ -1,15 +1,16 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/material.dart';
 import 'package:bot_toast/bot_toast.dart';
 import 'package:dotted_border/dotted_border.dart';
-import 'package:flutter/material.dart';
-import 'package:armada/networkhandler.dart';
-import '../../../models/usermodel.dart';
-import '../../../utils/helper_widget.dart';
 import 'package:image_picker/image_picker.dart';
-import '../../widgets/widgets.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+
+import '../../../models/model.dart';
+import '../../../networkhandler.dart';
+import '../../../utils/helper_widget.dart';
+import '../../widgets/widgets.dart';
 
 class UploadFarm extends StatefulWidget {
   static const String routeName = '/upload_farm';
@@ -18,7 +19,7 @@ class UploadFarm extends StatefulWidget {
     return MaterialPageRoute(
       settings: const RouteSettings(name: routeName),
       builder: (context) {
-        return UploadFarm();
+        return const UploadFarm();
       },
     );
   }
@@ -36,6 +37,11 @@ class _UploadFarmState extends State<UploadFarm> {
   final TextEditingController _farmName = TextEditingController();
   NetworkHandler networkHandler = NetworkHandler();
   final storage = const FlutterSecureStorage();
+
+  bool validate = false;
+  String? errorText;
+  XFile? imageFile;
+  final ImagePicker picker = ImagePicker();
 
   final _region = [
     'Tigray',
@@ -75,12 +81,6 @@ class _UploadFarmState extends State<UploadFarm> {
   ];
   String _selectedcropgrown = "Teff";
 
-  bool validate = false;
-  String? errorText;
-
-  XFile? imageFile;
-  final ImagePicker picker = ImagePicker();
-
   final image = Image.asset(
     height: 50,
     "assets/images/tracter1.png",
@@ -100,7 +100,6 @@ class _UploadFarmState extends State<UploadFarm> {
           ),
         ],
       ),
-      backgroundColor: Colors.white,
       body: Padding(
         padding: const EdgeInsets.all(20),
         child: SingleChildScrollView(
@@ -151,8 +150,8 @@ class _UploadFarmState extends State<UploadFarm> {
                                 value: _selectedregion,
                                 items: _region
                                     .map((e) => DropdownMenuItem(
-                                          child: Text(e),
                                           value: e,
+                                          child: Text(e),
                                         ))
                                     .toList(),
                                 onChanged: (val) {
@@ -160,11 +159,11 @@ class _UploadFarmState extends State<UploadFarm> {
                                     _selectedregion = val as String;
                                   });
                                 },
-                                icon: Icon(Icons.arrow_drop_down_circle),
-                                dropdownColor: Colors.white,
+                                icon: const Icon(Icons.arrow_drop_down_circle),
                                 decoration: InputDecoration(
                                   labelText: "Region",
-                                  labelStyle: TextStyle(color: Colors.grey),
+                                  labelStyle:
+                                      const TextStyle(color: Colors.grey),
                                   border: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(15),
                                       borderSide: const BorderSide(
@@ -201,8 +200,8 @@ class _UploadFarmState extends State<UploadFarm> {
                             value: _selectedcropgrown,
                             items: _cropgrown
                                 .map((e) => DropdownMenuItem(
-                                      child: Text(e),
                                       value: e,
+                                      child: Text(e),
                                     ))
                                 .toList(),
                             onChanged: (val) {
@@ -210,8 +209,7 @@ class _UploadFarmState extends State<UploadFarm> {
                                 _selectedcropgrown = val as String;
                               });
                             },
-                            icon: Icon(Icons.arrow_drop_down_circle),
-                            dropdownColor: Colors.white,
+                            icon: const Icon(Icons.arrow_drop_down_circle),
                             decoration: InputDecoration(
                               labelText: "Crop Grown",
                               labelStyle: TextStyle(color: Colors.grey),
@@ -250,7 +248,7 @@ class _UploadFarmState extends State<UploadFarm> {
                               });
                             },
                             icon: Icon(Icons.arrow_drop_down_circle),
-                            dropdownColor: Colors.white,
+                            // dropdownColor: Colors.white,
                             decoration: InputDecoration(
                               labelText: "Soil Type",
                               labelStyle: TextStyle(color: Colors.grey),

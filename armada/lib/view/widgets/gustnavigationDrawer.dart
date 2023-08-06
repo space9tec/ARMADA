@@ -8,12 +8,9 @@ class GustNavigationDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Drawer(
-      child: ListView(
-        padding: EdgeInsets.zero,
+      child: Column(
         children: [
           UserAccountsDrawerHeader(
-            onDetailsPressed: () {},
-            otherAccountsPictures: const [],
             accountName: GestureDetector(
               onTap: () {
                 Navigator.pushNamed(context, '/login');
@@ -41,9 +38,9 @@ class GustNavigationDrawer extends StatelessWidget {
               color: Theme.of(context).primaryColor,
             ),
           ),
-          SizedBox(
-            height: MediaQuery.of(context).size.height * 0.43,
+          Expanded(
             child: ListView.builder(
+              physics: const ClampingScrollPhysics(),
               itemBuilder: (context, index) {
                 return gCustomListTile(
                     ind: index,
@@ -53,12 +50,10 @@ class GustNavigationDrawer extends StatelessWidget {
               itemCount: gustDrawerItem.length,
             ),
           ),
-          const Divider(
-            color: Color.fromARGB(255, 156, 155, 155),
-          ),
           SizedBox(
             height: MediaQuery.of(context).size.height * 0.3,
             child: ListView.builder(
+              physics: const ClampingScrollPhysics(),
               itemBuilder: (context, index) {
                 return BgCustomListTile(
                   title: gustBDrawerItem[index].title,

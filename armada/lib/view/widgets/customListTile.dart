@@ -1,11 +1,10 @@
 import 'package:armada/provider/drower_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:provider/provider.dart';
 import 'package:armada/networkhandler.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:bot_toast/bot_toast.dart';
-import '../../main.dart';
 import '../../provider/provider.dart';
 import '../../services/tokenManager.dart';
 
@@ -160,16 +159,20 @@ class _BCustomListTileState extends State<BCustomListTile> {
   }
 
   logout() async {
+    EasyLoading.show(status: 'loading...');
+
     final storage = new FlutterSecureStorage();
 
     var response = await networkHandler.get("/api/auth/logout");
     String? token = await TokenManager().getToken();
+    // EasyLoading easyLoading = Provider.of<EasyLoading>(context);
     if (token != null) {
       if (response.statusCode == 200) {
         // await storage.delete(key: "token");
         await TokenManager().removeToken();
         await storage.delete(key: "userm");
         await TokenManager().removeToken();
+        EasyLoading.dismiss();
 
         BotToast.showText(
           text: "Logged out",
@@ -177,11 +180,9 @@ class _BCustomListTileState extends State<BCustomListTile> {
           contentColor: Colors.white,
           textStyle: TextStyle(fontSize: 16.0, color: Color(0xFF006837)),
         );
-
         Navigator.of(context)
             .pushNamedAndRemoveUntil('/guest', (Route<dynamic> route) => false);
-        // runApp(MyApp(showHomw: false));
-        // SystemNavigator.pop();
+
         print("Logedout");
       } else {
         print("failed");
@@ -252,7 +253,6 @@ class _gCustomListTileState extends State<gCustomListTile> {
                 Text(
                   widget.title,
                   style: TextStyle(
-                    color: Theme.of(context).primaryColor,
                     fontSize: 17,
                   ),
                 )
@@ -325,7 +325,6 @@ class _BgCustomListTileState extends State<BgCustomListTile> {
                 Text(
                   widget.title,
                   style: TextStyle(
-                    color: Theme.of(context).primaryColor,
                     fontSize: 17,
                   ),
                 )

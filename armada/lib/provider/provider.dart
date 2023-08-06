@@ -7,3 +7,6 @@ export 'machine_status_provider.dart';
 export 'themeProvider.dart';
 export 'user_provider.dart';
 export 'usermodel_provider.dart';
+export 'rangeslider_provider.dart';
+export 'datepicker_provier.dart';
+export 'bottomNavigation.dart';

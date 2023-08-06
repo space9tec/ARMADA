@@ -21,6 +21,7 @@ class CustomTheme {
       buttonTheme: _buildButtonTheme(primaryColor),
       cardTheme: _buildCardTheme(),
       dialogTheme: _buildDialogTheme(),
+      // datePickerTheme: _buildDatepickerTheme(),
       floatingActionButtonTheme: _buildFabTheme(isDarkMode),
       iconTheme: _buildIconTheme(isDarkMode),
       popupMenuTheme: _buildPopupMenuTheme(),
@@ -89,6 +90,19 @@ class CustomTheme {
       color: appBarColor,
     );
   }
+
+  // DatePickerTheme _buildDatepickerTheme(bool isDarkMode) {
+  //   final Color? textcolor =
+  //       isDarkMode ? const Color.fromARGB(255, 248, 248, 248) : Colors.black;
+  //   return DatePickerTheme(
+  //     data: DatePickerThemeData(
+  //       backgroundColor: isDarkMode ? Colors.black : Colors.white,
+  //       shadowColor: isDarkMode ? Colors.grey[800] : Colors.blue,
+  //       headerHelpStyle: TextStyle(color: Colors.white),
+  //       dayStyle: TextStyle(color: Colors.black),
+  //     ),
+  //   );
+  // }
 
   ButtonThemeData _buildButtonTheme(Color primaryColor) {
     return ButtonThemeData(

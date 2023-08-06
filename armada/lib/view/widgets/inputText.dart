@@ -11,11 +11,17 @@ Widget InputTextNumber(
     bool validate) {
   return SizedBox(
     width: MediaQuery.of(context).size.width * 0.71,
-    height: MediaQuery.of(context).size.height * 0.08,
+    height: MediaQuery.of(context).size.height * 0.1,
     child: TextFormField(
       controller: controller,
       keyboardType: ktype,
       obscureText: false,
+      validator: (value) {
+        if (value == null || value.length != 13) {
+          return "Phone must be 14 digit.";
+        }
+        return null;
+      },
       style: const TextStyle(
         fontSize: 17,
         color: Colors.grey,
@@ -59,7 +65,7 @@ Widget InputText(
   bool isPasswordVisible = false;
   return SizedBox(
     width: MediaQuery.of(context).size.width * 0.71,
-    height: MediaQuery.of(context).size.height * 0.08,
+    height: MediaQuery.of(context).size.height * 0.1,
     child: TextFormField(
       controller: controller,
       keyboardType: ktype,

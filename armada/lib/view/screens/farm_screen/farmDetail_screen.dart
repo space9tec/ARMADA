@@ -1,14 +1,12 @@
-import 'package:armada/configuration/theme_manager.dart';
-import 'package:armada/models/farm.dart';
-import 'package:armada/networkhandler.dart';
-import 'package:armada/utils/helper_widget.dart';
-import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../farm_screen/edit_farm_screen.dart';
+import 'package:bot_toast/bot_toast.dart';
 
+import '../../../models/model.dart';
+import '../../../networkhandler.dart';
 import '../../../provider/item_provider.dart';
-import 'farms_screen.dart';
+import '../../../utils/helper_widget.dart';
+import '../farm_screen/edit_farm_screen.dart';
 
 class farmDetail extends StatefulWidget {
   const farmDetail(
@@ -24,30 +22,17 @@ class _farmDetailState extends State<farmDetail> {
   @override
   void initState() {
     super.initState();
-    // theme = CustomTheme.getTheme(isDarkMode);
-    customTheme = CustomTheme();
-    // textTheme = customTheme.textTheme();
   }
 
-  late CustomTheme customTheme;
-  // late TextTheme textTheme;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: InkWell(
-          onTap: () {
-            Navigator.push(context,
-                MaterialPageRoute(builder: ((context) => FarmScreen())));
-          },
-          child: Icon(Icons.arrow_back_ios_new_rounded),
-        ),
         elevation: 0,
         backgroundColor: Theme.of(context).primaryColor,
         actions: [
           IconButton(
             onPressed: () {
-              // Navigator.pushNamed(context, '/edit_farm');
               Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -70,30 +55,23 @@ class _farmDetailState extends State<farmDetail> {
                     context: context,
                     builder: (BuildContext context) {
                       return AlertDialog(
-                        backgroundColor: Colors.white,
-                        title: Text('Confirm Delete'),
-                        content:
-                            Text('Are you sure you want to delete this Farm?'),
+                        title: const Text('Confirm Delete'),
+                        content: const Text(
+                            'Are you sure you want to delete this Farm?'),
                         actions: <Widget>[
                           ElevatedButton(
                             style: ElevatedButton.styleFrom(
                                 elevation: 0,
                                 backgroundColor:
                                     Theme.of(context).primaryColor),
-                            child: Text('Cancel'),
+                            child: const Text('Cancel'),
                             onPressed: () {
                               Navigator.of(context).pop();
                             },
                           ),
                           ElevatedButton(
-                            child: Text('Delete'),
+                            child: const Text('Delete'),
                             onPressed: () async {
-                              // Perform the delete operation here
-                              // Map<String, String> data = {
-                              //   "_id": widget.farmlist.farmid,
-                              // };
-                              // var response = await networkHandler.postt(
-                              //     "/api/farm/delete", data);
                               var response = await widget.networkHandler.delete(
                                   "/api/farm/${widget.farmlist.farmid}");
                               if (response.statusCode == 200) {
@@ -101,14 +79,11 @@ class _farmDetailState extends State<farmDetail> {
 
                                 BotToast.showText(
                                   text: "Farm deleted",
-                                  duration: Duration(seconds: 2),
+                                  duration: const Duration(seconds: 2),
                                   contentColor: Colors.white,
-                                  textStyle: TextStyle(
+                                  textStyle: const TextStyle(
                                       fontSize: 16.0, color: Color(0xFF006837)),
                                 );
-                                // Navigator.of(context).pushNamedAndRemoveUntil(
-                                //     '/guest', (Route<dynamic> route) => false);
-                                // Navigator.of(context).pop();
                               } else {
                                 print("faild");
                                 print(response.body.toString());
@@ -123,7 +98,6 @@ class _farmDetailState extends State<farmDetail> {
           ),
         ],
       ),
-      backgroundColor: Colors.grey.shade300,
       body: SafeArea(
         child: Consumer<ItemNotifire>(builder: (context, value, child) {
           return CustomScrollView(
@@ -134,77 +108,68 @@ class _farmDetailState extends State<farmDetail> {
                 pinned: true,
                 snap: false,
                 floating: true,
-                backgroundColor: Colors.transparent,
-                expandedHeight: MediaQuery.of(context).size.height,
+                expandedHeight: MediaQuery.of(context).size.height * 0.35,
                 flexibleSpace: FlexibleSpaceBar(
-                  background: Stack(
-                    children: [
-                      SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.5,
-                        width: MediaQuery.of(context).size.width,
-                        child: Stack(
-                          children: [
-                            Container(
-                              height: MediaQuery.of(context).size.height * 0.39,
-                              width: MediaQuery.of(context).size.width,
-                              color: Colors.grey.shade300,
-                              child: Image.asset(
-                                fit: BoxFit.contain,
-                                height: 100,
-                                "assets/images/tracter1.png",
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Positioned(
-                        bottom: 5,
-                        child: ClipRRect(
-                          borderRadius: const BorderRadius.only(
-                            topLeft: Radius.circular(30),
-                            topRight: Radius.circular(30),
-                          ),
-                          child: Container(
-                            height: MediaQuery.of(context).size.height * 0.605,
-                            width: MediaQuery.of(context).size.width,
-                            color: Colors.white,
-                            child: Padding(
-                              padding: const EdgeInsets.all(12),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    "Farm name: ${widget.farmlist.farmname}",
-                                    // style: textTheme.displayMedium,
-                                  ),
-                                  addVerticalSpace(10),
-                                  Text(
-                                    "Size: ${widget.farmlist.farmsize}",
-                                    // style: textTheme.displayMedium,
-                                  ),
-                                  addVerticalSpace(10),
-                                  Text(
-                                    "Crop type : ${widget.farmlist.croptype}",
-                                    // style: textTheme.displayMedium,
-                                  ),
-                                  addVerticalSpace(10),
-                                  addVerticalSpace(10),
-                                  addVerticalSpace(30),
-                                ],
-                              ),
-                            ),
+                  background: SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.35,
+                    width: MediaQuery.of(context).size.width,
+                    child: Stack(
+                      children: [
+                        Container(
+                          height: MediaQuery.of(context).size.height * 0.35,
+                          width: MediaQuery.of(context).size.width,
+                          color: Colors.grey.shade300,
+                          child: Image.network(
+                            "https://armada-server.glitch.me/api/farm/image/${widget.farmlist.imagename}",
                           ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),
+              // Sliv
+              SliverToBoxAdapter(
+                child: ClipRRect(
+                  borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(30),
+                    topRight: Radius.circular(30),
+                  ),
+                  child: Container(
+                    height: MediaQuery.of(context).size.height * 0.605,
+                    width: MediaQuery.of(context).size.width,
+                    // color: Colors.white,
+                    child: Padding(
+                      padding: const EdgeInsets.all(12),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Farm name: ${widget.farmlist.farmname}",
+                          ),
+                          addVerticalSpace(10),
+                          Text(
+                            "Size: ${widget.farmlist.farmsize}",
+                          ),
+                          addVerticalSpace(10),
+                          Text(
+                            "Crop type : ${widget.farmlist.croptype}",
+                          ),
+                          addVerticalSpace(10),
+                          Text(
+                            "Region : ${widget.farmlist.longtude}",
+                          ),
+                          addVerticalSpace(10),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              )
             ],
           );
         }),
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
 }

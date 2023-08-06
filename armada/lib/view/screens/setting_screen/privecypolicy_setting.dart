@@ -16,11 +16,6 @@ class PrivecyPolicy extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: InkWell(
-            onTap: () {
-              Navigator.pop(context);
-            },
-            child: Icon(Icons.arrow_back_ios)),
         title: Text("privacy policy"),
         elevation: 0,
         backgroundColor: Theme.of(context).primaryColor,

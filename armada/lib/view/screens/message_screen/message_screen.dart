@@ -156,49 +156,55 @@ class _UserListPageState extends State<UserListPage> {
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
+        title: const Text("Messages"),
         backgroundColor: Theme.of(context).primaryColor,
         // leading: InkWell(onTap: resetSocket, child: Icon(Icons.ac_unit)),
       ),
-      body: FutureBuilder<void>(
-        future: fetchData(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          }
-          if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
-          }
-          return ListView.builder(
-            itemCount: contacts.length,
-            itemBuilder: (BuildContext context, int index) {
-              final contact = contacts[index];
-              final count = newMessageCounts[index]['newMessageCount'];
-              return ListTile(
-                leading: CircleAvatar(
-                    backgroundColor: Colors.black26,
-                    backgroundImage: NetworkImage(
-                        "https://armada-server.glitch.me/api/auth/Image/${contact.image}")),
-                title: Text(contact.firstname),
-                trailing:
-                    count > 0 && contacts.length == newMessageCounts.length
-                        ? CircleAvatar(
-                            backgroundColor: Colors.green,
-                            radius: 12,
-                            child: Text(
-                              '${newMessageCounts[index]['newMessageCount']}',
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 12,
-                                fontWeight: FontWeight.bold,
+      body: Padding(
+        padding: const EdgeInsets.only(top: 8.0),
+        child: FutureBuilder<void>(
+          future: fetchData(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            }
+            if (snapshot.hasError) {
+              return Center(child: Text('Error: ${snapshot.error}'));
+            }
+            return ListView.builder(
+              itemCount: contacts.length,
+              itemBuilder: (BuildContext context, int index) {
+                final contact = contacts[index];
+                final count = newMessageCounts[index]['newMessageCount'];
+                return ListTile(
+                  // isThreeLine: true,
+
+                  leading: CircleAvatar(
+                      backgroundColor: Colors.black26,
+                      backgroundImage: NetworkImage(
+                          "https://armada-server.glitch.me/api/auth/Image/${contact.image}")),
+                  title: Text(contact.firstname),
+                  trailing:
+                      count > 0 && contacts.length == newMessageCounts.length
+                          ? CircleAvatar(
+                              backgroundColor: Colors.green,
+                              radius: 12,
+                              child: Text(
+                                '${newMessageCounts[index]['newMessageCount']}',
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
-                            ),
-                          )
-                        : null,
-                onTap: () => _navigateToChatPage(context, contact, index),
-              );
-            },
-          );
-        },
+                            )
+                          : null,
+                  onTap: () => _navigateToChatPage(context, contact, index),
+                );
+              },
+            );
+          },
+        ),
       ),
       drawer: navigationDrawer(),
       bottomNavigationBar: bottomAppbar(context),

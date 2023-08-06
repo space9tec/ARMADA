@@ -53,6 +53,22 @@ class ChatPageState extends State<ChatPage> {
         }
       });
     });
+    // SchedulerBinding.instance.addPostFrameCallback((_) => _controller.animateTo(
+    //       _controller.position.maxScrollExtent,
+    //       duration: const Duration(milliseconds: 300),
+    //       curve: Curves.easeOut,
+    //     ));
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      _controller.animateTo(
+        _controller.position.maxScrollExtent,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeOut,
+      );
+    });
+    // WidgetsBinding.instance.addPostFrameCallback((_) {
+    //   // Scroll to the end of the chat messages
+    //   _controller.jumpTo(_controller.position.maxScrollExtent);
+    // });
   }
 
   void addMessage(data) {
@@ -96,6 +112,7 @@ class ChatPageState extends State<ChatPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        title: Text(widget.name),
         elevation: 0,
         backgroundColor: Theme.of(context).primaryColor,
       ),
@@ -103,6 +120,8 @@ class ChatPageState extends State<ChatPage> {
         children: [
           Expanded(
             child: ListView.builder(
+              physics: const BouncingScrollPhysics(
+                  decelerationRate: ScrollDecelerationRate.fast),
               controller: _controller,
               itemCount: messages.length,
               itemBuilder: (BuildContext context, int index) {
@@ -115,16 +134,26 @@ class ChatPageState extends State<ChatPage> {
                     alignment:
                         isMe ? Alignment.centerRight : Alignment.centerLeft,
                     child: Container(
-                      padding: const EdgeInsets.all(8),
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 9, horizontal: 18),
                       margin: const EdgeInsets.symmetric(
                           vertical: 4, horizontal: 8),
                       decoration: BoxDecoration(
-                        color: isMe
-                            ? const Color.fromARGB(255, 48, 180, 77)
-                                .withOpacity(0.4)
-                            : Colors.grey.withOpacity(0.4),
-                        borderRadius: BorderRadius.circular(16),
-                      ),
+                          color: isMe
+                              ? const Color.fromARGB(255, 48, 180, 77)
+                                  .withOpacity(0.4)
+                              : Colors.grey.withOpacity(0.4),
+                          // borderRadius: BorderRadius.circular(16),
+                          // border: isMe? BorderDirectional(bottom: BorderSide())
+                          borderRadius: isMe
+                              ? const BorderRadius.only(
+                                  bottomLeft: Radius.circular(10),
+                                  bottomRight: Radius.circular(10),
+                                  topRight: Radius.circular(10))
+                              : const BorderRadius.only(
+                                  bottomLeft: Radius.circular(10),
+                                  topLeft: Radius.circular(10),
+                                  topRight: Radius.circular(10))),
                       child: Text(message.content),
                     ),
                   );
@@ -140,7 +169,7 @@ class ChatPageState extends State<ChatPage> {
             child: Row(
               children: [
                 Expanded(
-                  child: TextField(
+                  child: TextFormField(
                     controller: _messageController,
                     decoration:
                         const InputDecoration(hintText: 'Type a message'),

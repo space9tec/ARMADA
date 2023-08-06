@@ -3,12 +3,12 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:bot_toast/bot_toast.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import '../../../models/usermodel.dart';
 import '../../../networkhandler.dart';
 import '../../../services/tokenManager.dart';
 import '../../../utils/helper_widget.dart';
-import '../../widgets/inputText.dart';
 
 class Login extends StatefulWidget {
   static const String routeName = '/login';
@@ -61,8 +61,8 @@ class _LoginState extends State<Login> {
                 ),
                 addVerticalSpace(MediaQuery.of(context).size.width * 0.06),
                 SizedBox(
-                  height: 140,
-                  width: 140,
+                  height: MediaQuery.of(context).size.height * 0.15,
+                  width: MediaQuery.of(context).size.width * 0.4,
                   child: Image.asset("assets/images/logo.jpeg"),
                 ),
                 Row(
@@ -77,20 +77,53 @@ class _LoginState extends State<Login> {
                     ),
                   ],
                 ),
-                addVerticalSpace(MediaQuery.of(context).size.width * 0.1),
-                InputTextNumber(
-                    context,
-                    "Phone",
-                    false,
-                    Icons.phone_sharp,
-                    TextInputType.phone,
-                    _numbercontroller,
-                    errorText,
-                    validate),
-                addVerticalSpace(31.0),
+                addVerticalSpace(MediaQuery.of(context).size.height * 0.05),
                 SizedBox(
-                  width: MediaQuery.of(context).size.width * 0.72,
-                  height: 67,
+                  width: MediaQuery.of(context).size.width * 0.71,
+                  height: MediaQuery.of(context).size.height * 0.1,
+                  child: TextFormField(
+                    controller: _numbercontroller,
+                    keyboardType: TextInputType.phone,
+                    obscureText: false,
+                    validator: (value) {
+                      if (value == null || value.length != 13) {
+                        return "Phone must be 13 digit.";
+                      }
+                      return null;
+                    },
+                    style: const TextStyle(
+                      fontSize: 17,
+                      color: Colors.grey,
+                    ),
+                    decoration: InputDecoration(
+                      labelText: "Phone",
+                      labelStyle: const TextStyle(
+                        fontSize: 17,
+                        color: Colors.grey,
+                      ),
+                      prefixIcon: const Icon(
+                        Icons.phone_sharp,
+                        color: Color(0xFF006837),
+                      ),
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(15),
+                          borderSide: const BorderSide(
+                            width: 1,
+                            color: Color(0xFF006837),
+                          )),
+                      focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(15),
+                          borderSide: const BorderSide(
+                            width: 1,
+                            color: Color(0xFF006837),
+                          )),
+                    ),
+                  ),
+                ),
+                addVerticalSpace(MediaQuery.of(context).size.height * 0.01),
+                SizedBox(
+                  width: MediaQuery.of(context).size.width * 0.71,
+                  height: MediaQuery.of(context).size.height * 0.1,
                   child: TextFormField(
                     controller: _passwordcontroller,
                     keyboardType: TextInputType.text,
@@ -177,7 +210,9 @@ class _LoginState extends State<Login> {
                         },
                         child: Text(
                           "Reset",
-                          style: Theme.of(context).textTheme.titleMedium,
+                          style: TextStyle(
+                              color: Theme.of(context).primaryColor,
+                              fontSize: 18),
                         ),
                       ),
                     ],
@@ -189,6 +224,8 @@ class _LoginState extends State<Login> {
                     checkUser();
 
                     if (formKey.currentState!.validate() && validate) {
+                      EasyLoading.show(status: 'loading...');
+
                       Map<String, String> data = {
                         "phone": _numbercontroller.text,
                         "password": _passwordcontroller.text,
@@ -220,6 +257,8 @@ class _LoginState extends State<Login> {
                           await storage.write(key: 'userm', value: userJson);
 
                           //TOAST
+                          EasyLoading.dismiss();
+
                           BotToast.showText(
                             text: "You have successfully logged in.",
                             duration: const Duration(seconds: 2),
@@ -252,8 +291,8 @@ class _LoginState extends State<Login> {
                     }
                   },
                   child: Container(
-                    width: MediaQuery.of(context).size.width * 0.63,
-                    height: 55,
+                    width: MediaQuery.of(context).size.width * 0.65,
+                    height: MediaQuery.of(context).size.height * 0.07,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(15),
                       color: Theme.of(context).primaryColor,
@@ -281,7 +320,10 @@ class _LoginState extends State<Login> {
                   },
                   child: Text(
                     "Create an account",
-                    style: Theme.of(context).textTheme.displaySmall,
+                    style: TextStyle(
+                        color: Theme.of(context).primaryColor,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold),
                   ),
                 ),
               ],
