@@ -221,7 +221,7 @@ class _UserListPageState extends State<UserListPage> {
         builder: (context) => ChatPage(
           sender: widget.userl.useid,
           receiver: contact.useid,
-          name: contact.firstname,
+          // name: contact.firstname,
           socketService: socketService,
         ),
       ),

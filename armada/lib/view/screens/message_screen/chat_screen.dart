@@ -2,14 +2,15 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:intl/intl.dart';
 
 import '../../../models/model.dart';
 import '../../../networkhandler.dart';
 import '../../../services/socket_service.dart';
 
 class ChatPage extends StatefulWidget {
-  final String receiver;
-  final String name;
+  final String? receiver;
+  // final String name;
   final String sender;
   final SocketService socketService;
 
@@ -18,7 +19,7 @@ class ChatPage extends StatefulWidget {
     required this.receiver,
     required this.sender,
     required this.socketService,
-    required this.name,
+    // required this.name,
   }) : super(key: key);
 
   @override
@@ -30,6 +31,11 @@ class ChatPageState extends State<ChatPage> {
   List<Message> messages = [];
   final ScrollController _controller = ScrollController();
   NetworkHandler networkHandler = NetworkHandler();
+
+  String getTimeFromDateTime(DateTime dateTime) {
+    String time = DateFormat("HH:mm").format(dateTime);
+    return time;
+  }
 
   @override
   void initState() {
@@ -84,17 +90,31 @@ class ChatPageState extends State<ChatPage> {
     super.dispose();
   }
 
+  UserModel reciver = UserModel(
+      firstname: "",
+      lastname: "",
+      useid: "",
+      phone: "",
+      password: "",
+      image: "");
   Future<void> fetchData() async {
     try {
       final response = await networkHandler.get(
           "/api/message/fetch-messages/${widget.sender}/${widget.receiver}");
+
+      Map<String, dynamic> output = json.decode(response.body);
+
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         print(data);
         print("from call");
+        Map<String, dynamic> reciverData;
+
         setState(() {
           messages = List<Message>.from(
               data['messages'].map((message) => Message.fromJson(message)));
+          reciverData = output['reciever'];
+          reciver = UserModel.fromJson(reciverData);
         });
         print("from call2");
         print(messages);
@@ -112,7 +132,7 @@ class ChatPageState extends State<ChatPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.name),
+        title: Text(reciver.firstname),
         elevation: 0,
         backgroundColor: Theme.of(context).primaryColor,
       ),
@@ -154,7 +174,21 @@ class ChatPageState extends State<ChatPage> {
                                   bottomLeft: Radius.circular(10),
                                   topLeft: Radius.circular(10),
                                   topRight: Radius.circular(10))),
-                      child: Text(message.content),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            message.content,
+                            style: TextStyle(fontSize: 16),
+                          ),
+                          SizedBox(height: 8),
+                          Text(
+                            getTimeFromDateTime(message.timestamp),
+                            style: TextStyle(fontSize: 12, color: Colors.grey),
+                          ),
+                        ],
+                      ),
+                      // Text(message.content),
                     ),
                   );
                 } else {
@@ -195,7 +229,7 @@ class ChatPageState extends State<ChatPage> {
         final response =
             await networkHandler.postt("/api/message/send-message", {
           'sender': widget.sender,
-          'receiver': widget.receiver,
+          'receiver': widget.receiver!,
           'content': message,
         });
         if (response.statusCode == 201) {
