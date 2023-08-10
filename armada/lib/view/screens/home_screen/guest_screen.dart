@@ -103,6 +103,7 @@ class _GuestState extends State<Guest> {
     super.initState();
     _pageController = PageController(viewportFraction: 0.8);
     checkInternetConnection();
+    // print("first");
     fetchData();
   }
 
@@ -125,11 +126,11 @@ class _GuestState extends State<Guest> {
     }
   }
 
-  // Fetch
+  // Fetch Machine
   void fetchData() async {
     try {
       var response = await networkHandler.get("/api/machinery/");
-
+      print("Hello still fetching");
       setState(() {
         machine = (json.decode(response.body) as List)
             .map((data) => MachineM.fromJson(data))
@@ -138,6 +139,7 @@ class _GuestState extends State<Guest> {
         loading = true;
       });
     } catch (e) {
+      print("Failed to fethc Machinery data");
       return;
     }
   }
@@ -279,10 +281,11 @@ class _GuestState extends State<Guest> {
                                         const Color.fromARGB(255, 0, 117, 63),
                                     borderRadius: BorderRadius.circular(9),
                                   ),
-                                  child: const Center(
+                                  child: Center(
                                       child: Icon(
                                     Icons.filter_alt,
-                                    size: 30,
+                                    size: MediaQuery.of(context).size.width *
+                                        0.08,
                                     color: Colors.white,
                                   )),
                                 ),
@@ -326,7 +329,7 @@ class _GuestState extends State<Guest> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         SizedBox(
-                          height: MediaQuery.of(context).size.height * 0.27,
+                          height: MediaQuery.of(context).size.height * 0.28,
                           child: Center(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.center,
@@ -375,7 +378,8 @@ class _GuestState extends State<Guest> {
                             ),
                           ),
                         ),
-                        addVerticalSpace(25),
+                        addVerticalSpace(
+                            MediaQuery.of(context).size.height * 0.01),
                         loading
                             ? _connectionStatus ==
                                     InternetConnectionStatus.connected
@@ -526,7 +530,8 @@ class _GuestState extends State<Guest> {
                               context,
                               MaterialPageRoute(
                                 builder: ((context) => ItemPage(
-                                    machine: displayedMachines[index])),
+                                    machineid:
+                                        displayedMachines[index].machineId)),
                               ));
                         },
                         child: ListTile(

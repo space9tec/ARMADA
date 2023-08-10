@@ -14,6 +14,7 @@ class NetworkHandler {
     String? token = await TokenManager().getToken();
 
     String cookie = 'jwt=$token';
+
     try {
       var response = await http.get(url, headers: {'Cookie': cookie});
       return response;

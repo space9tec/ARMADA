@@ -54,7 +54,7 @@ class _LoginState extends State<Login> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                addVerticalSpace(MediaQuery.of(context).size.width * 0.19),
+                addVerticalSpace(MediaQuery.of(context).size.width * 0.17),
                 Center(
                   child: Text("Welcome.",
                       style: Theme.of(context).textTheme.displayLarge),
@@ -270,6 +270,7 @@ class _LoginState extends State<Login> {
                           Navigator.of(context).pushNamedAndRemoveUntil(
                               '/home', (Route<dynamic> route) => false);
                         } else {
+                          EasyLoading.dismiss();
                           BotToast.showText(
                             text: "Failed to login",
                             duration: const Duration(seconds: 2),

@@ -282,16 +282,20 @@ class _HomeScreenState extends State<HomeScreen> {
                                 },
                                 child: Container(
                                   margin: const EdgeInsets.all(7),
-                                  height: 30,
-                                  width: 30,
+                                  height:
+                                      MediaQuery.of(context).size.height * 0.09,
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.1,
                                   decoration: BoxDecoration(
                                     color:
                                         const Color.fromARGB(255, 0, 117, 63),
                                     borderRadius: BorderRadius.circular(9),
                                   ),
-                                  child: const Center(
+                                  child: Center(
                                       child: Icon(
-                                    Icons.filter_list_sharp,
+                                    size: MediaQuery.of(context).size.width *
+                                        0.08,
+                                    Icons.filter_alt,
                                     color: Colors.white,
                                   )),
                                 ),
@@ -507,7 +511,8 @@ class _HomeScreenState extends State<HomeScreen> {
                               context,
                               MaterialPageRoute(
                                 builder: ((context) => ItemPage(
-                                    machine: displayedMachines[index])),
+                                    machineid:
+                                        displayedMachines[index].machineId)),
                               ));
                         },
                         child: ListTile(

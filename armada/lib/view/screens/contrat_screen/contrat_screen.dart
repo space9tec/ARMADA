@@ -106,13 +106,13 @@ class _ContractListState extends State<ContractList> {
 
   Color _getBorderColor(String status) {
     switch (status) {
-      case "accepted":
+      case "Accepted":
         return Color.fromARGB(
             255, 222, 253, 223); // Set the border color for the accepted status
       case "In Progress":
         return const Color.fromARGB(
             255, 253, 251, 229); // Set the border color for the pending status
-      case "rejected":
+      case "Rejected":
         return const Color.fromARGB(
             255, 250, 226, 224); // Set the border color for the rejected status
       default:
@@ -137,7 +137,7 @@ class _ContractListState extends State<ContractList> {
             MaterialPageRoute(
               builder: ((context) => ItemPage(
                     contractsModel: contracts,
-                    machine: machine,
+                    machineid: contracts.machineId,
                   )),
             ),
           );
@@ -182,43 +182,45 @@ class _ContractListState extends State<ContractList> {
                         children: [
                           Text(machine.type),
                           // Text(machine.model),
-                          Padding(
-                            padding: EdgeInsets.only(left: 0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                Text("Duration"),
-                                Container(
-                                  height: 30,
-                                  width: 250,
-                                  decoration: BoxDecoration(
-                                      border: Border.all(
-                                          color:
-                                              Colors.black.withOpacity(0.02)),
-                                      color: Colors.black.withOpacity(0.04),
-                                      borderRadius: BorderRadius.circular(12)),
-                                  child: Row(children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              Text("Duration"),
+                              Container(
+                                height: 30,
+                                width: MediaQuery.of(context).size.width * 0.6,
+                                decoration: BoxDecoration(
+                                    border: Border.all(
+                                        color: Colors.black.withOpacity(0.02)),
+                                    color: Colors.black.withOpacity(0.04),
+                                    borderRadius: BorderRadius.circular(12)),
+                                child: Row(
+                                  children: [
                                     Icon(Icons.access_time_rounded),
-                                    Padding(
-                                      padding: EdgeInsets.only(left: 10),
+                                    Expanded(
                                       child: Text(
-                                          // String formattedDate = formatDate(myDate);
-                                          "${formatDate(DateTime.parse(contracts.rent_start_time))} - ${formatDate(DateTime.parse(contracts.rent_end_time))}"),
+                                        // String formattedDate = formatDate(myDate);
+                                        "${formatDate(DateTime.parse(contracts.rent_start_time))} - ${formatDate(DateTime.parse(contracts.rent_end_time))}",
+                                        // overflow: TextOverflow.ellipsis,
+                                        overflow: TextOverflow.ellipsis,
+                                        maxLines: 1,
+                                        softWrap: false,
+                                      ),
                                     )
-                                  ]),
+                                  ],
                                 ),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
                         ],
                       ),
                     ),
                     Positioned(
-                      top: 5,
-                      right: 10,
+                      top: MediaQuery.of(context).size.height * 0.009,
+                      right: MediaQuery.of(context).size.width * 0.01,
                       child: Container(
-                        height: 30,
+                        height: MediaQuery.of(context).size.height * 0.05,
                         child: Text(contracts.status),
                       ),
                     )

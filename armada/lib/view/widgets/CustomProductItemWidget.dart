@@ -74,7 +74,7 @@ class _CustomProductItemWidgetState extends State<CustomProductItemWidget> {
                         context,
                         MaterialPageRoute(
                           builder: ((context) =>
-                              ItemPage(machine: widget.machine)),
+                              ItemPage(machineid: widget.machine.machineId)),
                         ));
                   },
                   child: Container(
